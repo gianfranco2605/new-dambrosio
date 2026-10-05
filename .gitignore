@@ -1,0 +1,16 @@
+# Si ignora tutto il contenuto di wp-content...
+/*
+
+# ...e si riammette solo cio' che fa parte di questo progetto.
+!.gitignore
+!CLAUDE.md
+!.claude/
+.claude/*
+!.claude/settings.json
+
+!themes/
+themes/*
+!themes/sorriso-dambrosio/
+
+# Rumore di sistema
+.DS_Store

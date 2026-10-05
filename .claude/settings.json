@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(wp:*)",
+      "Bash(curl -s http://sorrisodambrosio.local:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(mkdir:*)",
+      "Bash(php -l:*)",
+      "Bash(composer:*)",
+      "Bash(vendor/bin/phpstan:*)",
+      "mcp__playwright"
+    ],
+    "ask": [
+      "Bash(wp db import:*)",
+      "Bash(wp search-replace:*)",
+      "Bash(wp plugin delete:*)",
+      "Bash(wp theme delete:*)",
+      "Bash(wp post delete:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(wp db drop:*)",
+      "Bash(wp db reset:*)",
+      "Bash(wp db clean:*)",
+      "Bash(wp site empty:*)"
+    ]
+  }
+}

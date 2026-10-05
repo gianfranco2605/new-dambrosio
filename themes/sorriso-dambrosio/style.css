@@ -1,0 +1,530 @@
+/*
+Theme Name: Sorriso D'Ambrosio
+Theme URI: https://www.sorrisodambrosio.it/
+Template: ollie
+Author: Gianfranco Navas Fernandini
+Author URI: https://digitalnavas.it/
+Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
+Tested up to: 7.1
+Requires PHP: 7.4
+Version: 1.0.0
+License: GNU General Public License v3 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: sorriso-dambrosio
+*/
+
+/*
+ * Nessun valore di colore (hex/rgb/hsl) in questo file.
+ * Tutti i colori arrivano da theme.json come custom property:
+ *   --wp--preset--color--*   (palette, invariata rispetto al tema precedente)
+ *   --wp--custom--*          (accessori: filetto, bordi card, bianco puro)
+ */
+
+/* ---------------------------------------------------------------
+   1. Tipografia di dettaglio
+   --------------------------------------------------------------- */
+
+/* Fraunces e' variabile su SOFT/WONK/opsz/wght: WONK a 0 toglie le
+   forme piu' bizzarre e lascia un serif sobrio; opsz alto da' un
+   disegno da titolo. */
+.wp-site-blocks h1,
+.wp-site-blocks h2,
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2 {
+	font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 72;
+	letter-spacing: -0.015em;
+}
+
+.wp-site-blocks h3,
+.editor-styles-wrapper h3 {
+	letter-spacing: -0.005em;
+}
+
+/* Misura di lettura: sotto i 75 caratteri sui paragrafi di testo
+   corrente, senza toccare i paragrafi dentro card e colonne. */
+.sd-prose > p {
+	max-width: 68ch;
+}
+
+/* ---------------------------------------------------------------
+   2. Occhiello + filetto
+   L'occhiello e' testo di contenuto ("Dal 1956", "Dottori", ...):
+   resta nel suo caso naturale, niente maiuscolo spaziato.
+   --------------------------------------------------------------- */
+
+.sd-eyebrow {
+	letter-spacing: 0.04em;
+	margin: 0;
+}
+
+.sd-rule {
+	background: linear-gradient(90deg, var(--wp--custom--accent--rule), transparent);
+	border: 0;
+	border-radius: 50px;
+	height: 3px;
+	margin: 0;
+	width: 112px;
+}
+
+/* ---------------------------------------------------------------
+   3. Hero
+   Una sola immagine art-directed via <picture> (ritratto sotto 782px,
+   panoramica sopra): un solo <h1> nel DOM, invece dei due blocchi Cover
+   duplicati e nascosti via CSS del tema precedente.
+   --------------------------------------------------------------- */
+
+.sd-hero {
+	isolation: isolate;
+	position: relative;
+}
+
+.sd-hero__media {
+	display: block;
+	inset: 0;
+	position: absolute;
+	z-index: -2;
+}
+
+.sd-hero__media img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	object-position: 62% center;
+	width: 100%;
+}
+
+/* Velo in diagonale: scurisce la colonna del testo e lascia leggibile
+   il soggetto sulla destra. */
+.sd-hero__scrim {
+	background: linear-gradient(
+		100deg,
+		var(--wp--custom--scrim--strong) 0%,
+		var(--wp--custom--scrim--soft) 50%,
+		var(--wp--custom--scrim--none) 82%
+	);
+	inset: 0;
+	position: absolute;
+	z-index: -1;
+}
+
+@media (max-width: 781px) {
+	.sd-hero__media img {
+		object-position: 50% 28%;
+	}
+
+	/* In verticale il testo sta sopra l'immagine, non di fianco:
+	   serve un velo pieno, non diagonale. */
+	.sd-hero__scrim {
+		background: linear-gradient(
+			180deg,
+			var(--wp--custom--scrim--soft) 0%,
+			var(--wp--custom--scrim--strong) 55%
+		);
+	}
+}
+
+.sd-hero__content {
+	min-height: 78vh;
+	display: flex;
+	align-items: center;
+}
+
+@media (max-width: 781px) {
+	.sd-hero__content {
+		min-height: 72vh;
+	}
+}
+
+.sd-hero__inner {
+	max-width: 34rem;
+	width: 100%;
+}
+
+@media (min-width: 782px) {
+	.sd-hero__inner {
+		max-width: 46rem;
+	}
+}
+
+.sd-hero__title {
+	margin: 0;
+}
+
+.sd-hero__claim {
+	max-width: 32ch;
+}
+
+/* Il secondo invito all'azione e' in outline chiaro sopra la foto. */
+.sd-button-ghost .wp-block-button__link {
+	background-color: transparent;
+	border: 1px solid var(--wp--preset--color--base);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-button-ghost .wp-block-button__link:hover,
+.sd-button-ghost .wp-block-button__link:focus {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--main);
+}
+
+/* Una sola entrata orchestrata, al caricamento. */
+@media (prefers-reduced-motion: no-preference) {
+	.sd-hero__inner > * {
+		animation: sd-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+	}
+
+	.sd-hero__inner > :nth-child(1) { animation-delay: 0.05s; }
+	.sd-hero__inner > :nth-child(2) { animation-delay: 0.14s; }
+	.sd-hero__inner > :nth-child(3) { animation-delay: 0.23s; }
+	.sd-hero__inner > :nth-child(4) { animation-delay: 0.32s; }
+}
+
+@keyframes sd-rise {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* ---------------------------------------------------------------
+   4. Scheda contatti sovrapposta all'hero
+   --------------------------------------------------------------- */
+
+.sd-contact-card {
+	box-shadow: 0 18px 50px -24px var(--wp--custom--shadow--card);
+	position: relative;
+	z-index: 2;
+}
+
+@media (min-width: 782px) {
+	.sd-contact-card {
+		margin-top: -4.5rem;
+	}
+}
+
+.sd-contact-card a {
+	text-decoration: none;
+}
+
+.sd-contact-card a:hover,
+.sd-contact-card a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------
+   5. Card (servizi, tecnologie)
+   --------------------------------------------------------------- */
+
+.sd-card {
+	border: 1px solid var(--wp--custom--border--card);
+	border-radius: 6px;
+	height: 100%;
+	overflow: hidden;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sd-card:hover,
+.sd-card:focus-within {
+	border-color: var(--wp--preset--color--tertiary);
+	box-shadow: 0 14px 34px -22px var(--wp--custom--shadow--card);
+}
+
+.sd-card figure.wp-block-image {
+	margin: 0;
+}
+
+.sd-card figure.wp-block-image img {
+	aspect-ratio: 3 / 2;
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 100%;
+}
+
+/* Le colonne diventano card a tutta altezza. */
+.sd-cards.wp-block-columns .wp-block-column {
+	display: flex;
+}
+
+.sd-cards.wp-block-columns .wp-block-column > .wp-block-group {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* Il bottone si incolla in fondo alla card, cosi' le card restano allineate. */
+.sd-card__body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.sd-card__body > .wp-block-buttons {
+	margin-top: auto;
+}
+
+/* ---------------------------------------------------------------
+   6. Ritratti dei professionisti
+   --------------------------------------------------------------- */
+
+.sd-portrait img {
+	aspect-ratio: 4 / 5;
+	border-radius: 6px;
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 100%;
+}
+
+/* ---------------------------------------------------------------
+   7. Header
+   --------------------------------------------------------------- */
+
+.sd-header {
+	backdrop-filter: saturate(1.6) blur(8px);
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-header .wp-block-navigation {
+	font-feature-settings: "ss01";
+}
+
+/* Sottolineatura animata solo da tablet in su e solo sulle voci di primo livello. */
+@media (min-width: 600px) and (prefers-reduced-motion: no-preference) {
+	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content {
+		position: relative;
+	}
+
+	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+		background-color: var(--wp--preset--color--primary);
+		bottom: -4px;
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		transition: width 0.3s ease;
+		width: 0;
+	}
+
+	.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
+	.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
+		width: 100%;
+	}
+}
+
+/* ---------------------------------------------------------------
+   8. CTA mobile sempre raggiungibile
+   --------------------------------------------------------------- */
+
+.sd-mobile-cta {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	bottom: 0;
+	display: none;
+	left: 0;
+	position: fixed;
+	right: 0;
+	z-index: 999;
+}
+
+@media (max-width: 781px) {
+	.sd-mobile-cta {
+		display: block;
+	}
+
+	/* Spazio in fondo alla pagina perche' la barra non copra il footer. */
+	.wp-site-blocks {
+		padding-bottom: 4.75rem;
+	}
+}
+
+.sd-mobile-cta .wp-block-buttons {
+	margin: 0;
+}
+
+.sd-mobile-cta .wp-block-button__link {
+	white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------
+   9. Tabella orari
+   --------------------------------------------------------------- */
+
+.sd-hours table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.sd-hours th,
+.sd-hours td {
+	border: 0;
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	padding: 0.85em 0.75em;
+}
+
+.sd-hours thead th {
+	border-bottom-color: var(--wp--preset--color--main-accent);
+	font-weight: 500;
+}
+
+.sd-hours tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+/* Prima colonna a sinistra, orari a destra: piu' leggibile della
+   centratura su tutte e tre le colonne. */
+.sd-hours th:first-child,
+.sd-hours td:first-child {
+	text-align: left;
+}
+
+.sd-hours th:not(:first-child),
+.sd-hours td:not(:first-child) {
+	text-align: right;
+}
+
+/* ---------------------------------------------------------------
+   10. Mappa
+   --------------------------------------------------------------- */
+
+.sd-map iframe {
+	border: 0;
+	border-radius: 6px;
+	display: block;
+	height: 420px;
+	width: 100%;
+}
+
+@media (max-width: 781px) {
+	.sd-map iframe {
+		height: 300px;
+	}
+}
+
+/* ---------------------------------------------------------------
+   11. Accessibilita' e igiene
+   --------------------------------------------------------------- */
+
+:where(.wp-site-blocks) :focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
+
+img {
+	max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* ---------------------------------------------------------------
+   12. Sezioni e griglie
+   --------------------------------------------------------------- */
+
+/* Fondo alternato appena percettibile per separare le sezioni senza righe. */
+.sd-section--tinted {
+	background-color: var(--wp--custom--surface--pure);
+}
+
+.sd-section-head {
+	max-width: 46rem;
+}
+
+/* Griglia auto-responsiva: nessun breakpoint da mantenere a mano. */
+.sd-grid {
+	display: grid;
+	gap: var(--wp--preset--spacing--medium);
+}
+
+.sd-grid > * {
+	margin: 0;
+}
+
+.sd-grid--tech {
+	grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.sd-grid--reasons {
+	grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.sd-reason__icon img {
+	height: 44px;
+	width: auto;
+}
+
+.sd-reason h3 {
+	text-wrap: balance;
+}
+
+/* Le card nelle griglie devono riempire la cella. */
+.sd-grid .sd-card {
+	display: flex;
+	flex-direction: column;
+}
+
+.sd-card__icon img {
+	height: 40px;
+	width: auto;
+}
+
+/* ---------------------------------------------------------------
+   13. Footer
+   --------------------------------------------------------------- */
+
+.sd-footer .logo-footer img {
+	height: auto;
+	width: 150px;
+}
+
+.sd-footer .sd-hours th,
+.sd-footer .sd-hours td {
+	border-bottom-color: var(--wp--preset--color--secondary);
+}
+
+.sd-footer .sd-hours thead th {
+	border-bottom-color: var(--wp--preset--color--main-accent);
+}
+
+.sd-footer__rule {
+	margin-bottom: var(--wp--preset--spacing--small);
+	margin-top: var(--wp--preset--spacing--small);
+}
+
+/* I social non usano gli attributi colore del blocco (conterrebbero hex
+   nel markup): il colore arriva dai preset. */
+.sd-social .wp-block-social-link {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--main);
+}
+
+.sd-footer .wp-block-social-link a {
+	text-decoration: none;
+}
+
+/* ---------------------------------------------------------------
+   14. Logo nell'header
+   --------------------------------------------------------------- */
+
+.sd-header .wp-block-site-logo img {
+	height: auto;
+	width: 168px;
+}
+
+@media (max-width: 599px) {
+	.sd-header .wp-block-site-logo img {
+		width: 132px;
+	}
+}
