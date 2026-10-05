@@ -12,5 +12,8 @@
 themes/*
 !themes/sorriso-dambrosio/
 
+# Dipendenze di sviluppo del child theme (solo PHPStan): non vanno in deploy.
+themes/sorriso-dambrosio/vendor/
+
 # Rumore di sistema
 .DS_Store

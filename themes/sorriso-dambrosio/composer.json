@@ -1,0 +1,21 @@
+{
+	"name": "sorrisodambrosio/sorriso-dambrosio",
+	"description": "Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio.",
+	"type": "wordpress-theme",
+	"license": "GPL-3.0-or-later",
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"phpstan/extension-installer": "^1.4"
+	},
+	"config": {
+		"allow-plugins": {
+			"phpstan/extension-installer": true
+		}
+	},
+	"scripts": {
+		"phpstan": "phpstan analyse --memory-limit=1G"
+	}
+}

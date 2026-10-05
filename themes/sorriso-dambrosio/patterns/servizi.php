@@ -64,8 +64,8 @@ $sd_services = array(
 <p class="has-secondary-color has-text-color has-small-font-size"><?php echo $sd_service['text']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph -->
 
-<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"var:preset|spacing|small"}}},"layout":{"type":"flex","justifyContent":"left"}} -->
-<div class="wp-block-buttons" style="margin-top:var(--wp--preset--spacing--small)"><!-- wp:button {"className":"is-style-outline"} -->
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"left"}} -->
+<div class="wp-block-buttons"><!-- wp:button {"className":"is-style-outline"} -->
 <div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( $sd_service['link'] ) ); ?>">DI PI&Ugrave;</a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons --></div>

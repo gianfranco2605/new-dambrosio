@@ -146,3 +146,26 @@ function sorriso_dambrosio_image_url( $id, $size = 'full' ) {
 
 	return is_string( $url ) ? $url : '';
 }
+
+/**
+ * Precarica il solo font display.
+ *
+ * Fraunces disegna il titolo dell'hero, che e' il primo elemento di testo
+ * visibile: anticiparne il download riduce lo scambio di carattere.
+ * DM Sans non viene precaricato per non competere con l'immagine dell'hero.
+ *
+ * @return void
+ */
+function sorriso_dambrosio_preload_display_font() {
+	$relative = '/assets/fonts/Fraunces-VariableFont_SOFT,WONK,opsz,wght.woff2';
+
+	if ( ! file_exists( get_stylesheet_directory() . $relative ) ) {
+		return;
+	}
+
+	printf(
+		'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+		esc_url( get_stylesheet_directory_uri() . $relative )
+	);
+}
+add_action( 'wp_head', 'sorriso_dambrosio_preload_display_font', 1 );

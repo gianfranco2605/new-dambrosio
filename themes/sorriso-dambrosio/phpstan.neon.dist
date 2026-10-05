@@ -1,0 +1,18 @@
+parameters:
+	level: 5
+
+	# Il sito gira su PHP 7.4 in locale e in produzione: l'analisi deve
+	# segnalare qualunque sintassi o funzione introdotta dopo, anche se la
+	# CLI che esegue PHPStan e' piu' recente.
+	phpVersion: 70400
+
+	paths:
+		- functions.php
+		- patterns
+
+	excludePaths:
+		- vendor
+
+	# I file in patterns/ sono frammenti di template: aprono e chiudono i tag
+	# PHP attorno a blocchi di HTML, quindi non dichiarano namespace o classi.
+	treatPhpDocTypesAsCertain: false
