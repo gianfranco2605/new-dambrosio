@@ -62,7 +62,9 @@ Text Domain: sorriso-dambrosio
 	border: 0;
 	border-radius: 50px;
 	height: 3px;
-	margin: 0;
+	margin-block: 0.75rem 0;
+	margin-inline-end: auto !important;
+	margin-inline-start: 0 !important;
 	width: 112px;
 }
 
@@ -97,10 +99,11 @@ Text Domain: sorriso-dambrosio
    il soggetto sulla destra. */
 .sd-hero__scrim {
 	background: linear-gradient(
-		100deg,
+		96deg,
 		var(--wp--custom--scrim--strong) 0%,
-		var(--wp--custom--scrim--soft) 50%,
-		var(--wp--custom--scrim--none) 82%
+		var(--wp--custom--scrim--strong) 20%,
+		var(--wp--custom--scrim--soft) 44%,
+		var(--wp--custom--scrim--none) 68%
 	);
 	inset: 0;
 	position: absolute;
@@ -112,13 +115,14 @@ Text Domain: sorriso-dambrosio
 		object-position: 50% 28%;
 	}
 
-	/* In verticale il testo sta sopra l'immagine, non di fianco:
-	   serve un velo pieno, non diagonale. */
+	/* In verticale il testo sta sopra l'immagine, non di fianco: il velo
+	   e' pieno e piu' denso in alto, dove cadono occhiello e titolo. */
 	.sd-hero__scrim {
 		background: linear-gradient(
 			180deg,
-			var(--wp--custom--scrim--soft) 0%,
-			var(--wp--custom--scrim--strong) 55%
+			var(--wp--custom--scrim--strong) 0%,
+			var(--wp--custom--scrim--strong) 62%,
+			var(--wp--custom--scrim--soft) 100%
 		);
 	}
 }
@@ -200,9 +204,11 @@ Text Domain: sorriso-dambrosio
 	z-index: 2;
 }
 
+/* Core emette .wp-container-... > * { margin-block-start: 0 } con la stessa
+   specificita': serve !important perche' la scheda salga sull'hero. */
 @media (min-width: 782px) {
 	.sd-contact-card {
-		margin-top: -4.5rem;
+		margin-top: -5rem !important;
 	}
 }
 
@@ -324,7 +330,9 @@ Text Domain: sorriso-dambrosio
 .sd-mobile-cta {
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	bottom: 0;
-	display: none;
+	/* Il supporto layout del blocco Group emette display:flex sulla classe
+	   generata: senza !important la barra resterebbe visibile anche su desktop. */
+	display: none !important;
 	left: 0;
 	position: fixed;
 	right: 0;
@@ -333,7 +341,7 @@ Text Domain: sorriso-dambrosio
 
 @media (max-width: 781px) {
 	.sd-mobile-cta {
-		display: block;
+		display: flex !important;
 	}
 
 	/* Spazio in fondo alla pagina perche' la barra non copra il footer. */
@@ -348,6 +356,14 @@ Text Domain: sorriso-dambrosio
 
 .sd-mobile-cta .wp-block-button__link {
 	white-space: nowrap;
+}
+
+/* Il badge fisso di iubenda occupa l'angolo in basso a destra: la barra
+   lascia libero quello spazio per non finirci sotto. */
+@media (max-width: 781px) {
+	.sd-mobile-cta {
+		padding-right: 3.75rem !important;
+	}
 }
 
 /* ---------------------------------------------------------------
@@ -438,9 +454,9 @@ img {
 	background-color: var(--wp--custom--surface--pure);
 }
 
-.sd-section-head {
-	max-width: 46rem;
-}
+/* L'intestazione e' alignwide: il suo box segue il bordo sinistro delle
+   colonne della sezione. La misura stretta e l'allineamento a sinistra
+   valgono per il testo dentro, non per il box. */
 
 /* Griglia auto-responsiva: nessun breakpoint da mantenere a mano. */
 .sd-grid {
@@ -489,6 +505,17 @@ img {
 	width: 150px;
 }
 
+/* Ollie da' alla tabella fondo "base" e intestazione chiara: nel footer
+   scuro il testo, anch'esso "base", risultava bianco su bianco. */
+.sd-footer .sd-hours table,
+.sd-footer .sd-hours thead,
+.sd-footer .sd-hours thead th,
+.sd-footer .sd-hours tbody tr,
+.sd-footer .sd-hours td {
+	background-color: transparent;
+	color: inherit;
+}
+
 .sd-footer .sd-hours th,
 .sd-footer .sd-hours td {
 	border-bottom-color: var(--wp--preset--color--secondary);
@@ -496,6 +523,7 @@ img {
 
 .sd-footer .sd-hours thead th {
 	border-bottom-color: var(--wp--preset--color--main-accent);
+	color: var(--wp--preset--color--main-accent);
 }
 
 .sd-footer__rule {
@@ -527,4 +555,36 @@ img {
 	.sd-header .wp-block-site-logo img {
 		width: 132px;
 	}
+}
+
+/* ---------------------------------------------------------------
+   15. Utility di visibilita' ereditate dal contenuto esistente
+
+   Il post wp_navigation (ID 4) e altri contenuti gia' in archivio usano
+   .is-style-hidden-destok / .is-style-hidden-mobile, che nel tema
+   precedente erano definite nel suo CSS. Senza queste regole i social
+   del menu comparirebbero nell'header anche su desktop.
+   --------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+	.is-style-hidden-destok {
+		display: none !important;
+	}
+}
+
+@media (max-width: 599px) {
+	.is-style-hidden-mobile {
+		display: none !important;
+	}
+}
+
+/* ---------------------------------------------------------------
+   17. Allineamento a sinistra dentro le intestazioni di sezione
+   --------------------------------------------------------------- */
+
+.sd-section-head > * {
+	margin-inline-end: auto !important;
+	margin-inline-start: 0 !important;
+	max-width: 46rem;
+	text-align: left;
 }

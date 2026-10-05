@@ -89,8 +89,8 @@ function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2 ) {
 
 	$heading_attrs = 2 === $level ? '{"level":2}' : '{"level":' . $level . '}';
 
-	return '<!-- wp:group {"className":"sd-section-head","style":{"spacing":{"blockGap":"0.5rem","margin":{"bottom":"var:preset|spacing|medium"}}},"layout":{"type":"constrained"}} -->'
-		. '<div class="wp-block-group sd-section-head" style="margin-bottom:var(--wp--preset--spacing--medium)">'
+	return '<!-- wp:group {"align":"wide","className":"sd-section-head","style":{"spacing":{"blockGap":"0.5rem","margin":{"bottom":"var:preset|spacing|medium"}}},"layout":{"type":"constrained"}} -->'
+		. '<div class="wp-block-group alignwide sd-section-head" style="margin-bottom:var(--wp--preset--spacing--medium)">'
 		. '<!-- wp:paragraph {"className":"sd-eyebrow","textColor":"primary","fontSize":"x-small"} -->'
 		. '<p class="sd-eyebrow has-primary-color has-text-color has-x-small-font-size">' . $eyebrow . '</p>'
 		. '<!-- /wp:paragraph -->'

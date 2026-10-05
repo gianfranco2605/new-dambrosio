@@ -68,6 +68,27 @@ $sd_hours    = array(
 <hr class="wp-block-separator has-text-color has-secondary-color has-alpha-channel-opacity has-secondary-background-color has-background sd-footer__rule"/>
 <!-- /wp:separator -->
 
+<!-- wp:html -->
+<?php
+/*
+ * Blocco legale iubenda.
+ *
+ * Il plugin cerca un pattern chiamato "<stylesheet>/footer" e, se non vi
+ * trova la stringa [iub-wp-block-buttons], ci inietta dentro un proprio
+ * <div> come primo figlio del secondo <div> del footer: nel nostro caso
+ * finirebbe dentro le colonne, rompendo la riga.
+ *
+ * Il blocco core/shortcode non espande gli shortcode (fa solo wpautop) e le
+ * parti template non passano dal filtro the_content: lo shortcode va quindi
+ * eseguito qui. Il commento HTML qui sotto mantiene la stringa letterale nel
+ * contenuto del pattern, cosi' il plugin riconosce che il blocco legale e'
+ * gia' presente e non lo inietta una seconda volta.
+ */
+?>
+<!-- blocco legale iubenda gestito dal tema: [iub-wp-block-buttons] -->
+<div class="sd-footer__legal"><?php echo do_shortcode( '[iub-wp-block-buttons]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+<!-- /wp:html -->
+
 <!-- wp:paragraph {"align":"center","textColor":"main-accent","fontSize":"x-small"} -->
 <p class="has-text-align-center has-main-accent-color has-text-color has-x-small-font-size">&copy;Copyright 2026 -&nbsp;<a href="https://elpuasdigitalcrafts.com/" target="_blank" rel="noreferrer noopener">Build by ElPuasDigitalCrafts</a></p>
 <!-- /wp:paragraph --></div>
