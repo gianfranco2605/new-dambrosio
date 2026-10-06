@@ -84,14 +84,17 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
 - **Tipografia**: `secondary` = Fraunces (titoli h1/h2), `primary` = DM Sans (testo, h3).
   Entrambi woff2 variabili in `assets/fonts/`.
 - **Spaziature e misure**: ereditate da Ollie (`small` … `xxxx-large`).
-  `contentSize` 740px, `wideSize` 1280px.
+  `contentSize` **1180px**, `wideSize` **1320px** (a 1440 la colonna utile e' 1320).
+  In CSS: `--sd-max` 1320px, `--sd-gutter`, `--sd-rhythm`, e la griglia `.sd-shelf` per far
+  uscire un elemento verso il bordo della finestra.
 - **Convenzione delle classi**: prefisso `sd-`.
 - **Le sezioni sono pattern PHP** in `patterns/`, richiamate dalla pagina con
   `<!-- wp:pattern {"slug":"sorriso-dambrosio/..."} /-->`.
   Cosi' la pagina resta versionata nel tema e **gli URL dei media si risolvono a runtime**:
   niente URL `.local` congelati nel database, nessun search-replace al deploy.
 - Helper disponibili nei pattern (definiti in `functions.php`):
-  - `sorriso_dambrosio_section_head( $occhiello, $titolo, $livello = 2 )`
+  - `sorriso_dambrosio_section_head( $occhiello, $titolo, $livello = 2, $href = '' )` —
+    filetto **sopra** la sezione, occhiello in coda a destra, titolo sotto a sinistra
   - `sorriso_dambrosio_image( $id, $size, $classi, $attr )` — usa
     `wp_get_attachment_image()`, quindi srcset, dimensioni e lazy loading gratis
   - `sorriso_dambrosio_image_url( $id, $size )`
@@ -153,7 +156,7 @@ cd themes/sorriso-dambrosio && composer run phpstan
 
 # nessun colore fuori da theme.json
 grep -rnE '(^|[^&])#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' themes/sorriso-dambrosio \
-  --include='*.php' --include='*.css' --include='*.html' | grep -v theme.json
+  --include='*.php' --include='*.css' --include='*.html' --exclude-dir=vendor | grep -v theme.json
 
 # la pagina risponde e non logga
 : > debug.log && curl -s -o /dev/null -w '%{http_code}\n' http://sorrisodambrosio.local/ && cat debug.log
@@ -174,13 +177,22 @@ orizzontale a 1440 / 768 / 390px, contatto raggiungibile su mobile.
 
 ## Stato attuale
 
-- Front page: pagina **2059** («Home»). La vecchia pagina **57** e' intatta e pubblicata.
-- Temi: `sorriso-dambrosio` attivo, `ollie` parent, `sorrisodambrosio` inattivo per il rollback.
+- Front page: pagina **2059** («Home»), otto pattern. La vecchia pagina **57** e' intatta
+  e pubblicata.
+- Temi: `sorriso-dambrosio` 1.1.0 attivo, `ollie` parent, `sorrisodambrosio` inattivo per il rollback.
+- La homepage e' alla **seconda iterazione**: la prima e' stata bocciata perche' riproduceva
+  il layout del vecchio sito. Leggere `redesign/DESIGN-SPEC.md` **prima** di toccare il layout:
+  contiene il sistema (misure, scala, fondi, intestazione di sezione) e l'impianto di ogni
+  sezione. L'autocritica sui punti ancora deboli sta in `REPORT.md` §6.
+- Lo script di misura usato per i criteri di design e' `.playwright-mcp/audit.js`: si carica
+  nella pagina e restituisce larghezza del contenuto, scala tipografica, altezza dell'hero,
+  dimensione delle icone, overflow e la regione vuota piu' alta.
 - Backup pre-lavoro: `../../../backups/pre-redesign.sql`.
 - Analisi, report e punti aperti: `../../../redesign/`.
-- **Da fare**: tutte le altre pagine. Leggere prima `redesign/DA-VERIFICARE.md`: contiene
-  decisioni del titolare ancora pendenti (immagini a bassa risoluzione, refusi nei testi,
-  formule promozionali da validare) che valgono per tutto il sito, non solo per la home.
+- **Da fare**: tutte le altre pagine, con lo stesso sistema. Leggere prima
+  `redesign/DA-VERIFICARE.md`: contiene decisioni del titolare ancora pendenti (ritratti
+  disomogenei, refusi nei testi, formule promozionali da validare, testo `alt` scritto da
+  zero) che valgono per tutto il sito.
 
 ## Deploy
 
