@@ -48,6 +48,10 @@
 				"si",
 				"no"
 			]
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
 		}
 	}
 }

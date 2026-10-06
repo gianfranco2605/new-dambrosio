@@ -1,0 +1,2 @@
+# Dipendenze di sviluppo (solo PHPStan): non vanno in deploy.
+/vendor/

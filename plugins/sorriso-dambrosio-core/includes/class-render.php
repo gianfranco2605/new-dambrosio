@@ -22,13 +22,24 @@ defined( 'ABSPATH' ) || exit;
 final class Render {
 
 	/**
+	 * Il tag di un titolo, tenuto fra h1 e h6.
+	 *
+	 * I livelli non si scelgono guardando la grandezza: un lettore di schermo
+	 * naviga per titoli, e un salto da h1 a h3 gli fa credere di aver perso un
+	 * pezzo di pagina. La grandezza la decide il CSS.
+	 */
+	public static function tag( int $level ): string {
+		return 'h' . max( 1, min( 6, $level ) );
+	}
+
+	/**
 	 * L'intestazione di sezione: filetto sopra, occhiello a destra, titolo sotto.
 	 *
 	 * E' la stessa figura di `sorriso_dambrosio_section_head()` nel tema, ma in
 	 * HTML puro invece che in markup a blocchi.
 	 */
 	public static function head( string $eyebrow, string $title, int $level = 2, string $href = '' ): string {
-		$tag   = 'h' . max( 2, min( 4, $level ) );
+		$tag   = 'h' . max( 1, min( 4, $level ) );
 		$inner = '' !== $href ? '<a href="' . esc_url( $href ) . '">' . esc_html( $title ) . '</a>' : esc_html( $title );
 
 		return '<div class="sd-head">'
@@ -75,19 +86,20 @@ final class Render {
 	 *
 	 * @param array<int, \WP_Post> $posts Articoli.
 	 */
-	public static function rows( array $posts, string $more = 'CONTINUA' ): string {
+	public static function rows( array $posts, string $more = 'CONTINUA', int $level = 3 ): string {
 		if ( array() === $posts ) {
 			return '';
 		}
 
+		$tag = self::tag( $level );
 		$out = '<div class="sd-rows">';
 
 		foreach ( $posts as $post ) {
 			$anchor = (string) get_post_meta( $post->ID, Fields::ANCORA, true );
 
 			$out .= '<article class="sd-rows__row"' . ( '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '' ) . '>'
-				. '<h3 class="sd-rows__title"><a href="' . esc_url( (string) get_permalink( $post ) ) . '">'
-				. esc_html( get_the_title( $post ) ) . '</a></h3>'
+				. '<' . $tag . ' class="sd-rows__title"><a href="' . esc_url( (string) get_permalink( $post ) ) . '">'
+				. esc_html( get_the_title( $post ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-rows__text">' . esc_html( self::excerpt( $post, 24 ) ) . '</p>'
 				. '<p class="sd-more sd-rows__more"><a href="' . esc_url( (string) get_permalink( $post ) ) . '">'
 				. esc_html( $more ) . ' &rarr;</a></p>'
@@ -105,11 +117,12 @@ final class Render {
 	 *
 	 * @param array<int, \WP_Post> $posts Articoli.
 	 */
-	public static function zigzag( array $posts ): string {
+	public static function zigzag( array $posts, int $level = 2 ): string {
 		if ( array() === $posts ) {
 			return '';
 		}
 
+		$tag = self::tag( $level );
 		$out = '<div class="sd-zig">';
 		$i   = 0;
 
@@ -122,7 +135,7 @@ final class Render {
 				. ( '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '' ) . '>'
 				. self::thumb( $post->ID, 'medium_large', 'sd-zig__figure' )
 				. '<div class="sd-zig__body">'
-				. '<h3 class="sd-zig__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></h3>'
+				. '<' . $tag . ' class="sd-zig__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-zig__text">' . esc_html( self::excerpt( $post, 34 ) ) . '</p>'
 				. '<p class="sd-more"><a href="' . esc_url( $link ) . '">CONTINUA &rarr;</a></p>'
 				. '</div></article>';
@@ -141,11 +154,12 @@ final class Render {
 	 *
 	 * @param array<int, \WP_Post> $posts Articoli.
 	 */
-	public static function matrix( array $posts ): string {
+	public static function matrix( array $posts, int $level = 3 ): string {
 		if ( array() === $posts ) {
 			return '';
 		}
 
+		$tag = self::tag( $level );
 		$out = '<div class="sd-matrix">';
 
 		foreach ( $posts as $post ) {
@@ -154,7 +168,7 @@ final class Render {
 
 			$out .= '<article class="sd-matrix__cell"' . ( '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '' ) . '>'
 				. self::thumb( $post->ID, 'medium', 'sd-matrix__figure' )
-				. '<h3 class="sd-matrix__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></h3>'
+				. '<' . $tag . ' class="sd-matrix__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-matrix__text">' . esc_html( self::excerpt( $post, 22 ) ) . '</p>'
 				. '</article>';
 		}

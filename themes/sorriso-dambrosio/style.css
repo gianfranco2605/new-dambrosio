@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.1.0
+Version: 1.2.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -32,6 +32,14 @@ Text Domain: sorriso-dambrosio
 	--sd-gutter: clamp(1.5rem, 4vw, 2rem);
 	--sd-rhythm: clamp(3.25rem, 6.6vw, 6rem);
 	--sd-sticky-top: 7.5rem;
+
+	/* Quanto manca, da dentro il contenitore, per arrivare al bordo della
+	   finestra. `calc(50% - 50vw)` funziona solo se il contenitore e'
+	   l'elemento stesso: dentro una cella di griglia quel 50% si misura
+	   sulla cella e il sanguinamento non arriva da nessuna parte — era
+	   il difetto delle prime pagine interne. Questo invece si misura
+	   sempre sul viewport. */
+	--sd-bleed: calc((100vw - min(100vw, var(--sd-max))) / 2 + var(--sd-gutter));
 }
 
 /* Il contenitore. Tutto quello che non sanguina sta qui dentro. */
@@ -160,6 +168,7 @@ Text Domain: sorriso-dambrosio
 	height: 1px;
 }
 
+.sd-head h1,
 .sd-head h2,
 .sd-head h3 {
 	margin: 0;
@@ -566,9 +575,21 @@ Text Domain: sorriso-dambrosio
 	width: 140px;
 }
 
-/* Otto voci di primo livello piu' due pulsanti: la riga e' piena. Le voci
+/* Il logo non si fa toccare dalla prima voce: misurato, lo spazio fra i due
+   scendeva a 14px e la riga sembrava accavallata anche quando non lo era. */
+/* Il logo non si fa toccare dalla prima voce: misurato, la prima voce
+   partiva a 221px mentre il logo finiva a 232 — si sovrapponevano di 11px
+   senza che nulla, nel codice, lo facesse sospettare. */
+.sd-header__logo {
+	margin-right: clamp(0.5rem, 1.4vw, 1.25rem);
+}
+
+/* Sette voci di primo livello piu' due pulsanti: la riga e' piena. Le voci
    stanno strette e non vanno mai a capo — se non ci stanno, il blocco
-   Navigation passa da solo alla tendina. */
+   Navigation passa da solo alla tendina.
+
+   Erano otto: con l'ottava la prima voce finiva **sopra** il logo a 1440px
+   (voce a 221, logo fino a 232). «Contatti» e' sceso sotto «Lo Studio». */
 .sd-header__nav {
 	flex: 1 1 auto;
 	justify-content: flex-end;
@@ -626,7 +647,7 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Otto voci piu' due pulsanti: fra 1024 e 1560px la riga e' al limite.
+/* Sette voci piu' due pulsanti: fra 1024 e 1560px la riga e' al limite.
    Le voci si stringono invece di accavallarsi sul logo. */
 @media (max-width: 1560px) {
 	.sd-header__nav.wp-block-navigation {
@@ -636,10 +657,10 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Misurato sulla pagina resa: la riga intera (logo 140 + 8 voci 695 +
-   telefono 170 + prenota 224) chiede 1328px. Sotto quella soglia cade
-   prima "Prenota" — si raggiunge comunque dall'hero e dalla fascia orari —
-   e poi la navigazione passa alla tendina. */
+/* Misurato sulla pagina resa, col menu di sette voci: a 1360px fra logo e
+   prima voce restano 52px; a 1340 cade "Prenota" — si raggiunge comunque
+   dall'hero, dalla fascia orari e dalla fascia di chiusura di ogni pagina
+   interna — e sotto 1120 la navigazione passa alla tendina. */
 @media (max-width: 1340px) {
 	.sd-header__book {
 		display: none;
@@ -647,7 +668,7 @@ Text Domain: sorriso-dambrosio
 }
 
 /* Il blocco Navigation di core passa alla tendina solo sotto i 600px: con
-   otto voci di primo livello e' troppo tardi, si accavallerebbe sul logo.
+   sette voci di primo livello e' troppo tardi, si accavallerebbe sul logo.
    Qui le due regole di core (sotto `@media (min-width: 600px)`) vengono
    rimesse al comportamento mobile fino a 1120px. */
 @media (max-width: 1120px) {
@@ -1764,4 +1785,1029 @@ img {
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;
 	}
+}
+
+/* ===============================================================
+   18. LE PAGINE INTERNE
+
+   Da qui in poi e' l'impianto delle pagine che non sono la home.
+   La regola di DESIGN FIRST — nessuna sezione riusa l'impianto di
+   un'altra — vale anche fra home e pagine interne: lo zig-zag, la
+   matrice a filetti e la scheda non compaiono in homepage.
+
+   L'architettura dei contenuti che queste pagine rendono sta in
+   docs/ARCHITECTURE.md.
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   18.1 Briciole di pane
+
+   Una riga sottile sotto l'header. Non un elenco numerato: il
+   browser metterebbe «1. 2. 3.» e sembrerebbe un sommario.
+   --------------------------------------------------------------- */
+
+.sd-crumbs {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	padding-block: 0.85rem;
+}
+
+.sd-crumbs__list {
+	display: flex;
+	flex-wrap: wrap;
+	font-size: var(--wp--preset--font-size--x-small);
+	gap: 0.5rem 0.75rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sd-crumbs__item {
+	color: var(--wp--preset--color--secondary);
+}
+
+.sd-crumbs__item + .sd-crumbs__item::before {
+	content: "/";
+	margin-right: 0.75rem;
+	opacity: 0.5;
+}
+
+.sd-crumbs__item a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-crumbs__item a:hover,
+.sd-crumbs__item a:focus-visible {
+	color: var(--wp--preset--color--primary);
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.sd-crumbs__item[aria-current="page"] {
+	color: var(--wp--preset--color--main);
+}
+
+/* L'header e' sticky: senza questo, il titolo di una sezione a cui
+   si arriva da un'ancora finisce sotto l'header. */
+.sd-crumbs,
+[id]:not(body) {
+	scroll-margin-top: var(--sd-sticky-top);
+}
+
+/* ---------------------------------------------------------------
+   18.2 Intestazione di una pagina d'area
+
+   Fascia tinta, titolo a sinistra e fotografia a destra che esce
+   verso il bordo della finestra. L'occhiello non e' un'etichetta:
+   e' il conto dei trattamenti, cioe' un'informazione.
+   --------------------------------------------------------------- */
+
+.sd-areahead {
+	overflow: hidden;
+	padding-bottom: 0;
+}
+
+.sd-areahead__grid {
+	align-items: end;
+	display: grid;
+	gap: clamp(2rem, 4vw, 3.5rem);
+	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+}
+
+.sd-areahead__text {
+	padding-bottom: var(--sd-rhythm);
+}
+
+.sd-areahead .sd-head {
+	margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.sd-areahead h1 {
+	font-size: var(--wp--preset--font-size--xx-large);
+	margin: 0;
+}
+
+.sd-areahead__lede {
+	line-height: 1.5;
+	margin: 0;
+	max-width: 32rem;
+}
+
+/* La fotografia esce verso destra fino al bordo della finestra: e'
+   il sanguinamento da un lato solo che DESIGN-SPEC isola come
+   costante del riferimento. */
+.sd-areahead__figure {
+	margin: 0;
+	margin-right: calc(var(--sd-bleed) * -1);
+}
+
+.sd-areahead__figure img {
+	aspect-ratio: 16 / 10;
+	display: block;
+	max-width: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+
+@media (max-width: 900px) {
+	.sd-areahead__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-areahead__text {
+		padding-bottom: clamp(1.75rem, 4vw, 2.5rem);
+	}
+
+	.sd-areahead__figure {
+		margin-inline: calc(var(--sd-bleed) * -1);
+	}
+
+	.sd-areahead__figure img {
+		aspect-ratio: 3 / 2;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.3 Zig-zag — l'elenco dei trattamenti di un'area
+
+   Righe alternate: la fotografia esce a sinistra, poi a destra, poi
+   di nuovo a sinistra. E' l'unico impianto che le pagine d'area
+   usano, e in homepage non c'e'.
+   --------------------------------------------------------------- */
+
+.sd-zig {
+	display: flex;
+	flex-direction: column;
+}
+
+.sd-zig__row {
+	align-items: center;
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	display: grid;
+	gap: clamp(1.5rem, 3.5vw, 3.5rem);
+	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+	grid-template-areas: "figure body";
+	padding-block: clamp(2rem, 4vw, 3.25rem);
+}
+
+.sd-zig__row:last-child {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-zig__figure {
+	grid-area: figure;
+}
+
+.sd-zig__body {
+	grid-area: body;
+}
+
+/* Sulle righe pari la fotografia passa a destra. Non basta spostarla
+   con `order`: l'ordine cambia la cella, non la colonna, e la
+   fotografia finirebbe nella colonna larga mentre il testo si
+   stringe in quella da 38 — che e' esattamente quel che faceva
+   prima di questa riga. Si scambiano le colonne, non gli elementi. */
+.sd-zig__row--end {
+	grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
+	grid-template-areas: "body figure";
+}
+
+.sd-zig__figure {
+	margin: 0;
+}
+
+.sd-zig__figure img {
+	aspect-ratio: 4 / 3;
+	display: block;
+	object-fit: cover;
+	width: 100%;
+}
+
+/* Qui le fotografie NON sanguinano. Il sanguinamento e' il gesto
+   dell'intestazione d'area e del capitolo in homepage: ripetuto
+   dodici volte di fila su /trattamenti/ diventa un tic, e due
+   immagini che escono da lati opposti si accavallano. L'alternanza
+   destra/sinistra basta da sola a dare il ritmo. */
+
+.sd-zig__title {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0 0 0.6rem;
+}
+
+.sd-zig__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-zig__title a:hover,
+.sd-zig__title a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.sd-zig__text {
+	color: var(--wp--preset--color--secondary);
+	margin: 0 0 1rem;
+	max-width: 38rem;
+}
+
+@media (max-width: 860px) {
+	.sd-zig__row,
+	.sd-zig__row--end {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas:
+			"figure"
+			"body";
+	}
+
+	.sd-zig__figure img {
+		aspect-ratio: 16 / 9;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.4 Righe a filetti — elenchi compatti
+
+   Titolo, due righe di testo, «CONTINUA». Nessun riquadro, nessuna
+   ombra: solo linee. Serve per «altri trattamenti» e per le
+   tecnologie collegate a una scheda.
+   --------------------------------------------------------------- */
+
+.sd-rows {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-rows__row {
+	align-items: baseline;
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	display: grid;
+	gap: 0.35rem clamp(1.5rem, 3vw, 3rem);
+	grid-template-columns: minmax(0, 34fr) minmax(0, 52fr) auto;
+	padding-block: clamp(1.1rem, 2.2vw, 1.6rem);
+}
+
+.sd-rows__title {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0;
+}
+
+.sd-rows__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-rows__title a:hover,
+.sd-rows__title a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.sd-rows__text {
+	color: var(--wp--preset--color--secondary);
+	font-size: var(--wp--preset--font-size--small);
+	margin: 0;
+}
+
+.sd-rows__more {
+	white-space: nowrap;
+}
+
+.sd-section--tint .sd-rows {
+	border-top-color: var(--wp--preset--color--main);
+}
+
+.sd-section--tint .sd-rows__row {
+	border-bottom-color: var(--wp--preset--color--main);
+}
+
+.sd-section--tint .sd-rows,
+.sd-section--tint .sd-rows__row {
+	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
+}
+
+.sd-section--tint .sd-rows__text {
+	color: var(--wp--preset--color--main);
+}
+
+@media (max-width: 860px) {
+	.sd-rows__row {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-rows__more {
+		margin-top: 0.4rem;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.5 Matrice a filetti — l'indice delle tecnologie
+
+   Celle divise da linee, niente riquadri e niente ombre: e' la
+   figura che DESIGN-SPEC §1 aveva isolato nel riferimento e che
+   fin qui non era stata usata da nessuna parte.
+   --------------------------------------------------------------- */
+
+/* I filetti sono bordi delle celle, non un fondo che traspare da una
+   griglia con `gap: 1px`: con otto voci su nove caselle, quel trucco
+   lasciava l'ultima casella grigia e vuota. */
+.sd-matrix {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sd-matrix__cell {
+	border-left: 1px solid var(--wp--custom--border--hairline);
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	display: flex;
+	flex-direction: column;
+	padding: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.sd-matrix__cell:nth-child(3n + 1) {
+	border-left: 0;
+	padding-left: 0;
+}
+
+.sd-matrix__cell:nth-child(3n) {
+	padding-right: 0;
+}
+
+.sd-matrix__figure {
+	margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+}
+
+.sd-matrix__figure img {
+	aspect-ratio: 3 / 2;
+	display: block;
+	object-fit: cover;
+	width: 100%;
+}
+
+.sd-matrix__title {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0 0 0.5rem;
+}
+
+.sd-matrix__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-matrix__title a:hover,
+.sd-matrix__title a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.sd-matrix__text {
+	color: var(--wp--preset--color--secondary);
+	font-size: var(--wp--preset--font-size--small);
+	margin: 0;
+}
+
+@media (max-width: 900px) {
+	.sd-matrix {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.sd-matrix__cell:nth-child(3n + 1),
+	.sd-matrix__cell:nth-child(3n) {
+		border-left: 1px solid var(--wp--custom--border--hairline);
+		padding-inline: clamp(1.25rem, 2.5vw, 2rem);
+	}
+
+	.sd-matrix__cell:nth-child(2n + 1) {
+		border-left: 0;
+		padding-left: 0;
+	}
+
+	.sd-matrix__cell:nth-child(2n) {
+		padding-right: 0;
+	}
+}
+
+@media (max-width: 600px) {
+	.sd-matrix {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-matrix__cell,
+	.sd-matrix__cell:nth-child(2n),
+	.sd-matrix__cell:nth-child(3n) {
+		border-left: 0;
+		padding-inline: 0;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.6 La scheda — un trattamento, una tecnologia, un articolo
+
+   Titolo in alto a sinistra, fotografia che esce verso un bordo,
+   testo in colonna di lettura sotto. `--mirror` manda la
+   fotografia dall'altra parte: un trattamento e una tecnologia non
+   devono sembrare la stessa pagina.
+   --------------------------------------------------------------- */
+
+.sd-entry {
+	overflow: hidden;
+}
+
+.sd-entry__grid {
+	display: grid;
+	gap: clamp(1.75rem, 3.5vw, 3rem);
+	grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+	grid-template-areas:
+		"head figure"
+		"body figure";
+	align-items: start;
+}
+
+.sd-entry__head {
+	grid-area: head;
+}
+
+.sd-entry__figure {
+	grid-area: figure;
+	margin: 0;
+}
+
+.sd-entry__body {
+	grid-area: body;
+}
+
+ /* Il titolo di una scheda sta in una colonna da ~46%: `xx-large` (72px)
+	    sarebbe piu' largo della colonna che lo porta — l'errore della prima
+	    iterazione. Scende fino a 60px, che resta sopra la soglia dei 56. */
+.sd-entry__title {
+	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	line-height: 1.08;
+	margin: 0;
+}
+
+.sd-entry__figure img {
+	aspect-ratio: 4 / 3;
+	display: block;
+	object-fit: cover;
+	width: 100%;
+}
+
+.sd-entry__figure {
+	margin-right: calc(var(--sd-bleed) * -1);
+}
+
+.sd-entry--mirror .sd-entry__grid {
+	grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
+	grid-template-areas:
+		"figure head"
+		"figure body";
+}
+
+.sd-entry--mirror .sd-entry__figure {
+	margin-left: calc(var(--sd-bleed) * -1);
+	margin-right: 0;
+}
+
+/* Le pagine interne usano `post-content`, che emette i blocchi
+   senza le classi del tema: la colonna di lettura si impone qui. */
+.sd-entry__body > *,
+.sd-doc__body > *,
+.sd-areatext > * {
+	margin-block: 0 1.1em;
+	max-width: 40rem;
+}
+
+.sd-entry__body > :last-child,
+.sd-doc__body > :last-child {
+	margin-bottom: 0;
+}
+
+.sd-entry__body h2,
+.sd-entry__body h3,
+.sd-doc__body h2,
+.sd-doc__body h3 {
+	margin-top: 2em;
+}
+
+@media (max-width: 900px) {
+	.sd-entry__grid,
+	.sd-entry--mirror .sd-entry__grid {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas:
+			"head"
+			"figure"
+			"body";
+	}
+
+	.sd-entry__figure,
+	.sd-entry--mirror .sd-entry__figure {
+		margin-inline: calc(var(--sd-bleed) * -1);
+	}
+
+	.sd-entry__figure img {
+		aspect-ratio: 16 / 9;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.7 Pagina generica e 404
+   --------------------------------------------------------------- */
+
+.sd-doc__head {
+	margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.sd-doc__title {
+	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	line-height: 1.08;
+	margin: 0;
+	max-width: 22ch;
+}
+
+/* ---------------------------------------------------------------
+   18.8 I professionisti fuori dalla home
+
+   In homepage sono tre righe strette 30/70. Qui sono voci
+   redazionali larghe, divise da filetti, con il ritratto piccolo
+   accanto al nome: stesso contenuto, ritmo diverso.
+   --------------------------------------------------------------- */
+
+.sd-people {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-people__row {
+	align-items: start;
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	display: grid;
+	gap: clamp(1.25rem, 3vw, 2.5rem);
+	grid-template-columns: 10rem minmax(0, 1fr);
+	padding-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sd-people__portrait {
+	margin: 0;
+}
+
+.sd-people__portrait img {
+	aspect-ratio: 4 / 5;
+	display: block;
+	object-fit: cover;
+	width: 100%;
+}
+
+.sd-people__name {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0 0 0.6rem;
+}
+
+.sd-people__name a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-people__name a:hover,
+.sd-people__name a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.sd-people__bio {
+	margin: 0 0 1rem;
+	max-width: 42rem;
+}
+
+.sd-section--tint .sd-people,
+.sd-section--tint .sd-people__row {
+	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
+}
+
+/* La pagina /professionisti/: tre schede affiancate, ritratto in
+   alto. E' l'unico posto in cui i tre medici si confrontano. */
+.sd-people--schede {
+	border: 0;
+	display: grid;
+	gap: 1px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	background-color: var(--wp--custom--border--hairline);
+	border-block: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-people--schede .sd-people__row {
+	background-color: var(--wp--preset--color--base);
+	border: 0;
+	grid-template-columns: minmax(0, 1fr);
+	padding: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.sd-people--schede .sd-people__portrait img {
+	aspect-ratio: 4 / 5;
+	max-height: 22rem;
+	object-position: top center;
+}
+
+@media (max-width: 860px) {
+	.sd-people__row {
+		grid-template-columns: 7rem minmax(0, 1fr);
+	}
+
+	.sd-people--schede {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-people--schede .sd-people__row {
+		grid-template-columns: 7rem minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.9 I casi prima/dopo
+
+   La galleria resta quella del plugin BEAF: qui si governa solo la
+   griglia che la contiene, e si tolgono i margini che il plugin
+   mette da se'.
+   --------------------------------------------------------------- */
+
+.sd-cases {
+	display: grid;
+	gap: clamp(1.5rem, 3vw, 2.5rem);
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sd-cases__group {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: clamp(2rem, 4vw, 3rem) 0 clamp(1rem, 2vw, 1.5rem);
+}
+
+.sd-cases__group:first-child {
+	margin-top: 0;
+}
+
+.sd-cases__item {
+	min-width: 0;
+}
+
+.sd-cases__media .bafg-container,
+.sd-cases__media .bafg-twentytwenty-container {
+	margin: 0 !important;
+	max-width: 100% !important;
+}
+
+/* Il plugin stampa da se' il titolo del caso, dentro un `h2`. Due volte lo
+   stesso testo, e un `h2` che si siede allo stesso livello del nome del
+   medico che lo raggruppa: un lettore di schermo ne ricava una gerarchia
+   sbagliata. `display:none` lo toglie anche dall'albero di accessibilita',
+   e il titolo resta quello del tema — che oltretutto e' un collegamento
+   alla scheda del caso. */
+.sd-cases .bafg-slider-info-wraper,
+.sd-case .bafg-slider-info-wraper {
+	display: none;
+}
+
+.sd-cases__caption {
+	font-size: var(--wp--preset--font-size--small);
+	margin: 0.75rem 0 0;
+}
+
+.sd-cases__caption a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-cases__caption a:hover,
+.sd-cases__caption a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.sd-case {
+	margin-inline: auto;
+	max-width: 48rem;
+}
+
+.sd-case__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: clamp(1.5rem, 3vw, 3rem);
+	list-style: none;
+	margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+	max-width: 48rem;
+	padding: 0;
+}
+
+.sd-case__meta-label {
+	color: var(--wp--preset--color--secondary);
+	display: block;
+	font-size: var(--wp--preset--font-size--x-small);
+	letter-spacing: 0.06em;
+	margin-bottom: 0.2rem;
+}
+
+@media (max-width: 700px) {
+	.sd-cases {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.10 La scheda del medico
+   --------------------------------------------------------------- */
+
+.sd-doctor__grid {
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3.5rem);
+	grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
+	align-items: start;
+}
+
+.sd-doctor__portrait {
+	margin: 0;
+	position: sticky;
+	top: var(--sd-sticky-top);
+}
+
+.sd-doctor__portrait img {
+	aspect-ratio: 4 / 5;
+	display: block;
+	object-fit: cover;
+	width: 100%;
+}
+
+.sd-doctor__name {
+	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	line-height: 1.08;
+	margin: 0 0 clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.sd-doctor__bio > * {
+	margin-block: 0 1.1em;
+	max-width: 40rem;
+}
+
+@media (max-width: 860px) {
+	.sd-doctor__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-doctor__portrait {
+		max-width: 16rem;
+		position: static;
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.11 L'indice per aree — /prestazioni/ e la 404
+   --------------------------------------------------------------- */
+
+.sd-index__area {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	display: grid;
+	gap: clamp(0.75rem, 2vw, 2rem);
+	grid-template-columns: minmax(0, 28fr) minmax(0, 72fr);
+	padding-block: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.sd-index__area:last-child {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-index__areaname {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0;
+}
+
+.sd-index__areaname a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-index__areaname a:hover,
+.sd-index__areaname a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.sd-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem 1.25rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sd-chips__item {
+	position: relative;
+}
+
+.sd-chips__item + .sd-chips__item::before {
+	background-color: var(--wp--custom--border--hairline);
+	content: "";
+	height: 1em;
+	left: -0.65rem;
+	position: absolute;
+	top: 0.25em;
+	width: 1px;
+}
+
+.sd-chips__item a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-chips__item a:hover,
+.sd-chips__item a:focus-visible {
+	color: var(--wp--preset--color--primary);
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.sd-section--tint .sd-index__area {
+	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
+}
+
+@media (max-width: 700px) {
+	.sd-index__area {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.12 La fascia di prenotazione che chiude ogni pagina interna
+   --------------------------------------------------------------- */
+
+.sd-cta {
+	background-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-cta__grid {
+	align-items: center;
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3.5rem);
+	grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+}
+
+.sd-cta .sd-head {
+	margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+.sd-cta__lede {
+	margin: 0;
+	max-width: 32rem;
+}
+
+.sd-cta__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+.sd-cta .sd-btn--outline {
+	border-color: var(--wp--custom--rule--on-dark);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-cta .sd-btn--outline:hover,
+.sd-cta .sd-btn--outline:focus-visible {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--main);
+}
+
+@media (max-width: 860px) {
+	.sd-cta__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.13 La pagina dei contatti
+   --------------------------------------------------------------- */
+
+.sd-contactpage__grid {
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3.5rem);
+	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+	align-items: start;
+}
+
+.sd-contacts {
+	display: grid;
+	gap: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-contacts__item {
+	align-items: center;
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	display: flex;
+	gap: 1rem;
+	padding-block: 1rem;
+}
+
+.sd-contacts__icon {
+	color: var(--wp--preset--color--primary);
+	flex: none;
+	height: 1.5rem;
+	width: 1.5rem;
+}
+
+.sd-contacts__label {
+	color: var(--wp--preset--color--secondary);
+	display: block;
+	font-size: var(--wp--preset--font-size--x-small);
+	letter-spacing: 0.06em;
+}
+
+.sd-contacts__value {
+	color: inherit;
+	font-size: var(--wp--preset--font-size--medium);
+	text-decoration: none;
+}
+
+.sd-contacts__value:hover,
+.sd-contacts__value:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.sd-contacts--inline {
+	border: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 clamp(1.5rem, 3vw, 3rem);
+}
+
+.sd-contacts--inline .sd-contacts__item {
+	border: 0;
+}
+
+@media (max-width: 860px) {
+	.sd-contactpage__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   18.14 Il testo libero di un'area (oggi: la FAQ di Implantologia)
+   --------------------------------------------------------------- */
+
+.sd-areatext {
+	max-width: 46rem;
+}
+
+.sd-areatext .wp-block-details {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	padding-block: 1rem;
+}
+
+.sd-areatext .wp-block-details:first-of-type {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+}
+
+.sd-areatext .wp-block-details summary {
+	cursor: pointer;
+	font-size: var(--wp--preset--font-size--medium);
+	font-family: var(--wp--preset--font-family--secondary);
+}
+
+.sd-areatext .wp-block-details p {
+	margin-block: 0.75rem 0;
+}
+
+/* ---------------------------------------------------------------
+   18.15 Il capitolo «Lo Studio» come pagina intera
+   --------------------------------------------------------------- */
+
+.sd-chapter__lede {
+	line-height: 1.35;
+	margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+	max-width: 32rem;
+}
+
+.sd-head--minor {
+	margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.sd-chapter__pillars {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	line-height: 1.35;
+	margin: clamp(2rem, 4vw, 3rem) 0 clamp(1.25rem, 2.5vw, 2rem);
+	max-width: 32rem;
+	padding-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* Su /contatti/ il modulo non ha i recapiti accanto — stanno gia' in cima
+   alla pagina — quindi occupa la colonna intera e i campi restano su due
+   file invece di stringersi in una. */
+.sd-prenota--wide .sd-prenota__lede {
+	margin-bottom: clamp(2rem, 4vw, 3rem);
+	max-width: 36rem;
+}
+
+.sd-prenota--wide .sd-form-wrapper {
+	max-width: 54rem;
 }

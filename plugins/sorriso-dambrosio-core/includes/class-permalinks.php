@@ -71,17 +71,41 @@ final class Permalinks {
 	}
 
 	/**
-	 * Una regola per ciascuna area, piu' la paginazione.
+	 * Una regola per ciascuna area, piu' la paginazione e i suoi trattamenti.
+	 *
+	 * Il `rewrite.slug` del tipo e' il segnaposto `%sd_area%`, e WordPress lo
+	 * mette **alla lettera** nelle regole che genera: `post_type_link()`
+	 * sistema l'indirizzo in uscita, ma in entrata `/implantologia/carico-immediato/`
+	 * non corrisponderebbe a niente. Le regole vere si scrivono qui, una per
+	 * area, come per i termini — e per la stessa ragione: niente jolly.
 	 */
 	public static function add_area_rules(): void {
-		foreach ( self::area_slugs() as $slug ) {
+		$slugs   = self::area_slugs();
+		$archive = 'prestazioni';
+
+		foreach ( array_merge( $slugs, array( $archive ) ) as $slug ) {
+			$quoted = preg_quote( $slug, '/' );
+
+			// Prima il singolo, poi l'area: `^slug/?$` non puo' catturare un
+			// percorso a due segmenti, quindi l'ordine fra i due e' indifferente,
+			// ma tenerlo esplicito evita sorprese se un giorno cambiano.
 			add_rewrite_rule(
-				'^' . preg_quote( $slug, '/' ) . '/?$',
+				'^' . $quoted . '/([^/]+)/?$',
+				'index.php?' . Content_Types::TRATTAMENTO . '=$matches[1]&post_type=' . Content_Types::TRATTAMENTO,
+				'top'
+			);
+
+			if ( $archive === $slug ) {
+				continue;
+			}
+
+			add_rewrite_rule(
+				'^' . $quoted . '/?$',
 				'index.php?' . Content_Types::AREA . '=' . $slug,
 				'top'
 			);
 			add_rewrite_rule(
-				'^' . preg_quote( $slug, '/' ) . '/page/([0-9]{1,})/?$',
+				'^' . $quoted . '/page/([0-9]{1,})/?$',
 				'index.php?' . Content_Types::AREA . '=' . $slug . '&paged=$matches[1]',
 				'top'
 			);

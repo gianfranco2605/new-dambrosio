@@ -40,6 +40,18 @@
 				"area",
 				"trattamento"
 			]
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
+		},
+		"impianto": {
+			"type": "string",
+			"default": "righe",
+			"enum": [
+				"righe",
+				"schede"
+			]
 		}
 	}
 }

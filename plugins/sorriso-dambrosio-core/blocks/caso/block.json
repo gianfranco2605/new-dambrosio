@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "sd/caso",
+	"version": "1.0.0",
+	"title": "Il caso prima/dopo",
+	"description": "La galleria del caso in pagina, con il medico e l'area.",
+	"category": "sorriso-dambrosio",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"textdomain": "sorriso-dambrosio-core",
+	"attributes": {
+		"fondo": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

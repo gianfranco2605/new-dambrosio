@@ -183,9 +183,18 @@ add_action( 'wp_head', 'sorriso_dambrosio_preload_display_font', 1 );
  * Sono gli stessi che il sito pubblica da sempre: header, hero, orari e footer
  * li leggono da qui invece di riscriverli, cosi' non possono divergere.
  *
+ * **La fonte vera e' il plugin** (`SD\Core\Studio::contacts()`): i recapiti
+ * sono contenuto, e il contenuto deve sopravvivere a un cambio di tema. Qui
+ * resta una copia di scorta, che entra in gioco solo se il plugin e' spento:
+ * un tema che va in bianco perche' manca un plugin e' un tema fragile.
+ *
  * @return array<string, string>
  */
 function sorriso_dambrosio_contacts() {
+	if ( class_exists( '\\SD\\Core\\Studio' ) ) {
+		return \SD\Core\Studio::contacts();
+	}
+
 	return array(
 		'phone'       => '+39 06 322 5754',
 		'phone_href'  => 'tel:063225754',
@@ -210,9 +219,15 @@ function sorriso_dambrosio_contacts() {
  * La chiave e' il numero del giorno secondo date('N') (1 = lunedi'), cosi' la
  * sezione puo' evidenziare oggi senza doverlo dedurre dal nome.
  *
+ * Come per i recapiti, la fonte vera e' il plugin: qui c'e' solo la scorta.
+ *
  * @return array<int, array{name: string, morning: string, afternoon: string}>
  */
 function sorriso_dambrosio_hours() {
+	if ( class_exists( '\\SD\\Core\\Studio' ) ) {
+		return \SD\Core\Studio::hours();
+	}
+
 	return array(
 		1 => array( 'name' => 'Lunedi', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => '14:00 &#8211; 19:00' ),
 		2 => array( 'name' => 'Martedi', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => 'Chiuso' ),

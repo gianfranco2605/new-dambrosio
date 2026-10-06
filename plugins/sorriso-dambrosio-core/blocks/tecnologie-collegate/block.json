@@ -31,6 +31,10 @@
 		"fondo": {
 			"type": "string",
 			"default": ""
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
 		}
 	}
 }

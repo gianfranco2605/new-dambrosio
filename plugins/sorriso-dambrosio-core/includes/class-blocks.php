@@ -59,6 +59,10 @@ final class Blocks {
 			'contatti'            => array( self::class, 'contatti' ),
 			'cta-prenota'         => array( self::class, 'cta_prenota' ),
 			'intestazione'        => array( self::class, 'intestazione' ),
+			'area-intestazione'   => array( self::class, 'area_intestazione' ),
+			'area-contenuto'      => array( self::class, 'area_contenuto' ),
+			'indice'              => array( self::class, 'indice' ),
+			'caso'                => array( self::class, 'caso' ),
 		);
 
 		foreach ( $blocks as $name => $callback ) {
@@ -103,6 +107,18 @@ final class Blocks {
 		$post = self::current_post();
 
 		return $post instanceof \WP_Post ? Relations::area( $post->ID ) : null;
+	}
+
+	/**
+	 * Il livello del titolo di sezione.
+	 *
+	 * Su un archivio la sezione **e'** la pagina, quindi il suo titolo e' un
+	 * `h1`; dentro una pagina singola e' un `h2`. Un `h1` per pagina, mai due.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	private static function livello( array $attrs ): int {
+		return max( 1, min( 4, (int) self::attr( $attrs, 'livello', '2' ) ) );
 	}
 
 	private static function current_area_id( string $slug = '' ): int {
@@ -165,6 +181,74 @@ final class Blocks {
 	}
 
 	/**
+	 * L'intestazione di una pagina d'area.
+	 *
+	 * Titolo, introduzione e immagine stanno sul **termine**, non su una
+	 * pagina: aggiungere un'area e' creare un termine, non costruire una
+	 * pagina da zero.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	public static function area_intestazione( array $attrs ): string {
+		$area = self::current_area();
+
+		if ( ! $area instanceof \WP_Term ) {
+			return '';
+		}
+
+		$cover = (int) get_term_meta( $area->term_id, '_sd_cover', true );
+		$count = count( Relations::in_area( Content_Types::TRATTAMENTO, (int) $area->term_id ) );
+
+		$eyebrow = $count > 0
+			? $count . ( 1 === $count ? ' trattamento' : ' trattamenti' )
+			: 'Area';
+
+		$body = '<div class="sd-areahead__grid">'
+			. '<div class="sd-areahead__text">'
+			. Render::head( $eyebrow, $area->name, 1 )
+			. ( '' !== $area->description ? '<p class="sd-areahead__lede">' . wp_kses_post( $area->description ) . '</p>' : '' )
+			. '</div>';
+
+		if ( $cover > 0 ) {
+			$img   = wp_get_attachment_image( $cover, 'large', false, array( 'class' => 'sd-img' ) );
+			$body .= '<figure class="sd-areahead__figure">' . $img . '</figure>';
+		}
+
+		return Render::section( $body . '</div>', trim( 'sd-areahead ' . self::attr( $attrs, 'fondo', 'sd-section--tint' ) ) );
+	}
+
+	/**
+	 * Il testo che appartiene all'area e non a un singolo trattamento.
+	 *
+	 * Oggi serve a una cosa sola: la FAQ di sei domande che chiudeva la vecchia
+	 * pagina `/implantologia/` e che non e' ne' un trattamento ne' una
+	 * tecnologia. Senza questo blocco si sarebbe persa.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	public static function area_contenuto( array $attrs ): string {
+		$area = self::current_area();
+
+		if ( ! $area instanceof \WP_Term ) {
+			return '';
+		}
+
+		$raw = (string) get_term_meta( $area->term_id, '_sd_contenuto', true );
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		$title   = (string) get_term_meta( $area->term_id, '_sd_contenuto_titolo', true );
+		$eyebrow = (string) get_term_meta( $area->term_id, '_sd_contenuto_occhiello', true );
+
+		$body = ( '' !== $title ? Render::head( $eyebrow, $title ) : '' )
+			. '<div class="sd-prose sd-areatext">' . do_blocks( $raw ) . '</div>';
+
+		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
+	}
+
+	/**
 	 * I trattamenti di un'area.
 	 *
 	 * @param array<string, mixed> $attrs Attributi.
@@ -189,12 +273,14 @@ final class Blocks {
 			return '';
 		}
 
-		$body = '' !== $title ? Render::head( $eyebrow, $title ) : '';
+		$level = self::livello( $attrs );
+		$item  = '' !== $title ? $level + 1 : 2;
+		$body  = '' !== $title ? Render::head( $eyebrow, $title, $level ) : '';
 
 		$body .= match ( $layout ) {
-			'righe'   => Render::rows( $posts ),
-			'matrice' => Render::matrix( $posts ),
-			default   => Render::zigzag( $posts ),
+			'righe'   => Render::rows( $posts, 'CONTINUA', $item ),
+			'matrice' => Render::matrix( $posts, $item ),
+			default   => Render::zigzag( $posts, $item ),
 		};
 
 		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
@@ -228,7 +314,8 @@ final class Blocks {
 		}
 
 		return Render::section(
-			Render::head( $eyebrow, $title ) . Render::rows( $posts, 'SCHEDA' ),
+			Render::head( $eyebrow, $title, self::livello( $attrs ) )
+				. Render::rows( $posts, 'SCHEDA', self::livello( $attrs ) + 1 ),
 			self::attr( $attrs, 'fondo' )
 		);
 	}
@@ -257,7 +344,10 @@ final class Blocks {
 
 		$eyebrow = self::attr( $attrs, 'occhiello', 'Dottori' );
 		$title   = self::attr( $attrs, 'titolo', 'Chi se ne occupa' );
-		$body    = Render::head( $eyebrow, $title ) . '<div class="sd-people">';
+		$layout  = self::attr( $attrs, 'impianto', 'righe' );
+		$tag     = Render::tag( self::livello( $attrs ) + 1 );
+		$body    = Render::head( $eyebrow, $title, self::livello( $attrs ) )
+			. '<div class="sd-people sd-people--' . esc_attr( $layout ) . '">';
 
 		foreach ( $posts as $doctor ) {
 			$link = (string) get_permalink( $doctor );
@@ -265,7 +355,7 @@ final class Blocks {
 			$body .= '<article class="sd-people__row">'
 				. Render::thumb( $doctor->ID, 'medium', 'sd-people__portrait' )
 				. '<div class="sd-people__text">'
-				. '<h3 class="sd-people__name"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></h3>'
+				. '<' . $tag . ' class="sd-people__name"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-people__bio">' . esc_html( Render::excerpt( $doctor, 40 ) ) . '</p>'
 				. '<p class="sd-more"><a href="' . esc_url( $link ) . '">LA SCHEDA &rarr;</a></p>'
 				. '</div></article>';
@@ -298,7 +388,7 @@ final class Blocks {
 		$grouped = 'si' === self::attr( $attrs, 'raggruppa', 'no' );
 		$eyebrow = self::attr( $attrs, 'occhiello', 'Prima e dopo' );
 		$title   = self::attr( $attrs, 'titolo', 'I nostri casi' );
-		$body    = Render::head( $eyebrow, $title );
+		$body    = Render::head( $eyebrow, $title, self::livello( $attrs ) );
 
 		if ( $grouped ) {
 			$groups = array();
@@ -310,7 +400,9 @@ final class Blocks {
 			}
 
 			foreach ( $groups as $label => $group ) {
-				$body .= '<h3 class="sd-cases__group">' . esc_html( (string) $label ) . '</h3>' . self::cases_grid( $group );
+				$tag   = Render::tag( self::livello( $attrs ) + 1 );
+				$body .= '<' . $tag . ' class="sd-cases__group">' . esc_html( (string) $label ) . '</' . $tag . '>'
+					. self::cases_grid( $group );
 			}
 		} else {
 			$body .= self::cases_grid( $posts );
@@ -343,58 +435,190 @@ final class Blocks {
 	}
 
 	/**
+	 * L'indice di un tipo di contenuto.
+	 *
+	 * Due impianti, nessuno dei quali compare in homepage: la **matrice a
+	 * filetti** (celle divise da linee, niente riquadri e niente ombre — la
+	 * figura isolata nel riferimento Prism) per le tecnologie, e il
+	 * raggruppamento **per area** per tutti i trattamenti.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	public static function indice( array $attrs ): string {
+		$type    = self::attr( $attrs, 'tipo', Content_Types::TRATTAMENTO );
+		$layout  = self::attr( $attrs, 'impianto', 'matrice' );
+		$eyebrow = self::attr( $attrs, 'occhiello' );
+		$title   = self::attr( $attrs, 'titolo' );
+		$level   = self::livello( $attrs );
+
+		if ( 'aree' === $layout ) {
+			$body = '' !== $title ? Render::head( $eyebrow, $title, $level ) : '';
+			$tag  = Render::tag( $level + 1 );
+
+			$terms = get_terms(
+				array(
+					'taxonomy'   => Content_Types::AREA,
+					'hide_empty' => true,
+					'meta_key'   => '_sd_ordine', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query
+					'orderby'    => 'meta_value_num',
+					'order'      => 'ASC',
+				)
+			);
+
+			if ( ! is_array( $terms ) ) {
+				return '';
+			}
+
+			foreach ( $terms as $term ) {
+				if ( ! $term instanceof \WP_Term ) {
+					continue;
+				}
+
+				$posts = Relations::in_area( $type, (int) $term->term_id );
+
+				if ( array() === $posts ) {
+					continue;
+				}
+
+				$body .= '<div class="sd-index__area">'
+					. '<' . $tag . ' class="sd-index__areaname">'
+					. '<a href="' . esc_url( (string) get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>'
+					. '</' . $tag . '>'
+					. Render::chips( $posts )
+					. '</div>';
+			}
+
+			return Render::section( $body, trim( 'sd-index ' . self::attr( $attrs, 'fondo' ) ) );
+		}
+
+		$posts = get_posts(
+			array(
+				'post_type'        => $type,
+				'numberposts'      => -1,
+				'orderby'          => 'menu_order title',
+				'order'            => 'ASC',
+				'post_status'      => 'publish',
+				'suppress_filters' => false,
+			)
+		);
+
+		if ( array() === $posts ) {
+			return '';
+		}
+
+		$body = ( '' !== $title ? Render::head( $eyebrow, $title, $level ) : '' )
+			. match ( $layout ) {
+				'righe'  => Render::rows( $posts, 'CONTINUA', $level + 1 ),
+				'zigzag' => Render::zigzag( $posts, $level + 1 ),
+				default  => Render::matrix( $posts, $level + 1 ),
+			};
+
+		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
+	}
+
+	/**
+	 * Un caso, in pagina.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	public static function caso( array $attrs ): string {
+		$post = self::current_post();
+
+		if ( ! $post instanceof \WP_Post ) {
+			return '';
+		}
+
+		$bafg   = (int) get_post_meta( $post->ID, Fields::BAFG, true );
+		$doctor = (int) get_post_meta( $post->ID, Fields::PROFESSIONISTA, true );
+		$area   = Relations::area( $post->ID );
+
+		$eyebrow = $area instanceof \WP_Term ? $area->name : 'Caso clinico';
+
+		$body = Render::head( $eyebrow, get_the_title( $post ), 1 )
+			. '<div class="sd-case">'
+			. ( $bafg > 0 ? do_shortcode( '[bafg id="' . $bafg . '"]' ) : Render::thumb( $post->ID, 'large' ) )
+			. '</div>';
+
+		$meta = array();
+
+		if ( $doctor > 0 ) {
+			$meta[] = '<li class="sd-case__meta-item"><span class="sd-case__meta-label">Seguito da</span>'
+				. '<a href="' . esc_url( (string) get_permalink( $doctor ) ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></li>';
+		}
+
+		if ( $area instanceof \WP_Term ) {
+			$meta[] = '<li class="sd-case__meta-item"><span class="sd-case__meta-label">Area</span>'
+				. '<a href="' . esc_url( (string) get_term_link( $area ) ) . '">' . esc_html( $area->name ) . '</a></li>';
+		}
+
+		if ( array() !== $meta ) {
+			$body .= '<ul class="sd-case__meta">' . implode( '', $meta ) . '</ul>';
+		}
+
+		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
+	}
+
+	/**
 	 * Gli orari. Unica fonte: `Studio::hours()`.
+	 *
+	 * Il markup e' **esattamente** quello che il pattern `orari` del tema
+	 * produceva a mano: stesse classi, stesso `ul`, stessi `is-today` e
+	 * `is-shut`. Non per nostalgia, ma perche' il foglio di stile del tema li
+	 * conosce gia' — e perche' ora il pattern chiama questo blocco invece di
+	 * riscriverli, cosi' la fascia in homepage, quella in «Lo Studio» e quella
+	 * nei contatti sono lo stesso oggetto.
 	 *
 	 * @param array<string, mixed> $attrs Attributi.
 	 */
 	public static function orari( array $attrs ): string {
-		$today   = Studio::today();
-		$variant = self::attr( $attrs, 'variante', 'fascia' );
-		$rows    = '';
+		$today = Studio::today();
+		$rows  = '';
 
 		foreach ( Studio::hours() as $n => $day ) {
 			$is_today = ( $n === $today );
+			$all_shut = ( 'Chiuso' === $day['morning'] && 'Chiuso' === $day['afternoon'] );
 
-			$rows .= '<div class="sd-hours-week__day' . ( $is_today ? ' sd-hours-week__day--today' : '' ) . '">'
+			$rows .= '<li class="sd-hours-week__day' . ( $is_today ? ' is-today' : '' ) . ( $all_shut ? ' is-closed' : '' ) . '"'
+				. ( $is_today ? ' aria-current="date"' : '' ) . '>'
 				. '<span class="sd-hours-week__name">' . wp_kses_post( $day['name'] )
 				// Il colore da solo non basta: «oggi» e' anche scritto.
-				. ( $is_today ? ' <span class="sd-hours-week__today">oggi</span>' : '' )
+				. ( $is_today ? '<span class="sd-hours-week__today">oggi</span>' : '' )
 				. '</span><span class="sd-hours-week__slots">'
 				. self::slot( $day['morning'] ) . self::slot( $day['afternoon'] )
-				. '</span></div>';
+				. '</span></li>';
 		}
 
-		$table = '<div class="sd-hours-week">' . $rows . '</div>';
+		$table = '<ul class="sd-hours-week">' . $rows . '</ul>';
 
-		if ( 'compatta' === $variant ) {
-			return '<div class="sd-hours-compact">' . $table . '</div>';
+		if ( 'compatta' === self::attr( $attrs, 'variante', 'fascia' ) ) {
+			return $table;
 		}
 
-		$contacts = Studio::contacts();
+		$c    = Studio::contacts();
+		$href = self::attr( $attrs, 'ancora', '' );
+		$href = '' !== $href ? $href : home_url( '/contatti/#prenota' );
 
 		$aside = '<div class="sd-hours-band__aside">'
-			. Render::head( 'Quando siamo aperti', 'I Nostri Orari' )
-			. '<p class="sd-hours-band__note has-small-font-size">Sabato e domenica lo studio &egrave; chiuso.</p>'
+			. Render::head( 'Quando siamo aperti', 'I Nostri Orari', self::livello( $attrs ) )
+			. '<p class="sd-hours-band__note has-main-accent-color has-text-color has-small-font-size">Sabato-Domenica chiuso</p>'
 			. '<div class="sd-hours-band__actions">'
-			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( $contacts['phone_href'] ) . '">'
-			. Render::icon( 'phone' ) . '<span>' . esc_html( $contacts['phone'] ) . '</span></a>'
-			. '<a class="sd-btn sd-btn--ghost" href="' . esc_url( home_url( '/contatti/#prenota' ) ) . '">'
-			. Render::icon( 'calendar' ) . '<span>Prenota</span></a>'
+			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( $c['phone_href'] ) . '">'
+			. Render::icon( 'phone' ) . '<span>' . esc_html( $c['phone'] ) . '</span></a>'
+			. '<a class="sd-btn sd-btn--ghost" href="' . esc_url( $href ) . '">'
+			. Render::icon( 'calendar' ) . '<span>Prenota un appuntamento</span></a>'
 			. '</div></div>';
 
-		return Render::section(
-			'<div class="sd-hours-band__grid">' . $aside . $table . '</div>',
-			'sd-section--dark',
-			'orari'
-		);
+		return '<section class="wp-block-group sd-section sd-section--dark sd-hours-band has-base-color'
+			. ' has-main-background-color has-text-color has-background has-link-color" id="orari">'
+			. '<div class="sd-wrap sd-hours-band__grid">' . $aside . $table . '</div></section>';
 	}
 
 	private static function slot( string $value ): string {
-		$closed = false !== stripos( wp_strip_all_tags( $value ), 'chiuso' );
+		$shut = ( 'Chiuso' === wp_strip_all_tags( $value ) );
 
 		// Un turno chiuso resta visibile ma spento: dire «chiuso» e'
 		// informazione, nasconderla no.
-		return '<span class="sd-hours-week__slot' . ( $closed ? ' sd-hours-week__slot--closed' : '' ) . '">'
+		return '<span class="sd-hours-week__slot' . ( $shut ? ' is-shut' : '' ) . '">'
 			. wp_kses_post( $value ) . '</span>';
 	}
 

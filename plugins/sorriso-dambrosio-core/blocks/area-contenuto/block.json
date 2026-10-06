@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "sd/area-contenuto",
+	"version": "1.0.0",
+	"title": "Testo libero dell'area",
+	"description": "Il testo che appartiene all'area e non a un singolo trattamento: per esempio la FAQ di Implantologia.",
+	"category": "sorriso-dambrosio",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"textdomain": "sorriso-dambrosio-core",
+	"attributes": {
+		"fondo": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

@@ -232,5 +232,9 @@
 		{ "name": "header", "title": "Header", "area": "header" },
 		{ "name": "footer", "title": "Footer", "area": "footer" },
 		{ "name": "mobile-cta", "title": "CTA mobile", "area": "uncategorized" }
+	],
+	"customTemplates": [
+		{ "name": "page-lo-studio", "title": "Pagina: Lo Studio", "postTypes": [ "page" ] },
+		{ "name": "page-contatti", "title": "Pagina: Contatti", "postTypes": [ "page" ] }
 	]
 }
