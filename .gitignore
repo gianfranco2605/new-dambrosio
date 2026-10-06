@@ -14,6 +14,11 @@
 themes/*
 !themes/sorriso-dambrosio/
 
+# Il plugin del sito: qui sta il contenuto (tipi, campi, orari, blocchi).
+!plugins/
+plugins/*
+!plugins/sorriso-dambrosio-core/
+
 # Dipendenze di sviluppo del child theme (solo PHPStan): non vanno in deploy.
 themes/sorriso-dambrosio/vendor/
 

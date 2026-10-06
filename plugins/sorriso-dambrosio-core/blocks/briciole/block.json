@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"category": "sorriso-dambrosio",
+	"textdomain": "sorriso-dambrosio-core",
+	"name": "sd/briciole",
+	"version": "1.0.0",
+	"title": "Briciole di pane",
+	"description": "Dove ti trovi, piu' il BreadcrumbList nei dati strutturati.",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

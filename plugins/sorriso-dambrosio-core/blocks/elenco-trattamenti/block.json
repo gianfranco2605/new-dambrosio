@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"category": "sorriso-dambrosio",
+	"textdomain": "sorriso-dambrosio-core",
+	"name": "sd/elenco-trattamenti",
+	"version": "1.0.0",
+	"title": "Elenco dei trattamenti",
+	"description": "I trattamenti di un'area: zig-zag, righe a filetti o matrice.",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	},
+	"attributes": {
+		"occhiello": {
+			"type": "string",
+			"default": ""
+		},
+		"titolo": {
+			"type": "string",
+			"default": ""
+		},
+		"fondo": {
+			"type": "string",
+			"default": ""
+		},
+		"area": {
+			"type": "string",
+			"default": ""
+		},
+		"impianto": {
+			"type": "string",
+			"default": "zigzag",
+			"enum": [
+				"zigzag",
+				"righe",
+				"matrice"
+			]
+		},
+		"escludiCorrente": {
+			"type": "string",
+			"default": "no",
+			"enum": [
+				"si",
+				"no"
+			]
+		}
+	}
+}
