@@ -51,7 +51,7 @@ Tutto il resto — core, altri temi, plugin, uploads — e' deliberatamente igno
    I testi lunghi (biografie dei medici, descrizioni delle tecnologie) possono essere
    **accorciati sulla homepage solo rimandando con un link alla pagina esistente** dove
    vive il testo completo. **Ogni caso di questo tipo va elencato** in
-   `../../../redesign/DA-VERIFICARE.md`.
+   `docs/DA-VERIFICARE.md`.
 3. **Le immagini non cambiano.** Solo quelle gia' in Media Library.
 4. **Non modificare mai** il core, il tema `ollie` (parent), il tema `sorrisodambrosio`
    (vecchio, tenuto per il rollback), nessun plugin.
@@ -67,7 +67,7 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
    riferimento (`https://www.prismoralsurgery.com/`) e analisi concreta del suo sistema
    di layout: larghezze dei contenitori, griglia, scala tipografica, composizione
    dell'hero, alternanza delle sezioni, respiro, uso delle immagini.
-2. **Specifica scritta prima del codice.** `../../../redesign/DESIGN-SPEC.md` definisce il
+2. **Specifica scritta prima del codice.** `docs/DESIGN-SPEC.md` definisce il
    sistema di layout e, **per ogni sezione**, quale pattern di impaginazione usa.
    Si usa la skill `frontend-design`.
 3. **Nessuna sezione puo' riusare il pattern del vecchio sito**: occhiello centrato +
@@ -181,21 +181,29 @@ orizzontale a 1440 / 768 / 390px, contatto raggiungibile su mobile.
   e pubblicata.
 - Temi: `sorriso-dambrosio` 1.1.0 attivo, `ollie` parent, `sorrisodambrosio` inattivo per il rollback.
 - La homepage e' alla **seconda iterazione**: la prima e' stata bocciata perche' riproduceva
-  il layout del vecchio sito. Leggere `redesign/DESIGN-SPEC.md` **prima** di toccare il layout:
+  il layout del vecchio sito. Leggere `docs/DESIGN-SPEC.md` **prima** di toccare il layout:
   contiene il sistema (misure, scala, fondi, intestazione di sezione) e l'impianto di ogni
   sezione. L'autocritica sui punti ancora deboli sta in `REPORT.md` §6.
 - Lo script di misura usato per i criteri di design e' `.playwright-mcp/audit.js`: si carica
   nella pagina e restituisce larghezza del contenuto, scala tipografica, altezza dell'hero,
   dimensione delle icone, overflow e la regione vuota piu' alta.
 - Backup pre-lavoro: `../../../backups/pre-redesign.sql`.
-- Analisi, report e punti aperti: `../../../redesign/`.
+- Analisi, report e punti aperti: **`docs/`**, versionati nel repository.
+- Materiali grezzi **non versionati** (screenshot, HTML reso, log di Playwright):
+  `../../../redesign/`, fuori dalla radice del repo. Vedi `../../../redesign/LEGGIMI.md`.
 - **Da fare**: tutte le altre pagine, con lo stesso sistema. Leggere prima
-  `redesign/DA-VERIFICARE.md`: contiene decisioni del titolare ancora pendenti (ritratti
+  `docs/DA-VERIFICARE.md`: contiene decisioni del titolare ancora pendenti (ritratti
   disomogenei, refusi nei testi, formule promozionali da validare, testo `alt` scritto da
   zero) che valgono per tutto il sito.
 
+## Repository
+
+Remote: `https://github.com/gianfranco2605/new-dambrosio`.
+La radice del repo e' `wp-content/`. Rami: `main` (stato approvato),
+`redesign/altre-pagine` (lavoro in corso sulle pagine interne).
+
 ## Deploy
 
-CI/CD esistente: GitHub Actions → FTP. **`themes/sorriso-dambrosio/vendor/`,
-`composer.json`, `composer.lock` e `phpstan.neon.dist` non vanno in produzione**: sono
-solo strumenti di sviluppo.
+CI/CD esistente: GitHub Actions → FTP. **Non vanno in produzione**:
+`themes/sorriso-dambrosio/vendor/`, `composer.json`, `composer.lock`, `phpstan.neon.dist`,
+`docs/`, `README.md`, `CLAUDE.md` e `.claude/` — sono strumenti e documentazione di sviluppo.
