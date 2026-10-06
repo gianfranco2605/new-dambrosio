@@ -1,10 +1,8 @@
 parameters:
 	level: 5
 
-	# Il sito gira su PHP 7.4 in locale e in produzione: l'analisi deve
-	# segnalare qualunque sintassi o funzione introdotta dopo, anche se la
-	# CLI che esegue PHPStan e' piu' recente.
-	phpVersion: 70400
+	# Il sito gira su PHP 8.3 in locale e in produzione.
+	phpVersion: 80300
 
 	paths:
 		- functions.php

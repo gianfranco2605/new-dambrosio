@@ -2,8 +2,7 @@
 /**
  * Sorriso D'Ambrosio — child theme di Ollie.
  *
- * Target PHP 7.4: niente match, union types, nullsafe, argomenti con nome,
- * promozione nel costruttore, str_contains/str_starts_with, enum, readonly.
+ * Target PHP 8.3, in locale e in produzione.
  *
  * @package SorrisoDambrosio
  */

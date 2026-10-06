@@ -24,13 +24,16 @@ Tutto il resto — core, altri temi, plugin, uploads — e' deliberatamente igno
 
 - **Local by Flywheel**, Apache. Sito: `http://sorrisodambrosio.local`
   (confermare sempre con `wp option get siteurl`).
-- **Il sito gira su PHP 7.4.30** (lightning-services di Local).
-- **WP-CLI gira su PHP 8.3.11**, non su quella del sito. Non fidarsi di `wp` per
-  giudizi su compatibilita' PHP, e ignorare i `Deprecated:` che WP-CLI emette da se'.
-- Per il lint usare il binario **7.4** del sito, non il `php` nel PATH:
+- **Il sito gira su PHP 8.3.17** (lightning-services di Local), in locale e in produzione.
+  Verificabile servendo un file dal sito, non con `wp`:
   ```bash
-  PHP74="$HOME/Library/Application Support/Local/lightning-services/php-7.4.30+6/bin/darwin-arm64/bin/php"
-  "$PHP74" -n -l file.php      # -n salta il php.ini ed evita l'errore di xdebug
+  printf '%s' '<?php echo PHP_VERSION;' > .playwright-mcp/phpcheck.php
+  curl -s http://sorrisodambrosio.local/wp-content/.playwright-mcp/phpcheck.php; rm .playwright-mcp/phpcheck.php
+  ```
+- Per il lint usare il binario **8.3** del sito:
+  ```bash
+  PHP83="$HOME/Library/Application Support/Local/lightning-services/php-8.3.17+1/bin/darwin-arm64/bin/php"
+  "$PHP83" -n -l file.php      # -n salta il php.ini ed evita l'errore di xdebug
   ```
 - `wp` stampa su stderr un errore di caricamento di `xdebug.so`: e' rumore, si filtra con
   `2>&1 | grep -v 'xdebug.so'`.
@@ -146,12 +149,12 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
 Controllare sempre **il sito in esecuzione**, non i file sorgente.
 
 ```bash
-PHP74="$HOME/Library/Application Support/Local/lightning-services/php-7.4.30+6/bin/darwin-arm64/bin/php"
+PHP83="$HOME/Library/Application Support/Local/lightning-services/php-8.3.17+1/bin/darwin-arm64/bin/php"
 
 # sintassi, su ogni file PHP del tema
-find themes/sorriso-dambrosio -name '*.php' -not -path '*/vendor/*' -exec "$PHP74" -n -l {} \;
+find themes/sorriso-dambrosio -name '*.php' -not -path '*/vendor/*' -exec "$PHP83" -n -l {} \;
 
-# analisi statica con target 7.4
+# analisi statica con target 8.3
 cd themes/sorriso-dambrosio && composer run phpstan
 
 # nessun colore fuori da theme.json
