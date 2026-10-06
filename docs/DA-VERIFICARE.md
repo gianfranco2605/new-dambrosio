@@ -7,6 +7,116 @@ Aggiornato il 2026-10-06, dopo il rifacimento del layout (vedi `DESIGN-SPEC.md`)
 
 ---
 
+## 0. Decisioni aperte della terza iterazione
+
+### 0.1 Il testo dell'hero: tre combinazioni fra cui scegliere
+
+Il testo dell'hero e' **solo testo gia' pubblicato sul sito**. Tre modi di combinarlo.
+**Oggi e' in opera la A.**
+
+| | Occhiello | Titolo (`h1`) | Paragrafo |
+|---|---|---|---|
+| **A** (in opera) | Dal 1956 | Studio Odontoiatrico D'Ambrosio | «Gli specialisti del sorriso. Tradizione – passione – innovazione per prenderci cura del tuo sorriso.» |
+| **B** | Gli specialisti del sorriso | Studio Odontoiatrico D'Ambrosio | «Pilastro dell'odontoiatria a Roma da oltre 68 anni, eccellenza odontoiatrica, il vostro sorriso, la nostra passione.» (da `/lo-studio/`) |
+| **C** | Dal 1956 | Studio Odontoiatrico D'Ambrosio | «I nostri pazienti vengono accolti in un ambiente elegante ed amichevole, con professionalità, competenza ed igiene.» |
+
+**Attenzione sulla B:** contiene «**oltre 68 anni**». E' un numero che invecchia da solo
+— nel 2026 sono 70 — e altrove il sito dice gia' «1956». Se si sceglie la B, va deciso
+se aggiornare il numero o toglierlo.
+
+Il titolo resta il nome dello studio in tutte e tre: e' l'unico testo esistente che
+funzioni da `h1`, e serve anche per la ricerca. Nel riferimento Prism il titolo e'
+invece una frase descrittiva («Oral Surgery and Implant Care in Summit, NJ») — per
+averne una qui servirebbe **scrivere testo nuovo**, che il mandato vieta.
+
+**Decisione richiesta:** A, B o C. Oppure autorizzare una frase nuova per il titolo.
+
+### 0.2 La fotografia dell'hero: in Media Library non c'e' un ritratto di paziente
+
+Il riferimento usa **un paziente solo**, in poltrona, sorridente, a figura grande sulla
+destra. In Media Library **non esiste una fotografia cosi'**. Quello che c'e':
+
+| ID | Che cos'e' | Perche' non va (o va) |
+|---|---|---|
+| **636** `AGA_5209` 2500×1685 | **in opera** — il dottore con una mamma e due bambini, nello studio vero | La composizione e' quella giusta (soggetti a destra, parete a sinistra) ed e' lo studio vero. Ma sono **quattro persone in una stanza**, non un primo piano: il lato destro resta piu' affollato del riferimento. |
+| 604 `cover-estetica1` 2560×1709 | ritratto di donna che si tocca il viso, fondo **ciano piatto** | E' uno scatto da banca immagini, non lo studio; il ciano non appartiene alla palette e con il velo scuro sopra diventa fango. |
+| 1601 / 1602 / 1625 | primi piani clinici di denti, prima/dopo | Nessun volto: non reggono un hero. |
+| 1207 `brother-1` 1260×838 | i tre medici in posa | **Troppo piccola** per un hero a tutta larghezza. |
+
+**Decisione richiesta:** commissionare uno scatto di un paziente in poltrona — volto
+grande, sguardo in camera, molta luce, spazio vuoto a sinistra per il testo — oppure
+accettare la 636. Serve almeno **2400px di larghezza**.
+
+### 0.3 Social: manca il profilo Google
+
+Nell'hero compaiono **solo i profili trovati sul sito**:
+
+| Rete | Indirizzo | Dove l'ho trovato |
+|---|---|---|
+| Facebook | `facebook.com/studioodontoiatricodambrosio/` | menu (post `wp_navigation` 4) e footer |
+| Instagram | `instagram.com/studioodontoiatricodambrosio/` | menu e footer |
+| WhatsApp | `api.whatsapp.com/send/?phone=3755524596` | footer e tutte le CTA del sito |
+
+Due cose da sapere:
+
+- Il riferimento mostra anche un'icona **Google** (scheda Google Business, dove stanno
+  le recensioni). **Sul sito non c'e' nessun link a una scheda Google.** Per uno studio
+  odontoiatrico e' di solito il canale piu' importante: se la scheda esiste, serve
+  l'indirizzo.
+- In una parte template **vecchia** (`wp_template_part` 562, non piu' in uso) c'e'
+  `facebook.com/stefania.dambrosio.18`, un **profilo personale**. Non e' stato usato:
+  nelle parti piu' recenti e' stato sostituito dalla pagina dello studio. Confermare
+  che sia giusto ignorarlo.
+
+**Decisione richiesta:** fornire l'indirizzo della scheda Google Business, se esiste.
+
+### 0.4 Il modulo di contatto: tre cose sistemate, una da decidere
+
+Il modulo «Modulo contatto» (CF7, post 2063) era **configurato a meta'**:
+
+1. **Il modello dell'email puntava a campi inesistenti.** Usava i segnaposto di default
+   di CF7 (`[your-name]`, `[your-email]`, `[your-subject]`, `[your-message]`) mentre i
+   campi del modulo si chiamano `nome-cognome`, `telefono`, `email`, `trattamento`,
+   `messaggio`. L'email sarebbe partita **vuota**, con un `Reply-To:` non valido.
+   E' stato riscritto: ora riporta tutti i campi e il `Reply-To` e' l'email del paziente.
+2. **I messaggi erano in inglese** («One or more fields have an error…») su un sito
+   `it_IT`. Tradotti.
+3. **Il destinatario e' `[_site_admin_email]`**, cioe' oggi `gianf2605@gmail.com` —
+   l'indirizzo dell'amministratore WordPress, non dello studio.
+   **Decisione richiesta:** a quale indirizzo devono arrivare le richieste?
+   Probabilmente `studio@sorrisodambrosio.it`.
+4. **Nessuna ricevuta automatica al paziente.** CF7 puo' mandare una seconda email di
+   conferma a chi compila. E' **disattivata**: per la sanita' una conferma automatica
+   va scritta con attenzione (non deve sembrare la conferma di un appuntamento che
+   invece non e' ancora fissato).
+   **Decisione richiesta:** si vuole la ricevuta? Con che testo?
+
+Verificato end-to-end: invio valido → messaggio di successo → email ricevuta da Mailpit
+con tutti i campi al posto giusto.
+
+### 0.5 Il pulsante «Prenota» sparisce sotto i 1340px
+
+Misurato sulla pagina resa: logo, otto voci di menu, telefono e «Prenota un
+appuntamento» chiedono **1328px** di finestra. Sotto quella soglia qualcosa deve cedere.
+Oggi cede «Prenota» (resta nell'hero e nella fascia orari); sotto 1120px anche il menu
+passa alla tendina.
+
+L'alternativa e' **accorciare il menu**: otto voci di primo livello sono tante, il
+riferimento ne ha sei. «Estetica» e «Denti e postura» potrebbero stare sotto
+«Trattamenti».
+
+**Decisione richiesta:** accettare cosi', oppure riorganizzare il menu.
+
+### 0.6 La barra fissa in fondo su mobile ora e' ridondante
+
+Su mobile convivono il **pulsante telefono nell'header** (nuovo) e la **barra fissa in
+fondo** con telefono e WhatsApp (dalla seconda iterazione). Due volte lo stesso numero.
+
+**Decisione richiesta:** tenerle entrambe, oppure togliere il telefono dalla barra in
+fondo e lasciarci solo WhatsApp e «Prenota».
+
+---
+
 ## 1. Testi accorciati sulla homepage, con rimando alla pagina completa
 
 Il vincolo ora in vigore (`CLAUDE.md`, regola 2) permette di accorciare un testo lungo
@@ -205,6 +315,6 @@ una voce in `theme.json`.
 ## 10. Dipendenza di sviluppo
 
 Nel tema c'e' un `composer.json` con **PHPStan** come sola dipendenza di sviluppo, per
-analizzare il codice con target PHP 7.4. `vendor/` e' escluso da Git e **non va caricato in
+analizzare il codice con target **PHP 8.3**. `vendor/` e' escluso da Git e **non va caricato in
 produzione**: se la pipeline FTP sincronizza l'intera cartella del tema, vanno escluse
 `vendor/`, `composer.json`, `composer.lock` e `phpstan.neon.dist`.

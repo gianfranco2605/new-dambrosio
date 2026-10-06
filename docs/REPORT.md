@@ -1,7 +1,7 @@
 # REPORT — Redesign homepage Studio Odontoiatrico D'Ambrosio
 
-Data: 2026-10-06 (seconda iterazione) · Ambiente: Local by Flywheel, `http://sorrisodambrosio.local`
-WordPress 7.1.2 · PHP del sito 7.4.30 · Tema attivo: `sorriso-dambrosio` 1.1.0 (child di `ollie` 1.6.3)
+Data: 2026-10-06 (**terza iterazione**) · Ambiente: Local by Flywheel, `http://sorrisodambrosio.local`
+WordPress 7.1.2 · **PHP del sito 8.3.17** · Tema attivo: `sorriso-dambrosio` 1.1.0 (child di `ollie` 1.6.3)
 
 > La prima iterazione (2026-10-05) e' stata **bocciata**: riproduceva il layout del vecchio
 > sito. Questo documento racconta che cosa era andato storto, che cosa e' cambiato e che cosa
@@ -141,7 +141,7 @@ Lo script di misura e' `wp-content/.playwright-mcp/audit.js`.
 | ✅ | Plugin before/after funzionante | non era in homepage (ne' prima ne' ora). Su `/ortodonzia/`: 4 slider montati, nessun overflow |
 | ✅ | Tutti gli `<img>` da `/uploads/` o dal child theme, tutti con `alt` | 12 su 12 (7 `alt` scritti ora: vedi `DA-VERIFICARE` §3) |
 | ✅ | `width`/`height` su ogni immagine | 12 su 12 |
-| ✅ | PHPStan livello 5 target 7.4 · `php -l` 7.4 | **No errors**; 11 file, tutti OK |
+| ✅ | PHPStan livello 5 target 7.4 · `php -l` 7.4 | **No errors**; 11 file, tutti OK *(alla terza iterazione il target e' PHP 8.3: §11.5)* |
 | ✅ | Contrasto del testo su tutte le fasce | minimo misurato **5,64:1** (testo secondario su `base`); su `tertiary` 6,96:1, su `main` 7,43:1 |
 | ✅ | `git status` pulito fuori dai percorsi consentiti | traccia solo `.gitignore`, `.claude/settings.json`, `CLAUDE.md`, `themes/sorriso-dambrosio/` |
 
@@ -254,6 +254,135 @@ stesso ritmo; la 3 ha quello della 4.
 
 ---
 
+## 11. Terza iterazione — header, hero, orari, modulo
+
+Il titolare ha approvato la direzione della seconda iterazione. Questa rifinisce la
+homepage sul riferimento `screenshots/ref/prism-hero.png`.
+
+### 11.1 Che cosa e' cambiato
+
+| | |
+|---|---|
+| **Ambiente** | Il sito gira ora su **PHP 8.3.17** (verificato servendo un file dal sito, non con `wp`: WP-CLI usa una PHP propria). `phpVersion` di PHPStan, `composer.json` e `style.css` allineati. |
+| **Header** | Logo, navigazione, poi telefono (pillola piena) e «Prenota un appuntamento» (contornata). Sticky, filetto in basso. Su mobile il telefono resta come icona. |
+| **Hero** | Velo in diagonale dalla sinistra al posto della lastra opaca; occhiello, titolo e paragrafo a sinistra; **scheda contatti bianca arrotondata** ancorata in basso; social in fondo a destra. |
+| **Orari** | Nuova fascia scura **subito dopo «Lo Studio»**: giorni a righe, mattina e pomeriggio in caselle, oggi marcato. |
+| **Prenota** | Nuova sezione `#prenota` con il modulo Contact Form 7, due colonne su desktop. |
+| **Via** | La barra contatti scura sotto l'hero e la tabella orari in fondo: i recapiti stanno nella scheda dell'hero, gli orari nella loro fascia. |
+
+### 11.2 Le soglie dell'header sono misurate, non scelte
+
+La riga intera — logo 140 + otto voci 695 + telefono 170 + «Prenota» 224 + margini —
+chiede **1328px**. Sotto, qualcosa deve cedere:
+
+- **≤1340px**: cade «Prenota» (resta nell'hero e nella fascia orari).
+- **≤1120px**: la navigazione passa alla tendina. Il blocco Navigation di core lo
+  farebbe **solo sotto i 600px**: con otto voci di primo livello si accavallava sul
+  logo gia' a 1440. Le due regole di core sotto `@media (min-width: 600px)` sono state
+  rimesse al comportamento mobile fino a 1120px.
+- **≤781px**: il telefono diventa un pulsante a sola icona.
+
+### 11.3 Il contrasto dell'hero e' misurato sui pixel, non stimato
+
+Il testo bianco sta sopra una fotografia: il contrasto dipende da **che cosa c'e' sotto
+ogni glifo**, non dal colore dichiarato. Procedura usata:
+
+1. nascondere il testo lasciando il layout invariato (`visibility: hidden`);
+2. screenshot del solo fondo (fotografia + velo compositi);
+3. campionare i pixel dentro il riquadro di ciascun blocco e calcolare il rapporto
+   con il bianco, pixel per pixel.
+
+| | medio | **peggiore** | pixel sotto 4.5:1 |
+|---|---|---|---|
+| Occhiello «Dal 1956» | 9,89:1 | **9,74:1** | 0 / 348 |
+| `h1` | 9,35:1 | **6,10:1** | 0 / 22.274 |
+| Paragrafo | 10,13:1 | **7,00:1** | 0 / 8.448 |
+
+Alla prima taratura il **23%** del riquadro dell'`h1` stava sotto 4,5:1: gli stop del
+velo sono stati spostati (28/46/62/78%) e le opacita' centrali alzate finche' nessun
+pixel e' rimasto sotto soglia.
+
+### 11.4 Il modulo era configurato a meta'
+
+Tre difetti trovati facendolo girare, non leggendolo:
+
+1. **Il modello dell'email puntava a campi inesistenti** — i segnaposto di default di
+   CF7 (`[your-name]`, `[your-email]`…) contro campi che si chiamano `nome-cognome`,
+   `telefono`, `email`, `trattamento`, `messaggio`. Le richieste sarebbero arrivate
+   **vuote**, con un `Reply-To:` non valido. Riscritto.
+2. **I messaggi erano in inglese** su un sito `it_IT`. Tradotti.
+3. **Il submit sembrava guasto**: il tag `[acceptance]` di CF7 lo tiene disabilitato
+   finche' la privacy non e' spuntata, e senza uno stato visibile si legge come un
+   pulsante rotto. Ora ha un suo aspetto d'attesa.
+
+Verifica end-to-end: invio valido → stato `sent` → **email ricevuta da Mailpit** con
+tutti i campi al posto giusto e `Reply-To` sull'email del paziente.
+
+### 11.5 Criteri di accettazione
+
+| | Criterio | Esito |
+|---|---|---|
+| ✅ | Header: telefono e «Prenota» a destra della navigazione a 1440px | entrambi visibili, allineati a destra; la riga sta su **una sola linea** (71px) |
+| ✅ | Header sticky | `position: sticky`, `top: 0`, misurato a `scrollY` 3433: `rect.top === 0` |
+| ✅ | Telefono come icona a 390px | pulsante 52×44, etichetta nascosta ai soli occhi (resta ai lettori di schermo) |
+| ✅ | Hero: immagine visibile, testo leggibile sul velo | **nessun pixel sotto 4.5:1** sotto nessuno dei tre blocchi (§11.3) |
+| ✅ | Scheda contatti: i collegamenti funzionano | `mailto:studio@sorrisodambrosio.it` · `tel:063225754` · `maps.app.goo.gl/jsVVDPiXFAFLCiE18` · «Prenota» → `#prenota` |
+| ✅ | «Prenota» porta a `#prenota` | dopo il clic il titolo della sezione e' a 245px, **sotto** l'header (71px), interamente visibile |
+| ✅ | Nessun overflow a 1440 / 768 / 390 | `scrollWidth` 1425/1440, 753/768, 375/390 |
+| ✅ | Social: solo profili reali | Facebook, Instagram, WhatsApp — tutti e tre presenti nel menu o nel footer del sito esistente. **Google non c'e'**: segnalato in `DA-VERIFICARE` §0.3 |
+| ✅ | Orari subito dopo «Lo Studio» | sezione 3 su 9; `#orari` presente |
+| ✅ | Oggi evidenziato | DOM: `.sd-hours-week__day.is-today` → «Martedi \| OGGI \| 9:00 – 13:00 \| Chiuso». Calcolato con `wp_date()`, non in JavaScript |
+| ✅ | Modulo CF7 dentro `#prenota` | `form.wpcf7-form` presente |
+| ✅ | Invio vuoto → errori vestiti | 3 campi `.wpcf7-not-valid` con bordo `primary-accent`, messaggi in `primary-accent`, riquadro di risposta su fondo `primary-accent` all'8% |
+| ✅ | Invio valido → successo + email | stato `sent`, messaggio italiano, **email in Mailpit** con tutti i campi |
+| ✅ | Nessun `<p>` o `<br>` iniettato da CF7 | **0** `<p>` e **0** `<br>` dentro `.sd-form` |
+| ✅ | Nessun colore fuori da `theme.json`; font locali | scansione del tema (escluso `vendor/`): zero; zero riferimenti a Google Fonts |
+| ✅ | PHPStan con target **PHP 8.3** | `phpVersion: 80300`, livello 5: **No errors** su 12 file. `php -l` con il binario 8.3 del sito: tutti OK |
+| ✅ | `debug.log` senza nuove voci | log azzerato, pagina visitata: **resta vuoto** |
+| ✅ | Tutti i criteri precedenti | contenuto 1320px · `h1` 72px · hero 86,7vh · icone max **24px** · regione vuota max **190px** · un solo `h1` · nessun salto di livello |
+
+### 11.6 Confronto con il riferimento, e autocritica
+
+`screenshots/compare/hero-vs-prism-1440.png` — i due hero affiancati.
+
+**Che cosa segue il riferimento, in concreto**
+
+1. **Struttura dell'header identica**: logo a sinistra, navigazione, poi due pillole —
+   telefono pieno, prenotazione contornata.
+2. **Fotografia a tutto schermo con velo dalla sinistra**, testo bianco allineato a
+   sinistra nella colonna scurita.
+3. **Occhiello come frase breve in grassetto**, non etichetta in maiuscoletto spaziato —
+   come «Precision. Comfort. Compassion.».
+4. **Titolo display leggero** (Fraunces 300) su piu' righe, non un nero pesante.
+5. **Scheda contatti bianca completamente arrotondata**, ancorata in basso, con icone di
+   linea e il pulsante pieno all'estremita' destra.
+6. **Social piccoli, bianchi, in fondo a destra**, sotto la scheda.
+
+**Dove resta sotto**
+
+1. **La fotografia non e' della stessa natura.** Prism ha **un volto solo**, grande,
+   luminoso, che occupa mezzo fotogramma. La 636 e' una stanza con quattro persone: il
+   lato destro resta piu' affollato e nessun viso ha quel peso. E' un limite di
+   materiale, non di impaginazione (`DA-VERIFICARE` §0.2).
+2. **Il velo e' piu' denso di quello del riferimento.** Per portare ogni pixel sotto
+   l'`h1` oltre 4,5:1 su una fotografia chiara e mossa serve piu' copertura di quanta ne
+   usi Prism, che ha a destra un fondo sfocato e uniforme. Il risultato: la famiglia e'
+   leggermente piu' spenta di quanto vorrei. Fra contrasto misurato e brillantezza ho
+   scelto il contrasto.
+3. **Il titolo e' il nome dello studio, non una frase.** Prism dice «Oral Surgery and
+   Implant Care in Summit, NJ»: dice al visitatore **che cosa si fa e dove**. «Studio
+   Odontoiatrico D'Ambrosio» dice solo chi. Per averne una qui servirebbe scrivere testo
+   nuovo, che il mandato vieta: le alternative possibili con il testo esistente sono in
+   `DA-VERIFICARE` §0.1.
+4. **L'header e' piu' denso.** Prism ha sei voci di menu, noi otto piu' due pulsanti: a
+   1440 la riga e' piena e «Prenota» cade gia' a 1340. Il riferimento respira di piu'.
+5. **La scheda contatti e' piu' carica.** Prism mostra solo le etichette
+   («Email», «Phone», «Location») e tiene il valore nel collegamento. La nostra mostra
+   etichetta **e** valore: piu' utile per chi vuole il numero a colpo d'occhio, ma meno
+   ariosa. Scelta deliberata, reversibile in una riga.
+
+---
+
 ## 7. Modifiche fuori dal tema
 
 Poche, tutte reversibili.
@@ -264,6 +393,10 @@ Poche, tutte reversibili.
    1085, 75). Elencati in `DA-VERIFICARE` §3.
 3. Restano dalla prima iterazione: la pagina 2059 come front page, `custom_logo = 645`,
    i meta Yoast copiati dalla pagina 57, `WP_DEBUG` attivo in `wp-config.php`.
+4. **Terza iterazione** — contenuto della pagina 2059 riscritto a nove pattern
+   (entrano `orari`, `prenota`, `vieni-a-trovarci`; escono `contact-bar` e
+   `orari-contatti`). Sul modulo CF7 **2063**: modello dell'email riscritto sui campi
+   reali e messaggi tradotti in italiano (vedi `DA-VERIFICARE` §0.4).
 
 Non sono stati toccati: il core, il tema `ollie`, il tema `sorrisodambrosio`, nessun plugin,
 nessuna pagina esistente. La pagina 57 e' **intatta e ancora pubblicata**.
@@ -323,8 +456,11 @@ wp db import ../../../backups/pre-redesign.sql
 | `redesign/screenshots/before/` | la home originale |
 | `redesign/screenshots/rejected/` | la prima iterazione, bocciata |
 | `redesign/screenshots/ref/` | Prism a 1440 e 390 |
-| `redesign/screenshots/final/` | la nuova, a 1440 / 768 / 390 |
+| `redesign/screenshots/final/` | la seconda iterazione, a 1440 / 768 / 390 |
+| `redesign/screenshots/final-it3/` | **la terza**: hero, orari e modulo a 1440 e 390 |
+| `redesign/screenshots/reference/prism-hero.png` | l'hero del riferimento |
 | `redesign/screenshots/compare/compare-1440.png` | il confronto a quattro colonne |
+| `redesign/screenshots/compare/hero-vs-prism-1440.png` | **l'hero nuovo accanto al riferimento** |
 | `wp-content/.playwright-mcp/audit.js` | lo script di misura usato per il §4 |
 | `backups/pre-redesign.sql` | dump del database prima di ogni modifica |
 
@@ -338,4 +474,10 @@ wp db import ../../../backups/pre-redesign.sql
 1a99cf7  Regole di progetto: contenuto letterale ma impaginazione libera, design first
 32bc44e  theme.json: misure realistiche e scala tipografica rifatta
 b2eef80  Homepage rifatta dalla specifica di design: otto sezioni, otto impianti
+96a2cc4  CLAUDE.md: stato dopo la seconda iterazione
+fa82050  README e documentazione di progetto dentro il repository
+-- terza iterazione --
+31186e6  Ambiente: il sito passa a PHP 8.3
+93527ab  Header, hero, orari in evidenza e modulo di prenotazione
+b6ba780  Hero: velo tarato sul contrasto misurato, e stacking su mobile
 ```

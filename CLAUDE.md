@@ -1,7 +1,7 @@
 # CLAUDE.md — Sito Studio Odontoiatrico D'Ambrosio
 
-Guida per sessioni future su questo repository. La homepage e' fatta; il lavoro che
-resta sono **le altre pagine**, con lo stesso impianto.
+Guida per sessioni future su questo repository. La homepage e' fatta e rifinita; il
+lavoro che resta sono **le altre pagine**, con lo stesso impianto.
 
 ---
 
@@ -101,6 +101,12 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
   - `sorriso_dambrosio_image( $id, $size, $classi, $attr )` — usa
     `wp_get_attachment_image()`, quindi srcset, dimensioni e lazy loading gratis
   - `sorriso_dambrosio_image_url( $id, $size )`
+  - `sorriso_dambrosio_contacts()` — **i recapiti in un posto solo**. Header, hero,
+    orari, modulo e «Vieni a Trovarci» leggono da qui: non riscriverli nei pattern.
+  - `sorriso_dambrosio_hours()` — gli orari, indicizzati per `date('N')`
+  - `sorriso_dambrosio_icon( $nome, $classi )` — icone di linea inline (`mail`,
+    `phone`, `pin`, `clock`, `calendar`, `facebook`, `instagram`, `whatsapp`).
+    Nessuna CDN, `currentColor`, 24px: la misura si governa in CSS, mai sopra i 56px.
 
 ### Per una pagina nuova
 
@@ -144,6 +150,29 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
 - Il banner cookie iubenda copre l'hero: nei test va chiuso
   (`document.querySelector('.iubenda-cs-accept-btn').click()`).
 
+- **Il blocco Navigation di core passa alla tendina solo sotto i 600px.** Con otto voci
+  di primo livello si accavalla sul logo molto prima. Il child rimette le due regole di
+  core (`.wp-block-navigation__responsive-container` e `…-container-open`, entrambe
+  sotto `@media (min-width: 600px)`) al comportamento mobile fino a 1120px.
+- **Contact Form 7**: il blocco `core/shortcode` non esegue gli shortcode e i pattern
+  non passano da `the_content` — serve `do_shortcode()`. I `<p>` e `<br>` automatici
+  vanno spenti con `wpcf7_autop_or_not`, altrimenti spezzano la griglia del modulo.
+- **`html_class` di CF7 mette la classe SUL `<form>`**, non attorno: i selettori sono
+  `form.sd-form-wrapper`, non un discendente.
+- **Il foglio di CF7 vince sul tema a parita' di specificita'**: usa
+  `.wpcf7 form.sent .wpcf7-response-output` (0,3,1) ed e' stampato dopo. I selettori del
+  tema partono da `.sd-prenota form.wpcf7-form` per vincere senza `!important`.
+- **Il tag `[acceptance]` di CF7 tiene il submit disabilitato** finche' la casella non
+  e' spuntata. Senza uno stato visibile il pulsante sembra guasto: `:disabled` e' vestito.
+- **Il contrasto del testo sulla fotografia si misura, non si stima.** Nascondere il
+  testo con `visibility:hidden`, fotografare il solo fondo, campionare i pixel dentro il
+  riquadro di ogni blocco (PIL con `/usr/local/bin/python3`, non `/usr/bin/python3` che
+  non ha PIL). Vedi `docs/REPORT.md` §11.3.
+- **L'header e' sticky**: le ancore hanno bisogno di `scroll-margin-top`, altrimenti il
+  titolo della sezione finisce sotto l'header.
+- **Local serve le pagine da una cache**: dopo aver cambiato meta o contenuti, se la
+  pagina sembra vecchia usare una query di cache-busting (`/?cb=1`) o `wp cache flush`.
+
 ## Verifiche prima di dire che e' finito
 
 Controllare sempre **il sito in esecuzione**, non i file sorgente.
@@ -180,11 +209,18 @@ orizzontale a 1440 / 768 / 390px, contatto raggiungibile su mobile.
 
 ## Stato attuale
 
-- Front page: pagina **2059** («Home»), otto pattern. La vecchia pagina **57** e' intatta
-  e pubblicata.
+- Front page: pagina **2059** («Home»), **nove pattern**: hero · lo-studio · orari ·
+  professionisti · servizi · tecnologie · perche-noi · prenota · vieni-a-trovarci.
+  La vecchia pagina **57** e' intatta e pubblicata.
+- **Modulo di contatto**: Contact Form 7, post **2063**, shortcode
+  `[contact-form-7 id="17f113f" title="Modulo contatto" html_class="sd-form-wrapper"]`,
+  reso dal pattern `prenota`. L'ancora `#prenota` e' il bersaglio di tutti i pulsanti
+  «Prenota»: se cambia, vanno cambiati header, hero e fascia orari.
+- Mailpit di Local: SMTP **10035**, API HTTP **http://localhost:10035/api/v1/messages**.
 - Temi: `sorriso-dambrosio` 1.1.0 attivo, `ollie` parent, `sorrisodambrosio` inattivo per il rollback.
-- La homepage e' alla **seconda iterazione**: la prima e' stata bocciata perche' riproduceva
-  il layout del vecchio sito. Leggere `docs/DESIGN-SPEC.md` **prima** di toccare il layout:
+- La homepage e' alla **terza iterazione**: la prima e' stata bocciata perche' riproduceva
+  il layout del vecchio sito; la seconda ha rifatto l'impianto; la terza ha rifinito
+  header, hero, orari e modulo sul riferimento `../../../redesign/reference/prism-hero.png`. Leggere `docs/DESIGN-SPEC.md` **prima** di toccare il layout:
   contiene il sistema (misure, scala, fondi, intestazione di sezione) e l'impianto di ogni
   sezione. L'autocritica sui punti ancora deboli sta in `REPORT.md` §6.
 - Lo script di misura usato per i criteri di design e' `.playwright-mcp/audit.js`: si carica
