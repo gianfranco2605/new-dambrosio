@@ -316,10 +316,10 @@ Text Domain: sorriso-dambrosio
 		linear-gradient(
 			100deg,
 			var(--wp--custom--veil--deep) 0%,
-			var(--wp--custom--veil--deep) 17%,
-			var(--wp--custom--veil--mid) 34%,
-			var(--wp--custom--veil--edge) 52%,
-			var(--wp--custom--veil--none) 68%
+			var(--wp--custom--veil--deep) 28%,
+			var(--wp--custom--veil--mid) 46%,
+			var(--wp--custom--veil--edge) 62%,
+			var(--wp--custom--veil--none) 78%
 		),
 		linear-gradient(
 			to top,
@@ -348,6 +348,7 @@ Text Domain: sorriso-dambrosio
    vieta proprio quel cliche'. */
 .sd-hero__eyebrow {
 	font-size: var(--wp--preset--font-size--small);
+	max-width: max-content;
 	font-weight: 600;
 	letter-spacing: 0.01em;
 	margin: 0 0 clamp(0.75rem, 1.6vw, 1.25rem);
@@ -496,7 +497,10 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (max-width: 781px) {
+	/* Senza display:block la <picture> e il testo restano due celle flex
+	   affiancate: il titolo finirebbe sopra la fotografia, non sotto. */
 	.sd-hero {
+		display: block;
 		min-height: 0;
 	}
 
@@ -1726,6 +1730,21 @@ Text Domain: sorriso-dambrosio
 /* ---------------------------------------------------------------
    17. Accessibilita' e igiene
    --------------------------------------------------------------- */
+
+/* L'header e' sticky: senza questo, saltando a un'ancora il titolo della
+   sezione finisce sotto l'header. */
+:target,
+#prenota,
+#orari,
+#chi-siamo {
+	scroll-margin-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
 
 :where(.wp-site-blocks) :focus-visible {
 	outline: 2px solid var(--wp--preset--color--primary);
