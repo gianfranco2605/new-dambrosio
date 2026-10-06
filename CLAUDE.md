@@ -40,15 +40,42 @@ Tutto il resto — core, altri temi, plugin, uploads — e' deliberatamente igno
 1. **I colori non cambiano.** La palette sta in `theme.json` ed e' quella storica del
    sito. Non introdurre colori nuovi. **Nessun valore hex/rgb/hsl fuori da `theme.json`**:
    nel CSS si usano `var(--wp--preset--color--…)` e `var(--wp--custom--…)`.
-2. **Il contenuto non cambia.** Si riusa il testo esistente alla lettera. Niente nuove
-   affermazioni commerciali, offerte, prezzi, testimonianze, nomi, titoli o numeri.
-   La pubblicita' sanitaria in Italia impone un tono informativo.
+2. **CONTENUTO — il testo e' letterale, l'impaginazione e' libera.**
+   Si riusa il testo esistente **alla lettera**: niente riscritture, niente contenuto
+   inventato, niente nuove affermazioni commerciali, offerte, prezzi, testimonianze,
+   nomi, titoli o numeri. La pubblicita' sanitaria in Italia impone un tono informativo.
+   **Ma ordine, raggruppamento e presentazione sono liberi**: si possono fondere sezioni,
+   spezzare testi lunghi, usare accordion/`<details>`, trasformare le card in elenchi o
+   in blocchi editoriali. **Non esiste alcun obbligo** di mantenere l'ordine originale
+   ne' di avere ogni frammento del testo originale sulla homepage.
+   I testi lunghi (biografie dei medici, descrizioni delle tecnologie) possono essere
+   **accorciati sulla homepage solo rimandando con un link alla pagina esistente** dove
+   vive il testo completo. **Ogni caso di questo tipo va elencato** in
+   `../../../redesign/DA-VERIFICARE.md`.
 3. **Le immagini non cambiano.** Solo quelle gia' in Media Library.
 4. **Non modificare mai** il core, il tema `ollie` (parent), il tema `sorrisodambrosio`
    (vecchio, tenuto per il rollback), nessun plugin.
 5. **Non cancellare pagine o contenuti.** Le pagine vecchie restano: quelle nuove si
    affiancano, cosi' ogni passo e' reversibile.
 6. **Font inclusi nel tema.** Nessuna CDN, nessun Google Fonts (GDPR).
+
+## DESIGN FIRST — come si affronta una pagina
+
+Il design viene **prima** del markup, e si giudica guardando la pagina resa.
+
+1. **Analisi di un riferimento.** Screenshot a pagina intera (1440 e 390px) del
+   riferimento (`https://www.prismoralsurgery.com/`) e analisi concreta del suo sistema
+   di layout: larghezze dei contenitori, griglia, scala tipografica, composizione
+   dell'hero, alternanza delle sezioni, respiro, uso delle immagini.
+2. **Specifica scritta prima del codice.** `../../../redesign/DESIGN-SPEC.md` definisce il
+   sistema di layout e, **per ogni sezione**, quale pattern di impaginazione usa.
+   Si usa la skill `frontend-design`.
+3. **Nessuna sezione puo' riusare il pattern del vecchio sito**: occhiello centrato +
+   titolo sottolineato dal filetto + griglia di card uniformi. Quello e' il risultato
+   bocciato: va evitato per costruzione.
+4. **`contentSize`/`wideSize` realistici**: a 1440px il contenuto principale non deve
+   essere piu' stretto di 1100px.
+5. Colori, testi e immagini restano quelli esistenti.
 
 ## Il tema
 
@@ -133,8 +160,17 @@ grep -rnE '(^|[^&])#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' themes/sorriso-dambrosio
 ```
 
 Poi, con Playwright: un solo `<h1>`, livelli di heading senza salti, nessun overflow
-orizzontale a 1440 / 768 / 390px, contatto raggiungibile su mobile, e ogni frammento del
-testo originale presente nell'HTML reso.
+orizzontale a 1440 / 768 / 390px, contatto raggiungibile su mobile.
+
+### Criteri di accettazione del design (si verificano con Playwright, non leggendo il codice)
+
+- Hero: immagine **e** titolo visibili sopra la piega a 1440 / 768 / 390px; **nessuna
+  regione vuota piu' alta di 200px** in nessun punto della pagina.
+- Ogni icona: bounding box reso **al massimo 56px**; nulla sborda dal proprio contenitore.
+- Larghezza del contenuto principale a 1440px: **almeno 1100px**.
+- `h1` **almeno 56px** su desktop, con una scala tipografica netta fra h1, h2 e testo.
+- Confronto affiancato vecchia home / nuova home / riferimento, a 1440px, in
+  `../../../redesign/screenshots/compare/`, e autocritica in `REPORT.md`.
 
 ## Stato attuale
 
