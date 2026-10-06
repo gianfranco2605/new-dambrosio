@@ -2400,9 +2400,11 @@ img {
 	padding: clamp(1.25rem, 2.5vw, 2rem);
 }
 
+ /* Stessa proporzione e nessun tetto d'altezza: con `max-height` i tre
+	    ritratti uscivano alti 3-4px diversi l'uno dall'altro e i nomi sotto
+	    non si allineavano. */
 .sd-people--schede .sd-people__portrait img {
 	aspect-ratio: 4 / 5;
-	max-height: 22rem;
 	object-position: top center;
 }
 

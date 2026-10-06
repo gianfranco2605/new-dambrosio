@@ -94,7 +94,7 @@ final class Studio {
 
 		foreach ( self::hours() as $n => $day ) {
 			foreach ( array( $day['morning'], $day['afternoon'] ) as $shift ) {
-				$plain = html_entity_decode( $shift, ENT_QUOTES, 'UTF-8' );
+				$plain = html_entity_decode( $shift, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 
 				if ( ! preg_match( '/(\d{1,2}:\d{2})\s*[–-]\s*(\d{1,2}:\d{2})/u', $plain, $m ) ) {
 					continue;

@@ -39,12 +39,25 @@ final class Schema {
 			$graph[] = $entity;
 		}
 
+		/*
+		 * `JSON_UNESCAPED_UNICODE` sarebbe piu' leggibile, ma non si puo' usare.
+		 *
+		 * iubenda monta un buffer di output su tutta la pagina e la ripassa da
+		 * un parser DOM: ogni carattere non ASCII torna indietro come entita'
+		 * numerica, e `D’Ambrosio` dentro il JSON-LD diventa `D&#8217;Ambrosio`
+		 * — che per un lettore di dati strutturati e' testo letterale, non un
+		 * apostrofo. Il plugin non si tocca (regola 4 di CLAUDE.md).
+		 *
+		 * Scrivendo `\u2019` il JSON resta tutto ASCII, il parser di iubenda
+		 * non ha niente da convertire, e chi legge il JSON lo rimette a posto
+		 * da se'. Verificato con `?iub_no_parse=1`, che spegne quel passaggio.
+		 */
 		$json = wp_json_encode(
 			array(
 				'@context' => 'https://schema.org',
 				'@graph'   => $graph,
 			),
-			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+			JSON_UNESCAPED_SLASHES
 		);
 
 		if ( false === $json ) {
@@ -122,13 +135,13 @@ final class Schema {
 		$entity = array(
 			'@type' => $type,
 			'@id'   => get_permalink( $post ) . '#entita',
-			'name'  => get_the_title( $post ),
+			'name'  => Render::plain( get_the_title( $post ) ),
 			'url'   => get_permalink( $post ),
 		);
 
 		$description = wp_strip_all_tags( Render::excerpt( $post, 40 ) );
 		if ( '' !== $description ) {
-			$entity['description'] = html_entity_decode( $description, ENT_QUOTES, 'UTF-8' );
+			$entity['description'] = Render::plain( $description );
 		}
 
 		$image = get_the_post_thumbnail_url( $post, 'large' );
@@ -238,7 +251,7 @@ final class Schema {
 			$items[] = array(
 				'@type'    => 'ListItem',
 				'position' => $i + 1,
-				'name'     => html_entity_decode( $crumb['name'], ENT_QUOTES, 'UTF-8' ),
+				'name'     => Render::plain( $crumb['name'] ),
 				'item'     => $crumb['url'],
 			);
 		}

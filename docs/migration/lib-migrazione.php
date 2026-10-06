@@ -162,6 +162,18 @@ function sd_upsert( $args, $origine ) {
 
 	$args['post_status'] = 'publish';
 
+	/*
+	 * Nel titolo vanno i caratteri veri, non le entita' HTML.
+	 *
+	 * I testi di origine scrivono l'apostrofo tipografico come `&#8217;`:
+	 * dentro una pagina HTML si vede giusto, ma il titolo finisce anche nel
+	 * JSON-LD, nel `<title>`, nei feed e nel campo dell'admin — dove
+	 * `&#8217;` resta `&#8217;`. E' lo stesso carattere, scritto come si deve.
+	 */
+	if ( isset( $args['post_title'] ) && is_string( $args['post_title'] ) ) {
+		$args['post_title'] = html_entity_decode( $args['post_title'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	}
+
 	if ( isset( $esistente[0] ) ) {
 		$args['ID'] = (int) $esistente[0];
 		$id         = wp_update_post( $args, true );

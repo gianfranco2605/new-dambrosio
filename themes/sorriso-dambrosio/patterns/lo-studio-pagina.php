@@ -10,6 +10,10 @@
  */
 
 /*
+ * NOTA: la griglia `.sd-chapter__grid` e' a tutta larghezza — porta le sue
+ * colonne di margine — quindi **non** va avvolta in `.sd-wrap`, altrimenti
+ * la fotografia non arriva al bordo della finestra.
+ *
  * Il testo e' quello della pagina 48 (`/lo-studio/`), parola per parola.
  * Cambia soltanto come e' impaginato: i due titoli decorativi del vecchio
  * impianto — «Storia / Dal 1956» e «Storia / Ad oggi» — diventano gli
@@ -27,8 +31,7 @@
 $sd_c = sorriso_dambrosio_contacts();
 ?>
 <!-- wp:group {"className":"sd-section sd-chapter","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-wrap"><!-- wp:group {"className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__grid"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
 <?php echo sorriso_dambrosio_image( 654, 'large', 'sd-chapter__figure' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -97,7 +100,6 @@ $sd_c = sorriso_dambrosio_contacts();
 <!-- wp:paragraph {"className":"sd-more","fontSize":"x-small"} -->
 <p class="sd-more has-x-small-font-size"><a href="<?php echo esc_url( $sd_c['map_href'] ); ?>" rel="noopener">VIENI A TROVARCI &#8212; <?php echo esc_html( $sd_c['address_short'] ); ?> &rarr;</a></p>
 <!-- /wp:paragraph --></div>
-<!-- /wp:group --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

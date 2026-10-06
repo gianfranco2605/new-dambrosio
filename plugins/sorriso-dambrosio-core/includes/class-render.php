@@ -33,6 +33,19 @@ final class Render {
 	}
 
 	/**
+	 * Un testo senza entita' HTML, per chi non sa leggerle.
+	 *
+	 * `wptexturize` trasforma l'apostrofo in `&rsquo;` prima di ogni resa, e
+	 * `&rsquo;` e' un'entita' **nominata di HTML5**: senza `ENT_HTML5` la
+	 * tabella di default (HTML 4.01) non la conosce e la lascia li' tale e
+	 * quale. In una pagina HTML non si vede; dentro un JSON-LD si', ed e'
+	 * esattamente il posto in cui non deve esserci.
+	 */
+	public static function plain( string $text ): string {
+		return html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	}
+
+	/**
 	 * L'intestazione di sezione: filetto sopra, occhiello a destra, titolo sotto.
 	 *
 	 * E' la stessa figura di `sorriso_dambrosio_section_head()` nel tema, ma in

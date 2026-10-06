@@ -128,10 +128,24 @@ final class Blocks {
 	}
 
 	/**
+	 * Un attributo del blocco, con il suo ripiego.
+	 *
+	 * **Una stringa vuota conta come «non dato».** `block.json` dichiara i
+	 * valori di partenza, quindi l'attributo arriva sempre valorizzato — anche
+	 * a `''` — e un `isset()` secco farebbe vincere quel vuoto sul ripiego
+	 * scritto qui: il titolo di «Dove la usiamo» usciva come un `<h2></h2>`
+	 * vuoto, visibile solo guardando la pagina resa.
+	 *
 	 * @param array<string, mixed> $attrs Attributi del blocco.
 	 */
 	private static function attr( array $attrs, string $key, string $default = '' ): string {
-		return isset( $attrs[ $key ] ) && is_scalar( $attrs[ $key ] ) ? (string) $attrs[ $key ] : $default;
+		if ( ! isset( $attrs[ $key ] ) || ! is_scalar( $attrs[ $key ] ) ) {
+			return $default;
+		}
+
+		$value = (string) $attrs[ $key ];
+
+		return '' !== $value ? $value : $default;
 	}
 
 	/* --------------------------------------------------------------- blocchi */
