@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 7.4
-Version: 1.0.0
+Version: 1.1.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -17,22 +17,78 @@ Text Domain: sorriso-dambrosio
  * Nessun valore di colore (hex/rgb/hsl) in questo file.
  * Tutti i colori arrivano da theme.json come custom property:
  *   --wp--preset--color--*   (palette, invariata rispetto al tema precedente)
- *   --wp--custom--*          (accessori: filetto, bordi card, bianco puro)
+ *   --wp--custom--*          (accessori: filetti, bianco puro, veli)
+ *
+ * Il sistema di layout e' descritto in redesign/DESIGN-SPEC.md.
  */
 
 /* ---------------------------------------------------------------
-   1. Tipografia di dettaglio
+   1. Misure del sistema
    --------------------------------------------------------------- */
 
-/* Fraunces e' variabile su SOFT/WONK/opsz/wght: WONK a 0 toglie le
-   forme piu' bizzarre e lascia un serif sobrio; opsz alto da' un
-   disegno da titolo. */
+.wp-site-blocks,
+.editor-styles-wrapper {
+	--sd-max: 1320px;
+	--sd-gutter: clamp(1.5rem, 4vw, 2rem);
+	--sd-rhythm: clamp(3.25rem, 6.6vw, 6rem);
+	--sd-sticky-top: 7.5rem;
+}
+
+/* Il contenitore. Tutto quello che non sanguina sta qui dentro. */
+.sd-wrap {
+	margin-inline: auto;
+	max-width: var(--sd-max);
+	padding-inline: var(--sd-gutter);
+	width: 100%;
+}
+
+/* La mensola: tre colonne, quella centrale e' il contenitore. Serve a far
+   uscire un elemento verso il bordo della finestra senza margini negativi
+   calcolati a mano. */
+.sd-shelf {
+	display: grid;
+	grid-template-columns:
+		[full-start] minmax(var(--sd-gutter), 1fr)
+		[wrap-start] minmax(0, var(--sd-max))
+		[wrap-end] minmax(var(--sd-gutter), 1fr)
+		[full-end];
+}
+
+.sd-shelf > * {
+	grid-column: wrap-start / wrap-end;
+	min-width: 0;
+}
+
+.sd-shelf__bleed-start {
+	grid-column: full-start / wrap-end;
+}
+
+.sd-section {
+	padding-block: var(--sd-rhythm);
+}
+
+.sd-section--flush {
+	padding-bottom: 0;
+}
+
+.sd-section--tint {
+	background-color: var(--wp--preset--color--tertiary);
+	color: var(--wp--preset--color--main);
+}
+
+/* ---------------------------------------------------------------
+   2. Tipografia di dettaglio
+   --------------------------------------------------------------- */
+
+/* Fraunces e' variabile su SOFT/WONK/opsz/wght: WONK a 0 toglie le forme
+   piu' bizzarre e lascia un serif sobrio; opsz alto da' un disegno da titolo. */
 .wp-site-blocks h1,
 .wp-site-blocks h2,
 .editor-styles-wrapper h1,
 .editor-styles-wrapper h2 {
 	font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 72;
-	letter-spacing: -0.015em;
+	letter-spacing: -0.018em;
+	text-wrap: balance;
 }
 
 .wp-site-blocks h3,
@@ -40,43 +96,121 @@ Text Domain: sorriso-dambrosio
 	letter-spacing: -0.005em;
 }
 
-/* Misura di lettura: sotto i 75 caratteri sui paragrafi di testo
-   corrente, senza toccare i paragrafi dentro card e colonne. */
+/* Misura di lettura: ~68 caratteri. In DM Sans lo zero e' largo 0.69em,
+   quindi "62ch" valeva 811px, cioe' 85 caratteri: le misure stanno in rem. */
 .sd-prose > p {
-	max-width: 68ch;
+	max-width: 40rem;
+}
+
+.sd-why__lede {
+	max-width: 36rem;
+}
+
+.sd-hero__lede {
+	max-width: 26rem;
+}
+
+/* Il collegamento che chiude un blocco di testo: niente sottolineatura
+   finche' non lo si tocca, cosi' la pagina non si riempie di righe. */
+.sd-more {
+	margin-block: 0;
+}
+
+.sd-more a {
+	letter-spacing: 0.06em;
+	text-decoration: none;
+}
+
+.sd-more a:hover,
+.sd-more a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
 }
 
 /* ---------------------------------------------------------------
-   2. Occhiello + filetto
-   L'occhiello e' testo di contenuto ("Dal 1956", "Dottori", ...):
-   resta nel suo caso naturale, niente maiuscolo spaziato.
+   3. Intestazione di sezione
+
+   Il filetto corre SOPRA la sezione e l'occhiello gli si siede in coda,
+   a destra. E' il contrario dell'impianto precedente (occhiello centrato,
+   titolo, filetto rosso sotto), che ripeteva nove volte la stessa figura.
    --------------------------------------------------------------- */
 
+.sd-head {
+	margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.sd-head + .sd-head,
+.sd-prose + .sd-head {
+	margin-top: clamp(3rem, 6vw, 5rem);
+}
+
 .sd-eyebrow {
-	letter-spacing: 0.04em;
+	align-items: center;
+	color: var(--wp--preset--color--secondary);
+	display: flex;
+	gap: clamp(1rem, 2vw, 1.5rem);
+	letter-spacing: 0.06em;
+	margin: 0 0 clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.sd-eyebrow::before {
+	background-color: var(--wp--custom--border--hairline);
+	content: "";
+	flex: 1 1 auto;
+	height: 1px;
+}
+
+.sd-head h2,
+.sd-head h3 {
 	margin: 0;
 }
 
-.sd-rule {
-	background: linear-gradient(90deg, var(--wp--custom--accent--rule), transparent);
-	border: 0;
-	border-radius: 50px;
-	height: 3px;
-	margin-block: 0.75rem 0;
-	margin-inline-end: auto !important;
-	margin-inline-start: 0 !important;
-	width: 112px;
+.sd-head a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-head a:hover,
+.sd-head a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.12em;
+}
+
+/* Sulle fasce scure e sulla fascia tinta il filetto cambia tono: il grigio
+   chiarissimo di default vi sarebbe invisibile o troppo acceso. */
+.sd-section--dark .sd-eyebrow,
+.sd-visit__panel .sd-eyebrow {
+	color: var(--wp--preset--color--main-accent);
+}
+
+.sd-section--dark .sd-eyebrow::before,
+.sd-visit__panel .sd-eyebrow::before {
+	background-color: var(--wp--custom--rule--on-dark);
+}
+
+/* Su tertiary il testo secondario farebbe 3,3:1. Tutto passa a main. */
+.sd-section--tint .sd-eyebrow {
+	color: var(--wp--preset--color--main);
+}
+
+.sd-section--tint .sd-eyebrow::before {
+	background-color: var(--wp--preset--color--main);
+	opacity: 0.28;
 }
 
 /* ---------------------------------------------------------------
-   3. Hero
-   Una sola immagine art-directed via <picture> (ritratto sotto 782px,
-   panoramica sopra): un solo <h1> nel DOM, invece dei due blocchi Cover
-   duplicati e nascosti via CSS del tema precedente.
+   4. Hero
+
+   Fotografia intera; il titolo non ci sta sopra con un velo ma su una
+   lastra opaca ancorata in basso a sinistra, che sborda dal bordo della
+   finestra e prosegue nella barra dei contatti.
    --------------------------------------------------------------- */
 
 .sd-hero {
+	align-items: flex-end;
+	display: flex;
 	isolation: isolate;
+	min-height: max(80vh, calc(100vh - var(--sd-sticky-top)));
 	position: relative;
 }
 
@@ -84,81 +218,37 @@ Text Domain: sorriso-dambrosio
 	display: block;
 	inset: 0;
 	position: absolute;
-	z-index: -2;
+	z-index: -1;
 }
 
 .sd-hero__media img {
 	display: block;
 	height: 100%;
 	object-fit: cover;
-	object-position: 62% center;
+	object-position: 56% 42%;
 	width: 100%;
 }
 
-/* Velo in diagonale: scurisce la colonna del testo e lascia leggibile
-   il soggetto sulla destra. */
-.sd-hero__scrim {
-	background: linear-gradient(
-		96deg,
-		var(--wp--custom--scrim--strong) 0%,
-		var(--wp--custom--scrim--strong) 20%,
-		var(--wp--custom--scrim--soft) 44%,
-		var(--wp--custom--scrim--none) 68%
-	);
-	inset: 0;
-	position: absolute;
-	z-index: -1;
-}
-
-@media (max-width: 781px) {
-	.sd-hero__media img {
-		object-position: 50% 28%;
-	}
-
-	/* In verticale il testo sta sopra l'immagine, non di fianco: il velo
-	   e' pieno e piu' denso in alto, dove cadono occhiello e titolo. */
-	.sd-hero__scrim {
-		background: linear-gradient(
-			180deg,
-			var(--wp--custom--scrim--strong) 0%,
-			var(--wp--custom--scrim--strong) 62%,
-			var(--wp--custom--scrim--soft) 100%
-		);
-	}
-}
-
-.sd-hero__content {
-	min-height: 78vh;
-	display: flex;
-	align-items: center;
-}
-
-@media (max-width: 781px) {
-	.sd-hero__content {
-		min-height: 72vh;
-	}
-}
-
-.sd-hero__inner {
-	max-width: 34rem;
+.sd-hero__frame {
 	width: 100%;
 }
 
-@media (min-width: 782px) {
-	.sd-hero__inner {
-		max-width: 46rem;
-	}
+.sd-hero__slab {
+	justify-self: start;
+	padding-block: clamp(1.75rem, 3.2vw, 2.75rem);
+	padding-inline: clamp(1.5rem, 4.5vw, 4rem) clamp(1.5rem, 2.5vw, 2.5rem);
+	width: min(100%, 42rem);
 }
 
 .sd-hero__title {
 	margin: 0;
 }
 
-.sd-hero__claim {
-	max-width: 32ch;
+.sd-hero__lede {
+	color: var(--wp--preset--color--main-accent);
 }
 
-/* Il secondo invito all'azione e' in outline chiaro sopra la foto. */
+/* Il secondo invito all'azione e' in outline chiaro sulla lastra scura. */
 .sd-button-ghost .wp-block-button__link {
 	background-color: transparent;
 	border: 1px solid var(--wp--preset--color--base);
@@ -171,16 +261,15 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--main);
 }
 
-/* Una sola entrata orchestrata, al caricamento. */
+/* Una sola entrata orchestrata, al caricamento. Nient'altro si muove. */
 @media (prefers-reduced-motion: no-preference) {
-	.sd-hero__inner > * {
+	.sd-hero__slab > * {
 		animation: sd-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 	}
 
-	.sd-hero__inner > :nth-child(1) { animation-delay: 0.05s; }
-	.sd-hero__inner > :nth-child(2) { animation-delay: 0.14s; }
-	.sd-hero__inner > :nth-child(3) { animation-delay: 0.23s; }
-	.sd-hero__inner > :nth-child(4) { animation-delay: 0.32s; }
+	.sd-hero__slab > :nth-child(1) { animation-delay: 0.06s; }
+	.sd-hero__slab > :nth-child(2) { animation-delay: 0.16s; }
+	.sd-hero__slab > :nth-child(3) { animation-delay: 0.26s; }
 }
 
 @keyframes sd-rise {
@@ -194,121 +283,644 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* ---------------------------------------------------------------
-   4. Scheda contatti sovrapposta all'hero
-   --------------------------------------------------------------- */
+/* Su schermo stretto la lastra copriva meta' fotografia e di quella
+   verticale restava visibile solo il soffitto. Qui l'immagine non fa piu' da
+   fondo: sta sopra, intera, e la lastra la segue nel flusso. */
+@media (max-width: 781px) {
+	.sd-hero {
+		display: block;
+		min-height: 0;
+	}
 
-.sd-contact-card {
-	box-shadow: 0 18px 50px -24px var(--wp--custom--shadow--card);
-	position: relative;
-	z-index: 2;
-}
+	.sd-hero__media {
+		height: 46vh;
+		min-height: 17rem;
+		position: static;
+	}
 
-/* Core emette .wp-container-... > * { margin-block-start: 0 } con la stessa
-   specificita': serve !important perche' la scheda salga sull'hero. */
-@media (min-width: 782px) {
-	.sd-contact-card {
-		margin-top: -5rem !important;
+	.sd-hero__media img {
+		object-position: 50% 58%;
+	}
+
+	.sd-hero__slab {
+		width: 100%;
 	}
 }
 
-.sd-contact-card a {
-	text-decoration: none;
-}
-
-.sd-contact-card a:hover,
-.sd-contact-card a:focus-visible {
-	text-decoration: underline;
-	text-underline-offset: 3px;
-}
-
 /* ---------------------------------------------------------------
-   5. Card (servizi, tecnologie)
+   5. Barra contatti
+
+   Non una scheda bianca con l'ombra che galleggia sull'hero: la lastra del
+   titolo e questa barra sono la stessa forma scura, continua.
    --------------------------------------------------------------- */
 
-.sd-card {
-	border: 1px solid var(--wp--custom--border--card);
-	border-radius: 6px;
-	height: 100%;
-	overflow: hidden;
-	transition: border-color 0.25s ease, box-shadow 0.25s ease;
+.sd-rail__inner {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	margin-inline: auto;
+	max-width: var(--sd-max);
+	padding-inline: var(--sd-gutter);
 }
 
-.sd-card:hover,
-.sd-card:focus-within {
-	border-color: var(--wp--preset--color--tertiary);
-	box-shadow: 0 14px 34px -22px var(--wp--custom--shadow--card);
+.sd-rail__cell {
+	border-left: 1px solid var(--wp--custom--rule--on-dark);
+	padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1rem, 2vw, 1.75rem);
 }
 
-.sd-card figure.wp-block-image {
+.sd-rail__cell:first-child {
+	border-left: 0;
+	padding-left: 0;
+}
+
+.sd-rail__label {
+	letter-spacing: 0.06em;
 	margin: 0;
 }
 
-.sd-card figure.wp-block-image img {
-	aspect-ratio: 3 / 2;
-	display: block;
-	height: auto;
-	object-fit: cover;
-	width: 100%;
+.sd-rail__cell p {
+	margin: 0;
+	/* studio@sorrisodambrosio.it e' una parola sola larga 194px: in una cella
+	   da meta' schermo sborda e la pagina scorre in orizzontale. */
+	overflow-wrap: anywhere;
 }
 
-/* Le colonne diventano card a tutta altezza. */
-.sd-cards.wp-block-columns .wp-block-column {
-	display: flex;
+.sd-rail a {
+	text-decoration: none;
 }
 
-.sd-cards.wp-block-columns .wp-block-column > .wp-block-group {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
+.sd-rail a:hover,
+.sd-rail a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
 }
 
-/* Il bottone si incolla in fondo alla card, cosi' i "DI PIU'" restano
-   allineati fra card di testo diverso. Il layout "constrained" di core
-   imporrebbe display:flow e margin-inline:auto sui figli: entrambi vanno
-   forzati. */
-.sd-card__body {
-	align-items: flex-start;
-	display: flex !important;
-	flex: 1;
-	flex-direction: column;
-}
+@media (max-width: 781px) {
+	.sd-rail__inner {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 
-.sd-card__body > * {
-	margin-inline-end: 0 !important;
-	margin-inline-start: 0 !important;
-	max-width: 100%;
-	text-align: left;
-	width: 100%;
-}
+	.sd-rail__cell:nth-child(odd) {
+		border-left: 0;
+		padding-left: 0;
+	}
 
-.sd-card__body > .wp-block-buttons {
-	margin-top: auto;
-	padding-top: var(--wp--preset--spacing--small);
-	width: auto;
-}
+	.sd-rail__cell:nth-child(n + 3) {
+		border-top: 1px solid var(--wp--custom--rule--on-dark);
+	}
 
-/* Icona del servizio a sinistra come il resto della card. */
-.sd-card__icon,
-.sd-card__icon img {
-	margin-inline-start: 0 !important;
+	/* L'email prende tutta la riga: e' il valore piu' lungo. */
+	.sd-rail__cell:last-child {
+		grid-column: 1 / -1;
+	}
 }
 
 /* ---------------------------------------------------------------
-   6. Ritratti dei professionisti
+   6. Capitolo "Lo Studio / I Nostri Pazienti"
+
+   Split 36/64 con la fotografia che esce dal bordo sinistro e resta ferma
+   mentre scorrono i due movimenti di testo.
    --------------------------------------------------------------- */
 
-.sd-portrait img {
+.sd-chapter__grid {
+	display: grid;
+	grid-template-columns:
+		[full-start] minmax(var(--sd-gutter), 1fr)
+		[media-start] minmax(0, calc(var(--sd-max) * 0.36))
+		[body-start] minmax(0, calc(var(--sd-max) * 0.64))
+		[wrap-end] minmax(var(--sd-gutter), 1fr)
+		[full-end];
+}
+
+.sd-chapter__media {
+	grid-column: full-start / body-start;
+	min-width: 0;
+	position: relative;
+}
+
+.sd-chapter__body {
+	grid-column: body-start / wrap-end;
+	min-width: 0;
+	padding-left: clamp(2rem, 4.5vw, 5rem);
+}
+
+/* La fotografia riempie tutta l'altezza della colonna. Con position:sticky
+   restava alta quanto la sua proporzione e sotto si apriva un vuoto di
+   centinaia di pixel: in una schermata a pagina intera si vedeva benissimo. */
+.sd-chapter__figure {
+	inset: 0;
+	margin: 0;
+	position: absolute;
+}
+
+.sd-chapter__figure img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	object-position: 50% 30%;
+	width: 100%;
+}
+
+.sd-pillars {
+	margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* I cinque paragrafi dell'accoglienza su tre colonne tipografiche, a tutta
+   larghezza sotto il capitolo: un muro di prosa diventa una pagina. */
+.sd-welcome {
+	margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.sd-columns3 {
+	column-gap: clamp(2rem, 4vw, 3.5rem);
+	columns: 3;
+}
+
+.sd-columns3 p {
+	break-inside: avoid;
+	margin: 0 0 1em;
+}
+
+.sd-columns3 p:last-child {
+	margin-bottom: 0;
+}
+
+@media (max-width: 1023px) {
+	.sd-chapter__grid {
+		display: block;
+	}
+
+	.sd-chapter__body {
+		margin-inline: auto;
+		max-width: var(--sd-max);
+		padding-inline: var(--sd-gutter);
+	}
+
+	.sd-chapter__media {
+		margin-bottom: clamp(2rem, 5vw, 3rem);
+	}
+
+	.sd-chapter__figure {
+		position: static;
+	}
+
+	.sd-chapter__figure img {
+		aspect-ratio: 16 / 9;
+		height: auto;
+	}
+}
+
+@media (max-width: 1023px) {
+	.sd-columns3 {
+		columns: 2;
+	}
+}
+
+@media (max-width: 699px) {
+	.sd-columns3 {
+		columns: 1;
+	}
+}
+
+/* ---------------------------------------------------------------
+   7. I Professionisti — elenco redazionale, non tre card
+
+   I ritratti scendono a 260px: i tre originali (420x554, 420x419, 486x642)
+   tornano nitidi anche su Retina senza chiedere scatti nuovi.
+   --------------------------------------------------------------- */
+
+.sd-roster__row {
+	align-items: start;
+	display: grid;
+	gap: clamp(1.5rem, 3.5vw, 3.5rem);
+	grid-template-columns: 260px minmax(0, 1fr);
+	padding-block: clamp(2rem, 3.5vw, 3rem);
+}
+
+.sd-roster__row + .sd-roster__row {
+	border-top: 1px solid var(--wp--preset--color--base);
+}
+
+.sd-roster__row:first-child {
+	padding-top: 0;
+}
+
+.sd-roster__row:last-child {
+	padding-bottom: 0;
+}
+
+.sd-roster__portrait {
+	margin: 0;
+}
+
+.sd-roster__portrait img {
 	aspect-ratio: 4 / 5;
-	border-radius: 6px;
 	display: block;
 	height: auto;
 	object-fit: cover;
 	width: 100%;
 }
 
+.sd-roster__text h3 {
+	margin-top: 0;
+}
+
+.sd-roster__text p {
+	max-width: 40rem;
+}
+
+@media (max-width: 899px) {
+	.sd-roster__row {
+		grid-template-columns: 180px minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-roster__row {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-roster__portrait {
+		max-width: 220px;
+	}
+}
+
 /* ---------------------------------------------------------------
-   7. Header
+   8. Nostri servizi — quattro pannelli fotografici
+
+   Le fotografie sono i pannelli: niente card, niente bordi, niente ombre
+   e soprattutto niente icone.
+   --------------------------------------------------------------- */
+
+.sd-panels {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.sd-panel {
+	align-items: flex-end;
+	display: flex;
+	isolation: isolate;
+	min-height: clamp(26rem, 36vw, 33rem);
+	overflow: hidden;
+	position: relative;
+}
+
+.sd-panel__figure {
+	inset: 0;
+	margin: 0;
+	position: absolute;
+	z-index: -2;
+}
+
+.sd-panel__figure img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+
+.sd-panel::before {
+	background: linear-gradient(
+		to top,
+		var(--wp--custom--scrim--strong) 0%,
+		var(--wp--custom--scrim--strong) 30%,
+		var(--wp--custom--scrim--soft) 58%,
+		var(--wp--custom--scrim--none) 88%
+	);
+	content: "";
+	inset: 0;
+	position: absolute;
+	z-index: -1;
+}
+
+.sd-panel__body {
+	padding: clamp(1.5rem, 2.5vw, 2.25rem);
+	width: 100%;
+}
+
+.sd-panel__body h3 {
+	margin: 0 0 0.5rem;
+}
+
+.sd-panel__body p {
+	margin: 0;
+}
+
+.sd-panel__body .sd-more {
+	margin-top: clamp(1rem, 2vw, 1.5rem);
+}
+
+@media (max-width: 899px) {
+	.sd-panels {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-panels {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-panel {
+		min-height: 22rem;
+	}
+}
+
+/* ---------------------------------------------------------------
+   9. Tecnologie — colonna ferma a sinistra, elenco a filetti a destra
+
+   Sette card quasi identiche diventano sette righe: si leggono in colpo
+   d'occhio e la pagina smette di sembrare un catalogo.
+   --------------------------------------------------------------- */
+
+.sd-tech__grid {
+	align-items: stretch;
+	display: grid;
+	gap: clamp(2rem, 5vw, 5rem);
+	grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
+}
+
+.sd-tech__aside {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Come nel capitolo: la fotografia prende l'altezza che avanza, cosi' la
+   colonna di sinistra non resta mezza vuota accanto alle sette righe. */
+.sd-tech__figure {
+	flex: 1 1 auto;
+	margin: 0;
+	min-height: 18rem;
+}
+
+.sd-tech__figure img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	object-position: 46% 50%;
+	width: 100%;
+}
+
+.sd-tech__row {
+	align-items: baseline;
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	column-gap: clamp(1rem, 2vw, 2rem);
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	padding-block: clamp(1.25rem, 2vw, 1.75rem);
+	row-gap: 0.35rem;
+}
+
+.sd-tech__row:first-child {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.sd-tech__row > h3 {
+	grid-column: 1;
+	grid-row: 1;
+	margin: 0;
+}
+
+.sd-tech__row > h3 a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sd-tech__row > h3 a:hover,
+.sd-tech__row > h3 a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.12em;
+}
+
+.sd-tech__row > .sd-more {
+	grid-column: 2;
+	grid-row: 1;
+	justify-self: end;
+	white-space: nowrap;
+}
+
+.sd-tech__row > p:not(.sd-more) {
+	grid-column: 1 / -1;
+	grid-row: 2;
+	margin: 0;
+	max-width: 38rem;
+}
+
+@media (max-width: 899px) {
+	.sd-tech__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-tech__figure {
+		min-height: 0;
+	}
+
+	.sd-tech__figure img {
+		aspect-ratio: 16 / 9;
+		height: auto;
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-tech__row {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-tech__row > .sd-more {
+		grid-column: 1;
+		grid-row: 3;
+		justify-self: start;
+		margin-top: 0.75rem;
+	}
+}
+
+/* ---------------------------------------------------------------
+   10. Perche' noi — fascia scura di sola tipografia
+
+   Le quattro icone spariscono: erano clipart da 44px che non dicevano
+   niente che il titolo non dicesse gia'. Nessun numero progressivo:
+   i quattro motivi non sono una sequenza.
+   --------------------------------------------------------------- */
+
+.sd-why__lede {
+	margin-block: 0 clamp(2.5rem, 5vw, 4rem);
+	max-width: 46ch;
+}
+
+.sd-why__grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sd-why__cell {
+	border-left: 1px solid var(--wp--custom--rule--on-dark);
+	padding: 0 clamp(1.25rem, 2vw, 2rem);
+}
+
+.sd-why__cell:first-child {
+	border-left: 0;
+	padding-left: 0;
+}
+
+.sd-why__cell h3 {
+	margin-top: 0;
+	text-wrap: balance;
+}
+
+@media (max-width: 899px) {
+	.sd-why__grid {
+		gap: clamp(1.75rem, 4vw, 2.5rem) 0;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.sd-why__cell:nth-child(odd) {
+		border-left: 0;
+		padding-left: 0;
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-why__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-why__cell {
+		border-left: 0;
+		padding-inline: 0;
+	}
+}
+
+/* ---------------------------------------------------------------
+   11. Orari e Vieni a Trovarci — mappa piena con pannello sovrapposto
+   --------------------------------------------------------------- */
+
+.sd-visit {
+	position: relative;
+}
+
+.sd-visit__map iframe {
+	border: 0;
+	display: block;
+	height: clamp(26rem, 54vw, 46rem);
+	width: 100%;
+}
+
+.sd-visit__layer {
+	align-items: center;
+	display: flex;
+	inset: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+.sd-visit__panel {
+	padding: clamp(1.75rem, 3vw, 2.5rem);
+	pointer-events: auto;
+	width: min(100%, 27rem);
+}
+
+.sd-visit__panel .sd-head {
+	margin-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+.sd-visit__panel .sd-hours + .sd-head {
+	margin-top: clamp(1.5rem, 3vw, 2rem);
+}
+
+.sd-visit__panel p {
+	margin-bottom: 0;
+}
+
+@media (max-width: 899px) {
+	.sd-visit {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+
+	.sd-visit__layer {
+		padding-block: var(--sd-rhythm) clamp(2rem, 5vw, 3rem);
+		position: static;
+	}
+
+	.sd-visit__panel {
+		width: 100%;
+	}
+}
+
+/* ---------------------------------------------------------------
+   12. Tabella orari
+   --------------------------------------------------------------- */
+
+.sd-hours {
+	margin-block: 0;
+}
+
+.sd-hours table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.sd-hours th,
+.sd-hours td {
+	border: 0;
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	padding: 0.7em 0.6em;
+}
+
+.sd-hours thead th {
+	font-weight: 500;
+}
+
+.sd-hours tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+/* Prima colonna a sinistra, orari a destra: piu' leggibile della
+   centratura su tutte e tre le colonne. */
+.sd-hours th:first-child,
+.sd-hours td:first-child {
+	text-align: left;
+}
+
+.sd-hours th:not(:first-child),
+.sd-hours td:not(:first-child) {
+	text-align: right;
+}
+
+/* Ollie da' alla tabella fondo "base" e intestazione chiara: su fondo
+   scuro il testo, anch'esso "base", risulterebbe bianco su bianco. */
+.sd-footer .sd-hours table,
+.sd-footer .sd-hours thead,
+.sd-footer .sd-hours thead th,
+.sd-footer .sd-hours tbody tr,
+.sd-footer .sd-hours td,
+.sd-visit__panel .sd-hours table,
+.sd-visit__panel .sd-hours thead,
+.sd-visit__panel .sd-hours thead th,
+.sd-visit__panel .sd-hours tbody tr,
+.sd-visit__panel .sd-hours td {
+	background-color: transparent;
+	color: inherit;
+}
+
+.sd-footer .sd-hours th,
+.sd-footer .sd-hours td,
+.sd-visit__panel .sd-hours th,
+.sd-visit__panel .sd-hours td {
+	border-bottom-color: var(--wp--custom--rule--on-dark);
+}
+
+.sd-footer .sd-hours thead th,
+.sd-footer .sd-hours figcaption,
+.sd-visit__panel .sd-hours thead th,
+.sd-visit__panel .sd-hours figcaption {
+	color: var(--wp--preset--color--main-accent);
+}
+
+/* ---------------------------------------------------------------
+   13. Header
    --------------------------------------------------------------- */
 
 .sd-header {
@@ -318,6 +930,17 @@ Text Domain: sorriso-dambrosio
 
 .sd-header .wp-block-navigation {
 	font-feature-settings: "ss01";
+}
+
+.sd-header .wp-block-site-logo img {
+	height: auto;
+	width: 168px;
+}
+
+@media (max-width: 599px) {
+	.sd-header .wp-block-site-logo img {
+		width: 132px;
+	}
 }
 
 /* Sottolineatura animata solo da tablet in su e solo sulle voci di primo livello. */
@@ -344,7 +967,7 @@ Text Domain: sorriso-dambrosio
 }
 
 /* ---------------------------------------------------------------
-   8. CTA mobile sempre raggiungibile
+   14. CTA mobile sempre raggiungibile
    --------------------------------------------------------------- */
 
 .sd-mobile-cta {
@@ -362,6 +985,8 @@ Text Domain: sorriso-dambrosio
 @media (max-width: 781px) {
 	.sd-mobile-cta {
 		display: flex !important;
+		/* Il badge fisso di iubenda occupa l'angolo in basso a destra. */
+		padding-right: 3.75rem !important;
 	}
 
 	/* Spazio in fondo alla pagina perche' la barra non copra il footer. */
@@ -378,172 +1003,13 @@ Text Domain: sorriso-dambrosio
 	white-space: nowrap;
 }
 
-/* Il badge fisso di iubenda occupa l'angolo in basso a destra: la barra
-   lascia libero quello spazio per non finirci sotto. */
-@media (max-width: 781px) {
-	.sd-mobile-cta {
-		padding-right: 3.75rem !important;
-	}
-}
-
 /* ---------------------------------------------------------------
-   9. Tabella orari
-   --------------------------------------------------------------- */
-
-.sd-hours table {
-	border-collapse: collapse;
-	width: 100%;
-}
-
-.sd-hours th,
-.sd-hours td {
-	border: 0;
-	border-bottom: 1px solid var(--wp--custom--border--hairline);
-	padding: 0.85em 0.75em;
-}
-
-.sd-hours thead th {
-	border-bottom-color: var(--wp--preset--color--main-accent);
-	font-weight: 500;
-}
-
-.sd-hours tbody tr:last-child td {
-	border-bottom: 0;
-}
-
-/* Prima colonna a sinistra, orari a destra: piu' leggibile della
-   centratura su tutte e tre le colonne. */
-.sd-hours th:first-child,
-.sd-hours td:first-child {
-	text-align: left;
-}
-
-.sd-hours th:not(:first-child),
-.sd-hours td:not(:first-child) {
-	text-align: right;
-}
-
-/* ---------------------------------------------------------------
-   10. Mappa
-   --------------------------------------------------------------- */
-
-.sd-map iframe {
-	border: 0;
-	border-radius: 6px;
-	display: block;
-	height: 420px;
-	width: 100%;
-}
-
-@media (max-width: 781px) {
-	.sd-map iframe {
-		height: 300px;
-	}
-}
-
-/* ---------------------------------------------------------------
-   11. Accessibilita' e igiene
-   --------------------------------------------------------------- */
-
-:where(.wp-site-blocks) :focus-visible {
-	outline: 2px solid var(--wp--preset--color--primary);
-	outline-offset: 2px;
-}
-
-img {
-	max-width: 100%;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	*,
-	*::before,
-	*::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-		scroll-behavior: auto !important;
-	}
-}
-
-/* ---------------------------------------------------------------
-   12. Sezioni e griglie
-   --------------------------------------------------------------- */
-
-/* Fondo alternato appena percettibile per separare le sezioni senza righe. */
-.sd-section--tinted {
-	background-color: var(--wp--custom--surface--pure);
-}
-
-/* L'intestazione e' alignwide: il suo box segue il bordo sinistro delle
-   colonne della sezione. La misura stretta e l'allineamento a sinistra
-   valgono per il testo dentro, non per il box. */
-
-/* Griglia auto-responsiva: nessun breakpoint da mantenere a mano. */
-.sd-grid {
-	display: grid;
-	gap: var(--wp--preset--spacing--medium);
-}
-
-.sd-grid > * {
-	margin: 0;
-}
-
-.sd-grid--tech {
-	grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-}
-
-.sd-grid--reasons {
-	grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-}
-
-.sd-reason__icon img {
-	height: 44px;
-	width: auto;
-}
-
-.sd-reason h3 {
-	text-wrap: balance;
-}
-
-/* Le card nelle griglie devono riempire la cella. */
-.sd-grid .sd-card {
-	display: flex;
-	flex-direction: column;
-}
-
-.sd-card__icon img {
-	height: 40px;
-	width: auto;
-}
-
-/* ---------------------------------------------------------------
-   13. Footer
+   15. Footer
    --------------------------------------------------------------- */
 
 .sd-footer .logo-footer img {
 	height: auto;
 	width: 150px;
-}
-
-/* Ollie da' alla tabella fondo "base" e intestazione chiara: nel footer
-   scuro il testo, anch'esso "base", risultava bianco su bianco. */
-.sd-footer .sd-hours table,
-.sd-footer .sd-hours thead,
-.sd-footer .sd-hours thead th,
-.sd-footer .sd-hours tbody tr,
-.sd-footer .sd-hours td {
-	background-color: transparent;
-	color: inherit;
-}
-
-.sd-footer .sd-hours th,
-.sd-footer .sd-hours td {
-	border-bottom-color: var(--wp--preset--color--secondary);
-}
-
-.sd-footer .sd-hours thead th {
-	border-bottom-color: var(--wp--preset--color--main-accent);
-	color: var(--wp--preset--color--main-accent);
 }
 
 .sd-footer__rule {
@@ -563,22 +1029,7 @@ img {
 }
 
 /* ---------------------------------------------------------------
-   14. Logo nell'header
-   --------------------------------------------------------------- */
-
-.sd-header .wp-block-site-logo img {
-	height: auto;
-	width: 168px;
-}
-
-@media (max-width: 599px) {
-	.sd-header .wp-block-site-logo img {
-		width: 132px;
-	}
-}
-
-/* ---------------------------------------------------------------
-   15. Utility di visibilita' ereditate dal contenuto esistente
+   16. Utility di visibilita' ereditate dal contenuto esistente
 
    Il post wp_navigation (ID 4) e altri contenuti gia' in archivio usano
    .is-style-hidden-destok / .is-style-hidden-mobile, che nel tema
@@ -599,12 +1050,25 @@ img {
 }
 
 /* ---------------------------------------------------------------
-   17. Allineamento a sinistra dentro le intestazioni di sezione
+   17. Accessibilita' e igiene
    --------------------------------------------------------------- */
 
-.sd-section-head > * {
-	margin-inline-end: auto !important;
-	margin-inline-start: 0 !important;
-	max-width: 46rem;
-	text-align: left;
+:where(.wp-site-blocks) :focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
+
+img {
+	max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }

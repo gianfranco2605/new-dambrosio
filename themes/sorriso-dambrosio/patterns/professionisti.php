@@ -3,12 +3,18 @@
  * Title: I Professionisti
  * Slug: sorriso-dambrosio/professionisti
  * Categories: sorriso-dambrosio
- * Description: I tre medici dello studio, ritratto e biografia su tre colonne.
+ * Description: I tre medici come righe di un elenco redazionale, ritratto stretto a sinistra e biografia a destra.
  * Inserter: true
  *
  * @package SorrisoDambrosio
  */
 
+/*
+ * Non tre card affiancate ma tre righe divise da filetti: 30/70, ritratto
+ * a sinistra e biografia a destra. I ritratti scendono da ~390 a 260px,
+ * cosi' i tre originali (420x554, 420x419, 486x642) tornano nitidi anche
+ * su Retina senza chiedere al titolare scatti nuovi.
+ */
 $sd_doctors = array(
 	array(
 		'anchor' => 'nicoletta',
@@ -33,32 +39,36 @@ $sd_doctors = array(
 	),
 );
 ?>
-<!-- wp:group {"align":"wide","className":"sd-section","style":{"spacing":{"padding":{"top":"var:preset|spacing|xx-large","bottom":"var:preset|spacing|xx-large","right":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"constrained","contentSize":"1280px"}} -->
-<div class="wp-block-group alignwide sd-section" id="chi-siamo" style="margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--xx-large);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--xx-large);padding-left:var(--wp--preset--spacing--medium)">
+<!-- wp:group {"className":"sd-section sd-section--tint","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-section sd-section--tint" id="chi-siamo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-wrap">
 <?php echo sorriso_dambrosio_section_head( 'Dottori', 'I Professionisti' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:columns {"verticalAlignment":"top","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|large","left":"var:preset|spacing|large"},"margin":{"top":"0","bottom":"0"}}}} -->
-<div class="wp-block-columns are-vertically-aligned-top" style="margin-top:0;margin-bottom:0">
+<!-- wp:group {"className":"sd-roster","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-roster">
 <?php foreach ( $sd_doctors as $sd_doctor ) : ?>
-<!-- wp:column {"verticalAlignment":"top","style":{"spacing":{"blockGap":"var:preset|spacing|small"}}} -->
-<div class="wp-block-column is-vertically-aligned-top" id="<?php echo esc_attr( $sd_doctor['anchor'] ); ?>">
-<?php echo sorriso_dambrosio_image( $sd_doctor['image'], 'large', 'sd-portrait' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<!-- wp:group {"className":"sd-roster__row","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-roster__row" id="<?php echo esc_attr( $sd_doctor['anchor'] ); ?>">
+<?php echo sorriso_dambrosio_image( $sd_doctor['image'], 'medium_large', 'sd-roster__portrait' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:heading {"level":3,"fontSize":"base"} -->
-<h3 class="wp-block-heading has-base-font-size"><?php echo $sd_doctor['name']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
+<!-- wp:group {"className":"sd-roster__text","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-roster__text"><!-- wp:heading {"level":3,"fontSize":"medium"} -->
+<h3 class="wp-block-heading has-medium-font-size"><?php echo $sd_doctor['name']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"fontSize":"small","textColor":"secondary"} -->
-<p class="has-secondary-color has-text-color has-small-font-size"><?php echo $sd_doctor['bio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+<!-- wp:paragraph {"fontSize":"small"} -->
+<p class="has-small-font-size"><?php echo $sd_doctor['bio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph -->
 <?php if ( '' !== $sd_doctor['link'] ) : ?>
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="<?php echo esc_url( home_url( $sd_doctor['link'] ) ); ?>"><strong>Guarda alcuni dei suoi casi &#8594;</strong></a></p>
+<!-- wp:paragraph {"className":"sd-more","fontSize":"small"} -->
+<p class="sd-more has-small-font-size"><a href="<?php echo esc_url( home_url( $sd_doctor['link'] ) ); ?>">Guarda alcuni dei suoi casi &#8594;</a></p>
 <!-- /wp:paragraph -->
 <?php endif; ?>
 </div>
-<!-- /wp:column -->
+<!-- /wp:group --></div>
+<!-- /wp:group -->
 <?php endforeach; ?>
 </div>
-<!-- /wp:columns --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
 <!-- /wp:group -->

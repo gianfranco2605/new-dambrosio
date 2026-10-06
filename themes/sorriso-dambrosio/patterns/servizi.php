@@ -3,76 +3,78 @@
  * Title: Nostri servizi
  * Slug: sorriso-dambrosio/servizi
  * Categories: sorriso-dambrosio
- * Description: Quattro aree di intervento in schede con immagine, icona e collegamento.
+ * Description: Quattro pannelli fotografici a pieno sanguinamento, testo in basso sopra la fotografia.
  * Inserter: true
  *
  * @package SorrisoDambrosio
  */
 
+/*
+ * Le fotografie sono i pannelli: niente card, niente bordi, niente ombre e
+ * soprattutto niente icone. Le quattro clipart blu (801, 803, 804, 799)
+ * uscivano a 230x153px accanto a fotografie vere e non aggiungevano nulla.
+ *
+ * Due immagini sostituite perche' troppo piccole per un pannello alto 520px
+ * (entrambe gia' nella Media Library, stesso soggetto):
+ *   Ortodonzia    1096  640x427  -> 527   2560x2080
+ *   Implantologia  156  300x200  -> 1226  2560x1707
+ */
 $sd_services = array(
 	array(
 		'image' => 85,
-		'icon'  => 801,
 		'title' => 'Estetica',
 		'text'  => 'Scopri il piacere di riscoprire e riabbracciare la bellezza del tuo sorriso attraverso l&#8217;ampia gamma dei nostri servizi di estetica dentale di prima classe.',
 		'link'  => '/estetica/',
 	),
 	array(
-		'image' => 1096,
-		'icon'  => 803,
+		'image' => 527,
 		'title' => 'Ortodonzia',
 		'text'  => 'Ci dedichiamo all&#8217;ortodonzia di alta qualit&agrave;, mettendo in primo piano il sorriso e la salute dentale per i nostri pazienti.',
 		'link'  => '/ortodonzia/',
 	),
 	array(
-		'image' => 156,
-		'icon'  => 804,
+		'image' => 1226,
 		'title' => 'Implantologia',
 		'text'  => 'Lo studio D&#8217;Ambrosio &egrave; la scelta perfetta per coloro che cercano soluzioni personalizzate in implantologia di alta qualit&agrave;.',
 		'link'  => '/implantologia/',
 	),
 	array(
 		'image' => 817,
-		'icon'  => 799,
 		'title' => 'Altri Servizi',
 		'text'  => 'Esplora la gamma completa di servizi dentali personalizzati per soddisfare le tue esigenze specifiche e un sorriso luminoso.',
 		'link'  => '/trattamenti/',
 	),
 );
 ?>
-<!-- wp:group {"align":"wide","className":"sd-section sd-section--tinted","style":{"spacing":{"padding":{"top":"var:preset|spacing|xx-large","bottom":"var:preset|spacing|xx-large","right":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"constrained","contentSize":"1280px"}} -->
-<div class="wp-block-group alignwide sd-section sd-section--tinted" style="margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--xx-large);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--xx-large);padding-left:var(--wp--preset--spacing--medium)">
+<!-- wp:group {"className":"sd-section sd-section--flush","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-section sd-section--flush" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-wrap">
 <?php echo sorriso_dambrosio_section_head( 'Prestazioni', 'Nostri servizi' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+</div>
+<!-- /wp:group -->
 
-<!-- wp:columns {"className":"sd-cards","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"margin":{"top":"0","bottom":"0"}}}} -->
-<div class="wp-block-columns sd-cards" style="margin-top:0;margin-bottom:0">
+<!-- wp:group {"className":"sd-panels","style":{"spacing":{"blockGap":"0"},"elements":{"link":{"color":{"text":"var:preset|color|base"}}}},"textColor":"base","layout":{"type":"default"}} -->
+<div class="wp-block-group sd-panels has-base-color has-text-color has-link-color">
 <?php foreach ( $sd_services as $sd_service ) : ?>
-<!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group {"className":"sd-card","style":{"spacing":{"blockGap":"0","padding":{"top":"0","right":"0","bottom":"0","left":"0"}}},"backgroundColor":"base","layout":{"type":"constrained"}} -->
-<div class="wp-block-group sd-card has-base-background-color has-background" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
-<?php echo sorriso_dambrosio_image( $sd_service['image'], 'large' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<!-- wp:group {"className":"sd-panel","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-panel">
+<?php echo sorriso_dambrosio_image( $sd_service['image'], 'large', 'sd-panel__figure' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:group {"className":"sd-card__body","style":{"spacing":{"padding":{"top":"var:preset|spacing|medium","right":"var:preset|spacing|medium","bottom":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"blockGap":"var:preset|spacing|small"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group sd-card__body" style="padding-top:var(--wp--preset--spacing--medium);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--medium);padding-left:var(--wp--preset--spacing--medium)">
-<?php echo sorriso_dambrosio_image( $sd_service['icon'], 'full', 'sd-card__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
-<!-- wp:heading {"level":3,"fontSize":"base"} -->
-<h3 class="wp-block-heading has-base-font-size"><?php echo $sd_service['title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
+<!-- wp:group {"className":"sd-panel__body","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-panel__body"><!-- wp:heading {"level":3,"fontSize":"large"} -->
+<h3 class="wp-block-heading has-large-font-size"><?php echo $sd_service['title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"fontSize":"small","textColor":"secondary"} -->
-<p class="has-secondary-color has-text-color has-small-font-size"><?php echo $sd_service['text']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+<!-- wp:paragraph {"fontSize":"small"} -->
+<p class="has-small-font-size"><?php echo $sd_service['text']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph -->
 
-<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"left"}} -->
-<div class="wp-block-buttons"><!-- wp:button {"className":"is-style-outline"} -->
-<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( $sd_service['link'] ) ); ?>">DI PI&Ugrave;</a></div>
-<!-- /wp:button --></div>
-<!-- /wp:buttons --></div>
+<!-- wp:paragraph {"className":"sd-more","fontSize":"x-small"} -->
+<p class="sd-more has-x-small-font-size"><a href="<?php echo esc_url( home_url( $sd_service['link'] ) ); ?>">DI PI&Ugrave;</a></p>
+<!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
-<!-- /wp:group --></div>
-<!-- /wp:column -->
+<!-- /wp:group -->
 <?php endforeach; ?>
 </div>
-<!-- /wp:columns --></div>
+<!-- /wp:group --></div>
 <!-- /wp:group -->

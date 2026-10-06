@@ -1,47 +1,52 @@
 <?php
 /**
- * Title: Scheda contatti sotto l'hero
+ * Title: Barra contatti
  * Slug: sorriso-dambrosio/contact-bar
  * Categories: sorriso-dambrosio
- * Description: Recapiti dello studio in una scheda che sborda sul bordo inferiore dell'hero.
+ * Description: Rail scuro a tutta larghezza con indirizzo, telefoni ed email, in continuita' con la lastra dell'hero.
  * Inserter: true
  *
  * @package SorrisoDambrosio
  */
 
+/*
+ * Non e' piu' una scheda bianca con l'ombra che galleggia sull'hero: la
+ * lastra del titolo e questa barra sono la stessa forma scura, continua.
+ * Le etichette ("Indirizzo:", "Tel:", "Cel:") sono il testo esistente.
+ */
+$sd_cells = array(
+	array(
+		'label' => 'Indirizzo:',
+		'value' => '<a href="https://maps.app.goo.gl/jsVVDPiXFAFLCiE18" target="_blank" rel="noreferrer noopener">Lungotevere Flaminio n. 34 &#8211; 00196 &#8211; Roma (RM)</a>',
+	),
+	array(
+		'label' => 'Tel:',
+		'value' => '<a href="tel:063225754">+39 06 322 5754</a><br><a href="tel:063610625">+39 06 361 0625</a>',
+	),
+	array(
+		'label' => 'Cel:',
+		'value' => '<a href="tel:+393755524596">+39 375 552 4596</a>',
+	),
+	array(
+		'label' => 'Email:',
+		'value' => '<a href="mailto:studio@sorrisodambrosio.it">studio@sorrisodambrosio.it</a>',
+	),
+);
 ?>
-<!-- wp:group {"style":{"spacing":{"padding":{"right":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"constrained","contentSize":"1280px"}} -->
-<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-right:var(--wp--preset--spacing--medium);padding-left:var(--wp--preset--spacing--medium)"><!-- wp:group {"className":"sd-contact-card","style":{"spacing":{"padding":{"top":"var:preset|spacing|medium","bottom":"var:preset|spacing|medium","right":"var:preset|spacing|medium","left":"var:preset|spacing|medium"},"blockGap":"var:preset|spacing|medium"},"border":{"radius":"6px"}},"backgroundColor":"base","layout":{"type":"default"}} -->
-<div class="wp-block-group sd-contact-card has-base-background-color has-background" style="border-radius:6px;padding-top:var(--wp--preset--spacing--medium);padding-right:var(--wp--preset--spacing--medium);padding-bottom:var(--wp--preset--spacing--medium);padding-left:var(--wp--preset--spacing--medium)"><!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"var:preset|spacing|medium","left":"var:preset|spacing|large"},"margin":{"top":"0","bottom":"0"}}}} -->
-<div class="wp-block-columns" style="margin-top:0;margin-bottom:0"><!-- wp:column {"style":{"spacing":{"blockGap":"0.35rem"}}} -->
-<div class="wp-block-column"><!-- wp:paragraph {"className":"sd-eyebrow","textColor":"secondary","fontSize":"x-small"} -->
-<p class="sd-eyebrow has-secondary-color has-text-color has-x-small-font-size">Indirizzo:</p>
+<!-- wp:group {"className":"sd-rail","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"},"elements":{"link":{"color":{"text":"var:preset|color|base"}}}},"backgroundColor":"main","textColor":"base","layout":{"type":"default"}} -->
+<div class="wp-block-group sd-rail has-base-color has-main-background-color has-text-color has-background has-link-color" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-rail__inner","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-rail__inner">
+<?php foreach ( $sd_cells as $sd_cell ) : ?>
+<!-- wp:group {"className":"sd-rail__cell","style":{"spacing":{"blockGap":"0.3rem"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-rail__cell"><!-- wp:paragraph {"className":"sd-rail__label","textColor":"main-accent","fontSize":"x-small"} -->
+<p class="sd-rail__label has-main-accent-color has-text-color has-x-small-font-size"><?php echo $sd_cell['label']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://maps.app.goo.gl/jsVVDPiXFAFLCiE18" target="_blank" rel="noreferrer noopener">Lungotevere Flaminio n. 34 &#8211; 00196 &#8211; Roma (RM)</a></p>
+<p class="has-small-font-size"><?php echo $sd_cell['value']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph --></div>
-<!-- /wp:column -->
-
-<!-- wp:column {"style":{"spacing":{"blockGap":"0.35rem"}}} -->
-<div class="wp-block-column"><!-- wp:paragraph {"className":"sd-eyebrow","textColor":"secondary","fontSize":"x-small"} -->
-<p class="sd-eyebrow has-secondary-color has-text-color has-x-small-font-size">Tel:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="tel:063225754">+39 06 322 5754</a><br><a href="tel:063610625">+39 06 361 0625</a></p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:column -->
-
-<!-- wp:column {"style":{"spacing":{"blockGap":"0.35rem"}}} -->
-<div class="wp-block-column"><!-- wp:paragraph {"className":"sd-eyebrow","textColor":"secondary","fontSize":"x-small"} -->
-<p class="sd-eyebrow has-secondary-color has-text-color has-x-small-font-size">Cel:</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="tel:+393755524596">+39 375 552 4596</a><br><a href="mailto:studio@sorrisodambrosio.it">studio@sorrisodambrosio.it</a></p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:column --></div>
-<!-- /wp:columns --></div>
+<!-- /wp:group -->
+<?php endforeach; ?>
+</div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

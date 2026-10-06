@@ -72,32 +72,40 @@ function sorriso_dambrosio_register_pattern_category() {
 add_action( 'init', 'sorriso_dambrosio_register_pattern_category' );
 
 /**
- * Markup dell'intestazione di sezione: occhiello, titolo e filetto.
+ * Markup dell'intestazione di sezione.
  *
- * L'occhiello e' un paragrafo, non un heading: nel tema precedente era un
- * secondo <h2> accanto al titolo, cosa che produceva due h2 per sezione.
- * Il testo resta identico, cambia solo l'elemento che lo porta.
+ * Il filetto corre SOPRA la sezione, da bordo a bordo della colonna, e
+ * l'occhiello — che e' contenuto esistente ("Dal 1956", "Dottori",
+ * "Prestazioni"...) — si siede in coda al filetto, a destra. Il titolo
+ * sta sotto, a sinistra. E' il contrario dell'impianto precedente
+ * (occhiello centrato, titolo, filetto rosso sotto), che ripeteva nove
+ * volte la stessa figura e faceva somigliare la pagina al vecchio sito.
+ *
+ * Il filetto vero e' disegnato in CSS con ::before sull'occhiello: cosi'
+ * si allunga da solo fino a riempire lo spazio che l'occhiello lascia.
  *
  * @param string $eyebrow Testo dell'occhiello.
  * @param string $title   Titolo della sezione.
  * @param int    $level   Livello del titolo (2 o 3).
+ * @param string $href    Se valorizzato, il titolo diventa un collegamento.
  * @return string Markup a blocchi.
  */
-function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2 ) {
+function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '' ) {
 	$level = (int) $level;
 	$tag   = 'h' . $level;
 
-	$heading_attrs = 2 === $level ? '{"level":2}' : '{"level":' . $level . '}';
+	$inner = '' !== $href
+		? '<a href="' . esc_url( $href ) . '">' . $title . '</a>'
+		: $title;
 
-	return '<!-- wp:group {"align":"wide","className":"sd-section-head","style":{"spacing":{"blockGap":"0.5rem","margin":{"bottom":"var:preset|spacing|medium"}}},"layout":{"type":"constrained"}} -->'
-		. '<div class="wp-block-group alignwide sd-section-head" style="margin-bottom:var(--wp--preset--spacing--medium)">'
-		. '<!-- wp:paragraph {"className":"sd-eyebrow","textColor":"primary","fontSize":"x-small"} -->'
-		. '<p class="sd-eyebrow has-primary-color has-text-color has-x-small-font-size">' . $eyebrow . '</p>'
+	return '<!-- wp:group {"className":"sd-head","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->'
+		. '<div class="wp-block-group sd-head">'
+		. '<!-- wp:paragraph {"className":"sd-eyebrow","fontSize":"x-small"} -->'
+		. '<p class="sd-eyebrow has-x-small-font-size">' . $eyebrow . '</p>'
 		. '<!-- /wp:paragraph -->'
-		. '<!-- wp:heading ' . $heading_attrs . ' -->'
-		. '<' . $tag . ' class="wp-block-heading">' . $title . '</' . $tag . '>'
+		. '<!-- wp:heading {"level":' . $level . '} -->'
+		. '<' . $tag . ' class="wp-block-heading">' . $inner . '</' . $tag . '>'
 		. '<!-- /wp:heading -->'
-		. '<!-- wp:html --><div class="sd-rule" aria-hidden="true"></div><!-- /wp:html -->'
 		. '</div><!-- /wp:group -->';
 }
 
