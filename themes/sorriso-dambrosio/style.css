@@ -198,16 +198,95 @@ Text Domain: sorriso-dambrosio
 	opacity: 0.28;
 }
 
+
+/* ---------------------------------------------------------------
+   3b. Pulsanti a pillola
+
+   Tre varianti sole: pieno (azione principale), contornato (su fondo
+   chiaro), fantasma (su fondo scuro o sulla fotografia).
+   --------------------------------------------------------------- */
+
+.sd-btn {
+	align-items: center;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	display: inline-flex;
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--x-small);
+	font-weight: 500;
+	gap: 0.55em;
+	justify-content: center;
+	letter-spacing: 0.02em;
+	line-height: 1.2;
+	padding: 0.85em 1.5em;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	white-space: nowrap;
+}
+
+.sd-btn .sd-icon {
+	flex: 0 0 auto;
+	height: 1.15em;
+	width: 1.15em;
+}
+
+.sd-btn--solid {
+	background-color: var(--wp--preset--color--primary);
+	border-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-btn--solid:hover,
+.sd-btn--solid:focus-visible {
+	background-color: var(--wp--preset--color--main);
+	border-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-btn--outline {
+	background-color: transparent;
+	border-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--main);
+}
+
+.sd-btn--outline:hover,
+.sd-btn--outline:focus-visible {
+	background-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-btn--ghost {
+	background-color: transparent;
+	border-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-btn--ghost:hover,
+.sd-btn--ghost:focus-visible {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--main);
+}
+
+/* Le icone di linea: mai sopra i 56px, per costruzione. */
+.sd-icon {
+	display: inline-block;
+	flex: 0 0 auto;
+	height: 24px;
+	vertical-align: middle;
+	width: 24px;
+}
+
 /* ---------------------------------------------------------------
    4. Hero
 
-   Fotografia intera; il titolo non ci sta sopra con un velo ma su una
-   lastra opaca ancorata in basso a sinistra, che sborda dal bordo della
-   finestra e prosegue nella barra dei contatti.
+   Impianto del riferimento Prism: fotografia intera, velo dalla sinistra,
+   testo bianco allineato a sinistra, scheda contatti bianca arrotondata
+   vicino al fondo e social in fondo a destra.
    --------------------------------------------------------------- */
 
 .sd-hero {
-	align-items: flex-end;
+	align-items: stretch;
 	display: flex;
 	isolation: isolate;
 	min-height: max(80vh, calc(100vh - var(--sd-sticky-top)));
@@ -218,58 +297,174 @@ Text Domain: sorriso-dambrosio
 	display: block;
 	inset: 0;
 	position: absolute;
-	z-index: -1;
+	z-index: -2;
 }
 
 .sd-hero__media img {
 	display: block;
 	height: 100%;
 	object-fit: cover;
-	object-position: 56% 42%;
+	object-position: 62% 40%;
 	width: 100%;
+}
+
+/* Il velo scurisce la colonna del testo e si dissolve prima del soggetto:
+   a sinistra il fondo efficace e' praticamente `main`, quindi il bianco ci
+   legge sopra come leggerebbe su una fascia scura piena. */
+.sd-hero__veil {
+	background:
+		linear-gradient(
+			100deg,
+			var(--wp--custom--veil--deep) 0%,
+			var(--wp--custom--veil--deep) 17%,
+			var(--wp--custom--veil--mid) 34%,
+			var(--wp--custom--veil--edge) 52%,
+			var(--wp--custom--veil--none) 68%
+		),
+		linear-gradient(
+			to top,
+			var(--wp--custom--veil--edge) 0%,
+			var(--wp--custom--veil--none) 26%
+		);
+	inset: 0;
+	position: absolute;
+	z-index: -1;
 }
 
 .sd-hero__frame {
-	width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding-block: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.sd-hero__slab {
-	justify-self: start;
-	padding-block: clamp(1.75rem, 3.2vw, 2.75rem);
-	padding-inline: clamp(1.5rem, 4.5vw, 4rem) clamp(1.5rem, 2.5vw, 2.5rem);
-	width: min(100%, 42rem);
+.sd-hero__copy {
+	color: var(--wp--preset--color--base);
+	margin-bottom: auto;
+	max-width: 46rem;
+}
+
+/* Nel riferimento l'occhiello e' una frase breve in grassetto, non
+   un'etichetta in maiuscoletto spaziato: la regola 3 di DESIGN FIRST
+   vieta proprio quel cliche'. */
+.sd-hero__eyebrow {
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	margin: 0 0 clamp(0.75rem, 1.6vw, 1.25rem);
 }
 
 .sd-hero__title {
+	font-weight: 300;
 	margin: 0;
+	max-width: 14ch;
 }
 
 .sd-hero__lede {
-	color: var(--wp--preset--color--main-accent);
+	margin: clamp(1.25rem, 2.6vw, 2rem) 0 0;
+	max-width: 32rem;
 }
 
-/* Il secondo invito all'azione e' in outline chiaro sulla lastra scura. */
-.sd-button-ghost .wp-block-button__link {
-	background-color: transparent;
-	border: 1px solid var(--wp--preset--color--base);
-	color: var(--wp--preset--color--base);
-}
-
-.sd-button-ghost .wp-block-button__link:hover,
-.sd-button-ghost .wp-block-button__link:focus {
-	background-color: var(--wp--preset--color--base);
+/* La scheda contatti: bianca, completamente arrotondata, ancorata in basso. */
+.sd-hero__bar {
+	align-items: center;
+	background-color: var(--wp--custom--surface--pure);
+	border-radius: 999px;
+	box-shadow: 0 24px 60px -30px var(--wp--custom--shadow--bar);
 	color: var(--wp--preset--color--main);
+	display: flex;
+	gap: clamp(0.75rem, 2vw, 2rem);
+	margin-top: clamp(2rem, 5vw, 3.5rem);
+	padding: 0.6rem 0.6rem 0.6rem clamp(1.25rem, 2.4vw, 2.25rem);
+}
+
+.sd-hero__bar-item {
+	align-items: center;
+	color: inherit;
+	display: flex;
+	flex: 1 1 0;
+	gap: 0.75rem;
+	min-width: 0;
+	padding-block: 0.5rem;
+	text-decoration: none;
+}
+
+.sd-hero__bar-item .sd-icon {
+	color: var(--wp--preset--color--primary);
+	height: 22px;
+	width: 22px;
+}
+
+.sd-hero__bar-text {
+	display: grid;
+	min-width: 0;
+}
+
+.sd-hero__bar-label {
+	color: var(--wp--preset--color--secondary);
+	font-size: var(--wp--preset--font-size--x-small);
+	line-height: 1.3;
+}
+
+.sd-hero__bar-value {
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.35;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sd-hero__bar-item:hover .sd-hero__bar-value,
+.sd-hero__bar-item:focus-visible .sd-hero__bar-value {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+
+.sd-hero__bar-cta {
+	flex: 0 0 auto;
+	padding-block: 1.1em;
+}
+
+.sd-hero__social {
+	display: flex;
+	gap: 0.85rem;
+	justify-content: flex-end;
+	list-style: none;
+	margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+	padding: 0;
+}
+
+.sd-hero__social a {
+	align-items: center;
+	color: var(--wp--preset--color--base);
+	display: inline-flex;
+	height: 2.25rem;
+	justify-content: center;
+	text-decoration: none;
+	transition: opacity 0.2s ease;
+	width: 2.25rem;
+}
+
+.sd-hero__social a:hover,
+.sd-hero__social a:focus-visible {
+	opacity: 0.7;
+}
+
+.sd-hero__social .sd-icon {
+	height: 21px;
+	width: 21px;
 }
 
 /* Una sola entrata orchestrata, al caricamento. Nient'altro si muove. */
 @media (prefers-reduced-motion: no-preference) {
-	.sd-hero__slab > * {
+	.sd-hero__copy > *,
+	.sd-hero__bar {
 		animation: sd-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 	}
 
-	.sd-hero__slab > :nth-child(1) { animation-delay: 0.06s; }
-	.sd-hero__slab > :nth-child(2) { animation-delay: 0.16s; }
-	.sd-hero__slab > :nth-child(3) { animation-delay: 0.26s; }
+	.sd-hero__copy > :nth-child(1) { animation-delay: 0.06s; }
+	.sd-hero__copy > :nth-child(2) { animation-delay: 0.16s; }
+	.sd-hero__copy > :nth-child(3) { animation-delay: 0.26s; }
+	.sd-hero__bar { animation-delay: 0.36s; }
 }
 
 @keyframes sd-rise {
@@ -283,18 +478,31 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Su schermo stretto la lastra copriva meta' fotografia e di quella
-   verticale restava visibile solo il soffitto. Qui l'immagine non fa piu' da
-   fondo: sta sopra, intera, e la lastra la segue nel flusso. */
+/* Sotto i 1024px la scheda non ci sta piu' su una riga sola: diventa
+   una griglia 2x2 e poi una colonna. */
+@media (max-width: 1023px) {
+	.sd-hero__bar {
+		border-radius: 1.75rem;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem 1.25rem;
+		padding: 1.25rem;
+	}
+
+	.sd-hero__bar-cta {
+		grid-column: 1 / -1;
+		width: 100%;
+	}
+}
+
 @media (max-width: 781px) {
 	.sd-hero {
-		display: block;
 		min-height: 0;
 	}
 
 	.sd-hero__media {
-		height: 46vh;
-		min-height: 17rem;
+		height: 42vh;
+		min-height: 15rem;
 		position: static;
 	}
 
@@ -302,75 +510,190 @@ Text Domain: sorriso-dambrosio
 		object-position: 50% 58%;
 	}
 
-	.sd-hero__slab {
-		width: 100%;
+	/* Finita la sovrapposizione, il velo non serve: il testo sta su `main`. */
+	.sd-hero__veil {
+		display: none;
+	}
+
+	.sd-hero__frame {
+		background-color: var(--wp--preset--color--main);
+		padding-block: clamp(2rem, 7vw, 3rem);
+	}
+
+	.sd-hero__title {
+		max-width: none;
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-hero__bar {
+		grid-template-columns: minmax(0, 1fr);
 	}
 }
 
 /* ---------------------------------------------------------------
-   5. Barra contatti
+   5. Header
 
-   Non una scheda bianca con l'ombra che galleggia sull'hero: la lastra del
-   titolo e questa barra sono la stessa forma scura, continua.
+   Logo a sinistra, navigazione, e in fondo a destra telefono e prenotazione.
    --------------------------------------------------------------- */
 
-.sd-rail__inner {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	margin-inline: auto;
-	max-width: var(--sd-max);
-	padding-inline: var(--sd-gutter);
+.sd-header {
+	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	box-shadow: 0 1px 0 var(--wp--custom--shadow--header);
+	z-index: 100;
 }
 
-.sd-rail__cell {
-	border-left: 1px solid var(--wp--custom--rule--on-dark);
-	padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1rem, 2vw, 1.75rem);
+.sd-header__inner {
+	align-items: center;
+	display: flex;
+	flex-wrap: nowrap;
+	gap: clamp(0.6rem, 1.2vw, 1.15rem);
+	justify-content: space-between;
+	padding-block: 0.7rem;
 }
 
-.sd-rail__cell:first-child {
-	border-left: 0;
-	padding-left: 0;
-}
-
-.sd-rail__label {
-	letter-spacing: 0.06em;
+.sd-header__logo {
+	flex: 0 0 auto;
 	margin: 0;
 }
 
-.sd-rail__cell p {
-	margin: 0;
-	/* studio@sorrisodambrosio.it e' una parola sola larga 194px: in una cella
-	   da meta' schermo sborda e la pagina scorre in orizzontale. */
-	overflow-wrap: anywhere;
+.sd-header .wp-block-site-logo img {
+	height: auto;
+	width: 140px;
 }
 
-.sd-rail a {
-	text-decoration: none;
+/* Otto voci di primo livello piu' due pulsanti: la riga e' piena. Le voci
+   stanno strette e non vanno mai a capo — se non ci stanno, il blocco
+   Navigation passa da solo alla tendina. */
+.sd-header__nav {
+	flex: 1 1 auto;
+	justify-content: flex-end;
+	min-width: 0;
 }
 
-.sd-rail a:hover,
-.sd-rail a:focus-visible {
-	text-decoration: underline;
-	text-underline-offset: 0.25em;
+.sd-header__nav .wp-block-navigation__container {
+	flex-wrap: nowrap;
+}
+
+.sd-header__nav .wp-block-navigation-item {
+	white-space: nowrap;
+}
+
+.sd-header__nav.wp-block-navigation {
+	--wp--style--block-gap: 0.62rem;
+	gap: 0.62rem;
+}
+
+.sd-header .wp-block-navigation {
+	font-feature-settings: "ss01";
+}
+
+.sd-header__actions {
+	align-items: center;
+	display: flex;
+	flex: 0 0 auto;
+	gap: 0.4rem;
+}
+
+.sd-header__actions .sd-btn {
+	padding-inline: 1.15em;
+}
+
+/* Sottolineatura animata solo da tablet in su e solo sulle voci di primo livello. */
+@media (min-width: 600px) and (prefers-reduced-motion: no-preference) {
+	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content {
+		position: relative;
+	}
+
+	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+		background-color: var(--wp--preset--color--primary);
+		bottom: -4px;
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		transition: width 0.3s ease;
+		width: 0;
+	}
+
+	.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
+	.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
+		width: 100%;
+	}
+}
+
+/* Otto voci piu' due pulsanti: fra 1024 e 1560px la riga e' al limite.
+   Le voci si stringono invece di accavallarsi sul logo. */
+@media (max-width: 1560px) {
+	.sd-header__nav.wp-block-navigation {
+		--wp--style--block-gap: 0.45rem;
+		font-size: 0.8125rem;
+		gap: 0.45rem;
+	}
+}
+
+/* Misurato sulla pagina resa: la riga intera (logo 140 + 8 voci 695 +
+   telefono 170 + prenota 224) chiede 1328px. Sotto quella soglia cade
+   prima "Prenota" — si raggiunge comunque dall'hero e dalla fascia orari —
+   e poi la navigazione passa alla tendina. */
+@media (max-width: 1340px) {
+	.sd-header__book {
+		display: none;
+	}
+}
+
+/* Il blocco Navigation di core passa alla tendina solo sotto i 600px: con
+   otto voci di primo livello e' troppo tardi, si accavallerebbe sul logo.
+   Qui le due regole di core (sotto `@media (min-width: 600px)`) vengono
+   rimesse al comportamento mobile fino a 1120px. */
+@media (max-width: 1120px) {
+	.sd-header .wp-block-navigation__responsive-container:not(.hidden-by-default):not(.is-menu-open) {
+		display: none;
+	}
+
+	.sd-header .wp-block-navigation__responsive-container-open:not(.always-shown) {
+		display: flex;
+	}
 }
 
 @media (max-width: 781px) {
-	.sd-rail__inner {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	/* Su mobile il telefono resta, ma come sola icona. */
+	.sd-header__phone-text {
+		border: 0;
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
 	}
 
-	.sd-rail__cell:nth-child(odd) {
-		border-left: 0;
-		padding-left: 0;
+	.sd-header__phone {
+		border-radius: 999px;
+		padding: 0.7rem;
 	}
 
-	.sd-rail__cell:nth-child(n + 3) {
-		border-top: 1px solid var(--wp--custom--rule--on-dark);
+	.sd-header__phone .sd-icon {
+		height: 20px;
+		width: 20px;
 	}
 
-	/* L'email prende tutta la riga: e' il valore piu' lungo. */
-	.sd-rail__cell:last-child {
-		grid-column: 1 / -1;
+	.sd-header__inner {
+		gap: 0.5rem;
+	}
+
+	.sd-header .wp-block-site-logo img {
+		width: 132px;
+	}
+
+	/* Il bottone apre/chiude il menu: deve restare accanto alle azioni. */
+	.sd-header__nav {
+		flex: 0 0 auto;
+		order: 3;
+	}
+
+	.sd-header__actions {
+		order: 2;
 	}
 }
 
@@ -849,6 +1172,404 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
+
+/* ---------------------------------------------------------------
+   11b. Gli orari in evidenza
+
+   Il titolare ha chiesto che si vedano: fascia scura subito dopo "Lo Studio",
+   i giorni come righe, mattina e pomeriggio due caselle distinte, i turni
+   chiusi spenti ma leggibili, il giorno corrente marcato.
+   --------------------------------------------------------------- */
+
+.sd-hours-band__grid {
+	align-items: center;
+	display: grid;
+	gap: clamp(2rem, 5vw, 4.5rem);
+	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+}
+
+.sd-hours-band__note {
+	margin: 0;
+}
+
+.sd-hours-band__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.sd-hours-week {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sd-hours-week__day {
+	align-items: center;
+	border-top: 1px solid var(--wp--custom--rule--on-dark);
+	display: grid;
+	gap: 0.5rem 1rem;
+	grid-template-columns: minmax(0, 1fr) auto;
+	padding-block: clamp(0.7rem, 1.4vw, 1rem);
+}
+
+.sd-hours-week__day:first-child {
+	border-top: 0;
+}
+
+.sd-hours-week__name {
+	align-items: baseline;
+	display: flex;
+	font-size: var(--wp--preset--font-size--medium);
+	font-weight: 500;
+	gap: 0.6rem;
+}
+
+/* Oggi: un filetto in `primary` sul bordo sinistro e la riga piu' accesa.
+   Il marcatore "oggi" e' testo, non solo colore. */
+.sd-hours-week__day.is-today {
+	box-shadow: inset 3px 0 0 var(--wp--preset--color--primary);
+	padding-left: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.sd-hours-week__today {
+	background-color: var(--wp--preset--color--primary);
+	border-radius: 999px;
+	color: var(--wp--preset--color--base);
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--x-small);
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	line-height: 1;
+	padding: 0.35em 0.7em;
+	text-transform: uppercase;
+}
+
+.sd-hours-week__slots {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.sd-hours-week__slot {
+	border: 1px solid var(--wp--custom--rule--on-dark);
+	border-radius: 999px;
+	font-size: var(--wp--preset--font-size--small);
+	font-variant-numeric: tabular-nums;
+	min-width: 8.5rem;
+	padding: 0.4em 0.9em;
+	text-align: center;
+}
+
+.sd-hours-week__slot.is-shut {
+	border-style: dashed;
+	color: var(--wp--preset--color--main-accent);
+	opacity: 0.75;
+}
+
+.sd-hours-week__day.is-closed .sd-hours-week__name {
+	color: var(--wp--preset--color--main-accent);
+	font-weight: 400;
+}
+
+@media (max-width: 899px) {
+	.sd-hours-band__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-hours-week__day {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sd-hours-week__slot {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+}
+
+/* ---------------------------------------------------------------
+   11c. Prenota un appuntamento — il modulo
+
+   Le classi .sd-form__* arrivano dal markup del modulo in Contact Form 7.
+   I <p> e <br> automatici sono spenti in functions.php: se tornassero,
+   spezzerebbero la griglia a due colonne.
+   --------------------------------------------------------------- */
+
+.sd-prenota__grid {
+	align-items: start;
+	display: grid;
+	gap: clamp(2rem, 5vw, 4.5rem);
+	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+}
+
+.sd-prenota__lede {
+	max-width: 32rem;
+}
+
+.sd-prenota__contacts {
+	list-style: none;
+	margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+	padding: 0;
+}
+
+.sd-prenota__contacts li {
+	align-items: flex-start;
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	display: flex;
+	gap: 0.85rem;
+	padding-block: 0.9rem;
+}
+
+.sd-prenota__contacts li:first-child {
+	border-top: 0;
+}
+
+.sd-prenota__contacts .sd-icon {
+	color: var(--wp--preset--color--primary);
+	height: 21px;
+	margin-top: 0.15em;
+	width: 21px;
+}
+
+.sd-prenota__contacts a {
+	text-decoration: none;
+}
+
+.sd-prenota__contacts a:hover,
+.sd-prenota__contacts a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+
+.sd-form__row {
+	margin-bottom: clamp(1rem, 2vw, 1.4rem);
+}
+
+.sd-form__row--2col {
+	display: grid;
+	gap: clamp(1rem, 2vw, 1.4rem);
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sd-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+
+.sd-form__field label {
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 500;
+}
+
+.sd-form__field input[type="text"],
+.sd-form__field input[type="email"],
+.sd-form__field input[type="tel"],
+.sd-form__field select,
+.sd-form__field textarea {
+	background-color: var(--wp--custom--surface--pure);
+	border: 1px solid var(--wp--custom--border--field);
+	border-radius: 6px;
+	color: var(--wp--preset--color--main);
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.5;
+	padding: 0.75em 0.9em;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	width: 100%;
+}
+
+.sd-form__field textarea {
+	min-height: 9rem;
+	resize: vertical;
+}
+
+.sd-form__field input:focus,
+.sd-form__field select:focus,
+.sd-form__field textarea:focus {
+	border-color: var(--wp--preset--color--primary);
+	box-shadow: 0 0 0 3px var(--wp--custom--state--ok-tint);
+	outline: none;
+}
+
+.sd-form__privacy {
+	font-size: var(--wp--preset--font-size--small);
+	margin-bottom: clamp(1rem, 2vw, 1.4rem);
+}
+
+.sd-form__privacy .wpcf7-list-item {
+	margin: 0;
+}
+
+.sd-form__privacy label {
+	align-items: flex-start;
+	display: flex;
+	gap: 0.6rem;
+}
+
+.sd-form__privacy input[type="checkbox"] {
+	accent-color: var(--wp--preset--color--primary);
+	flex: 0 0 auto;
+	height: 1.1em;
+	margin-top: 0.22em;
+	width: 1.1em;
+}
+
+.sd-form__actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.85rem;
+}
+
+/* Il submit di CF7 e' un <input>: prende l'aspetto dei pulsanti pieni. */
+.sd-form__submit,
+.sd-form input[type="submit"] {
+	background-color: var(--wp--preset--color--primary);
+	border: 1px solid var(--wp--preset--color--primary);
+	border-radius: 999px;
+	color: var(--wp--preset--color--base);
+	cursor: pointer;
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--x-small);
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	padding: 0.95em 2em;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sd-form__submit:hover,
+.sd-form__submit:focus-visible {
+	background-color: var(--wp--preset--color--main);
+	border-color: var(--wp--preset--color--main);
+}
+
+/* --- Stati di Contact Form 7 -------------------------------------
+
+   `html_class` mette .sd-form-wrapper SUL form, non attorno: i selettori
+   sono quindi `form.sd-form-wrapper`, non un discendente.
+
+   Il foglio di CF7 usa `.wpcf7 form .wpcf7-response-output` (0,2,1): per
+   vincerlo serve almeno la stessa specificita', da qui `.sd-prenota form…`.
+   --------------------------------------------------------------- */
+
+/* Campo non valido. */
+.sd-prenota form.wpcf7-form .wpcf7-not-valid {
+	border-color: var(--wp--preset--color--primary-accent);
+}
+
+.sd-prenota form.wpcf7-form .wpcf7-not-valid-tip {
+	color: var(--wp--preset--color--primary-accent);
+	font-size: var(--wp--preset--font-size--x-small);
+	line-height: 1.4;
+	margin-top: 0.1rem;
+}
+
+/* Messaggio di risposta sotto il modulo. */
+.sd-prenota form.wpcf7-form .wpcf7-response-output {
+	border: 1px solid var(--wp--custom--border--field);
+	border-left-width: 3px;
+	border-radius: 4px;
+	font-size: var(--wp--preset--font-size--small);
+	margin: clamp(1rem, 2vw, 1.4rem) 0 0;
+	padding: 0.9em 1.1em;
+}
+
+.sd-prenota form.wpcf7-form.invalid .wpcf7-response-output,
+.sd-prenota form.wpcf7-form.unaccepted .wpcf7-response-output,
+.sd-prenota form.wpcf7-form.failed .wpcf7-response-output,
+.sd-prenota form.wpcf7-form.aborted .wpcf7-response-output,
+.sd-prenota form.wpcf7-form.spam .wpcf7-response-output {
+	background-color: var(--wp--custom--state--error-tint);
+	border-color: var(--wp--preset--color--primary-accent);
+	color: var(--wp--preset--color--primary-accent);
+}
+
+.sd-prenota form.wpcf7-form.sent .wpcf7-response-output {
+	background-color: var(--wp--custom--state--ok-tint);
+	border-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--primary);
+}
+
+/* Invio in corso: la rotella di CF7 e il modulo che si spegne. */
+.sd-prenota form.wpcf7-form.submitting .sd-form {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.sd-prenota .wpcf7-spinner {
+	background-color: var(--wp--preset--color--main-accent);
+}
+
+/* Il tag [acceptance] di CF7 tiene il submit disabilitato finche' la
+   casella privacy non e' spuntata. Senza uno stato visibile il pulsante
+   sembra rotto: qui si vede che e' in attesa, non guasto. */
+.sd-prenota .sd-form__submit:disabled {
+	background-color: var(--wp--preset--color--main-accent);
+	border-color: var(--wp--preset--color--main-accent);
+	color: var(--wp--preset--color--secondary);
+	cursor: not-allowed;
+}
+
+.sd-prenota .sd-form__submit:disabled:hover {
+	background-color: var(--wp--preset--color--main-accent);
+	border-color: var(--wp--preset--color--main-accent);
+}
+
+@media (max-width: 899px) {
+	.sd-prenota__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-form__row--2col {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---------------------------------------------------------------
+   11d. Vieni a Trovarci — l'elenco nel pannello sulla mappa
+   --------------------------------------------------------------- */
+
+.sd-visit__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sd-visit__list li {
+	align-items: flex-start;
+	border-top: 1px solid var(--wp--custom--rule--on-dark);
+	display: flex;
+	gap: 0.8rem;
+	padding-block: 0.8rem;
+}
+
+.sd-visit__list li:first-child {
+	border-top: 0;
+}
+
+.sd-visit__list .sd-icon {
+	height: 20px;
+	margin-top: 0.15em;
+	width: 20px;
+}
+
+.sd-visit__list a {
+	text-decoration: none;
+}
+
+.sd-visit__list a:hover,
+.sd-visit__list a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+
 /* ---------------------------------------------------------------
    12. Tabella orari
    --------------------------------------------------------------- */
@@ -917,53 +1638,6 @@ Text Domain: sorriso-dambrosio
 .sd-visit__panel .sd-hours thead th,
 .sd-visit__panel .sd-hours figcaption {
 	color: var(--wp--preset--color--main-accent);
-}
-
-/* ---------------------------------------------------------------
-   13. Header
-   --------------------------------------------------------------- */
-
-.sd-header {
-	backdrop-filter: saturate(1.6) blur(8px);
-	border-bottom: 1px solid var(--wp--custom--border--hairline);
-}
-
-.sd-header .wp-block-navigation {
-	font-feature-settings: "ss01";
-}
-
-.sd-header .wp-block-site-logo img {
-	height: auto;
-	width: 168px;
-}
-
-@media (max-width: 599px) {
-	.sd-header .wp-block-site-logo img {
-		width: 132px;
-	}
-}
-
-/* Sottolineatura animata solo da tablet in su e solo sulle voci di primo livello. */
-@media (min-width: 600px) and (prefers-reduced-motion: no-preference) {
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content {
-		position: relative;
-	}
-
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
-		background-color: var(--wp--preset--color--primary);
-		bottom: -4px;
-		content: "";
-		height: 1px;
-		left: 0;
-		position: absolute;
-		transition: width 0.3s ease;
-		width: 0;
-	}
-
-	.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
-	.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
-		width: 100%;
-	}
 }
 
 /* ---------------------------------------------------------------

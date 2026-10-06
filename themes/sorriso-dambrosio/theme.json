@@ -76,7 +76,8 @@
 		},
 		"custom": {
 			"border": {
-				"hairline": "#e3e3ea"
+				"hairline": "#e3e3ea",
+				"field": "#d0ccde"
 			},
 			"surface": {
 				"pure": "#ffffff"
@@ -88,6 +89,20 @@
 			},
 			"rule": {
 				"onDark": "rgba(252, 252, 252, 0.22)"
+			},
+			"veil": {
+				"deep": "rgba(57, 56, 58, 0.94)",
+				"mid": "rgba(57, 56, 58, 0.72)",
+				"edge": "rgba(57, 56, 58, 0.28)",
+				"none": "rgba(57, 56, 58, 0)"
+			},
+			"shadow": {
+				"bar": "rgba(57, 56, 58, 0.28)",
+				"header": "rgba(57, 56, 58, 0.08)"
+			},
+			"state": {
+				"errorTint": "rgba(165, 18, 18, 0.08)",
+				"okTint": "rgba(18, 98, 250, 0.08)"
 			}
 		}
 	},

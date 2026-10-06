@@ -176,3 +176,98 @@ function sorriso_dambrosio_preload_display_font() {
 	);
 }
 add_action( 'wp_head', 'sorriso_dambrosio_preload_display_font', 1 );
+
+/**
+ * I recapiti dello studio, in un posto solo.
+ *
+ * Sono gli stessi che il sito pubblica da sempre: header, hero, orari e footer
+ * li leggono da qui invece di riscriverli, cosi' non possono divergere.
+ *
+ * @return array<string, string>
+ */
+function sorriso_dambrosio_contacts() {
+	return array(
+		'phone'       => '+39 06 322 5754',
+		'phone_href'  => 'tel:063225754',
+		'phone2'      => '+39 06 361 0625',
+		'phone2_href' => 'tel:063610625',
+		'mobile'      => '+39 375 552 4596',
+		'mobile_href' => 'tel:+393755524596',
+		'email'       => 'studio@sorrisodambrosio.it',
+		'email_href'  => 'mailto:studio@sorrisodambrosio.it',
+		'address'     => 'Lungotevere Flaminio n. 34 &#8211; 00196 &#8211; Roma (RM)',
+		'address_short' => 'Lungotevere Flaminio 34, Roma',
+		'map_href'    => 'https://maps.app.goo.gl/jsVVDPiXFAFLCiE18',
+		'whatsapp'    => 'https://api.whatsapp.com/send/?phone=3755524596&text&type=phone_number&app_absent=0',
+		'instagram'   => 'https://www.instagram.com/studioodontoiatricodambrosio/',
+		'facebook'    => 'https://www.facebook.com/studioodontoiatricodambrosio/',
+	);
+}
+
+/**
+ * Gli orari di apertura, nel formato in cui il sito li pubblica da sempre.
+ *
+ * La chiave e' il numero del giorno secondo date('N') (1 = lunedi'), cosi' la
+ * sezione puo' evidenziare oggi senza doverlo dedurre dal nome.
+ *
+ * @return array<int, array{name: string, morning: string, afternoon: string}>
+ */
+function sorriso_dambrosio_hours() {
+	return array(
+		1 => array( 'name' => 'Lunedi', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => '14:00 &#8211; 19:00' ),
+		2 => array( 'name' => 'Martedi', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => 'Chiuso' ),
+		3 => array( 'name' => 'Mercoled&igrave;', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => '14:00 &#8211; 19:00' ),
+		4 => array( 'name' => 'Gioved&igrave;', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => '14:00 &#8211; 19:00' ),
+		5 => array( 'name' => 'Venerd&igrave;', 'morning' => '9:00 &#8211; 13:00', 'afternoon' => '14:00 &#8211; 19:00' ),
+		6 => array( 'name' => 'Sabato', 'morning' => 'Chiuso', 'afternoon' => 'Chiuso' ),
+		7 => array( 'name' => 'Domenica', 'morning' => 'Chiuso', 'afternoon' => 'Chiuso' ),
+	);
+}
+
+/**
+ * Icone di linea, disegnate inline.
+ *
+ * Inline e non da sprite o da CDN: sono poche, ereditano `currentColor`, non
+ * aggiungono una richiesta e rispettano il vincolo "nessuna CDN".
+ * Il `viewBox` e' 24: la dimensione resa si governa in CSS, mai sopra i 56px.
+ *
+ * @param string $name  Nome dell'icona.
+ * @param string $class Classi aggiuntive.
+ * @return string SVG, stringa vuota se l'icona non esiste.
+ */
+function sorriso_dambrosio_icon( $name, $class = '' ) {
+	$paths = array(
+		'mail'      => '<rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 7 8.3 5.6a1.5 1.5 0 0 0 1.7 0L21 7"/>',
+		'phone'     => '<path d="M6.5 3.5h3l1.5 4-2 1.3a12 12 0 0 0 5.2 5.2l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2Z"/>',
+		'pin'       => '<path d="M12 21.5s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10.5" r="2.75"/>',
+		'clock'     => '<circle cx="12" cy="12" r="8.75"/><path d="M12 7.25V12l3 1.75"/>',
+		'calendar'  => '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+		'facebook'  => '<path d="M14.6 21v-7.6h2.6l.4-3h-3V8.5c0-.9.25-1.5 1.5-1.5H17.7V4.3A20 20 0 0 0 15.4 4.2c-2.3 0-3.9 1.4-3.9 4v2.2H8.9v3h2.6V21Z" fill="currentColor" stroke="none"/>',
+		'instagram' => '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.15" fill="currentColor" stroke="none"/>',
+		'whatsapp'  => '<path d="M3.5 20.5 4.9 16a8.2 8.2 0 1 1 3.1 3.1Z"/><path d="M9 8.6c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .6.5l.7 1.6c.1.3 0 .5-.1.7l-.4.5c-.1.2-.2.3 0 .6a7 7 0 0 0 2.7 2.3c.3.1.4 0 .6-.1l.5-.6c.2-.2.4-.2.6-.1l1.6.8c.3.1.4.3.4.5s0 .9-.3 1.3c-.3.4-1 .8-1.6.8a8.9 8.9 0 0 1-6.6-5.9c-.2-.9 0-1.8.5-2.4Z"/>',
+	);
+
+	if ( ! isset( $paths[ $name ] ) ) {
+		return '';
+	}
+
+	$class = trim( 'sd-icon sd-icon--' . $name . ' ' . $class );
+
+	return '<svg class="' . esc_attr( $class ) . '" viewBox="0 0 24 24" width="24" height="24"'
+		. ' fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"'
+		. ' stroke-linejoin="round" aria-hidden="true" focusable="false">' . $paths[ $name ] . '</svg>';
+}
+
+/**
+ * Contact Form 7: niente <p> e <br> automatici.
+ *
+ * Il markup del modulo e' gia' strutturato a `div` con le classi del tema
+ * (`.sd-form__row`, `.sd-form__field`...). Se CF7 ci applica `wpautop` sopra,
+ * inserisce paragrafi e interruzioni di riga in mezzo alla griglia e la rompe.
+ *
+ * @return bool
+ */
+function sorriso_dambrosio_cf7_no_autop() {
+	return false;
+}
+add_filter( 'wpcf7_autop_or_not', 'sorriso_dambrosio_cf7_no_autop' );
