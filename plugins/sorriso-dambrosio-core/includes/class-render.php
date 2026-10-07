@@ -101,8 +101,11 @@ final class Render {
 
 		if ( ! $fills && $natural > 0 ) {
 			// Non superare mai la misura naturale: e' il tetto contro
-			// l'ingrandimento, e vale anche se il CSS cambia.
-			$attr['style'] = 'max-width:' . $natural . 'px';
+			// l'ingrandimento, e vale anche se il CSS cambia. `min()` con
+			// il 100% perche' su un telefono la misura naturale puo'
+			// essere piu' larga dello schermo, e lo stile in linea batte
+			// la regola `img { max-width: 100% }` del tema.
+			$attr['style'] = 'max-width:min(100%,' . $natural . 'px)';
 		}
 
 		$img = wp_get_attachment_image( $id, $size, false, $attr );

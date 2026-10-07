@@ -3526,55 +3526,40 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 }
 
 /* ---------------------------------------------------------------
-   20.5 Una lastra `contain` non va messa in cassetta
+   20.5 Le cornici hanno un tetto d'altezza
 
-   Dove la lastra sta in una griglia a piu' colonne la proporzione
-   fissa serve: tiene le celle allineate. Dove sta da sola — una
-   riga dello zig-zag, la fotografia di una scheda — no: un ritaglio
-   piccolo dentro una cornice 16/9 larga quanto lo schermo lascia
-   quattrocento pixel di fondo attorno a se', e a 768px era la fascia
-   vuota piu' alta rimasta sul sito. La cornice si stringe addosso
-   all'immagine, con un tetto perche' un ritaglio verticale non
-   diventi una torre.
+   Il problema non era la proporzione ma l'**altezza**: una cornice
+   16/9 larga quanto lo schermo e' alta 432px, e con dentro un
+   ritaglio piccolo erano quattrocento pixel di fondo — a 768px la
+   fascia vuota piu' alta del sito.
+
+   La proporzione resta fissa, perche' e' quella che tiene allineate
+   le immagini di uno stesso elenco; cambia il tetto. Le cornici
+   larghe passano da 16/9 a 3/2 e non superano mai i 20rem.
    --------------------------------------------------------------- */
 
-.sd-zig__figure.sd-plate--contain,
-.sd-entry__figure.sd-plate--contain,
-.sd-areahead__figure.sd-plate--contain {
-	aspect-ratio: auto;
-	max-height: 26rem;
+.sd-zig__figure,
+.sd-entry__figure,
+.sd-areahead__figure {
+	aspect-ratio: var(--wp--custom--frame--wide);
+	max-height: 20rem;
 }
 
-.sd-zig__figure.sd-plate--contain img,
-.sd-entry__figure.sd-plate--contain img,
-.sd-areahead__figure.sd-plate--contain img {
-	max-height: 24rem;
+.sd-zig__figure img,
+.sd-entry__figure img,
+.sd-areahead__figure img {
+	max-height: 100%;
 }
 
 @media (max-width: 900px) {
-	/* Il tetto vale anche per le lastre `cover`.
-	   La scelta fra riempire e posare si fa su quanto e' grande
-	   l'originale rispetto allo spazio **a 1440px**; quando la
-	   colonna diventa larga quanto lo schermo quella stessa
-	   fotografia si trova a coprire 768×544, e se e' chiara — mezza
-	   libreria lo e' — quella fascia si legge come vuota. Il tetto
-	   la riporta a una striscia. */
+	/* Su una colonna larga quanto lo schermo anche una fotografia
+	   vera copre 768×512: se e' chiara — mezza libreria lo e' —
+	   quella fascia si legge come vuota. Il tetto la riporta a una
+	   striscia. */
 	.sd-zig__figure,
 	.sd-entry__figure,
 	.sd-areahead__figure {
-		max-height: 20rem;
-	}
-
-	.sd-zig__figure.sd-plate--contain,
-	.sd-entry__figure.sd-plate--contain,
-	.sd-areahead__figure.sd-plate--contain {
-		max-height: 20rem;
-	}
-
-	.sd-zig__figure.sd-plate--contain img,
-	.sd-entry__figure.sd-plate--contain img,
-	.sd-areahead__figure.sd-plate--contain img {
-		max-height: 18rem;
+		max-height: 17rem;
 	}
 }
 
