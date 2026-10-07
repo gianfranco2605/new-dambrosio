@@ -605,3 +605,123 @@ tinto invece di un rettangolo bianco. Il testo e' quello di
 
 **Decisione richiesta:** va bene cosi', o si preferisce una frase esplicita del
 tipo «Accetta i cookie per vedere la mappa»? Sarebbe testo nuovo.
+
+---
+
+## 16. Punti aperti dell'iterazione «fix di impaginazione»
+
+Le 26 voci del prompt sono state lavorate guardando la pagina resa. Quel che
+segue e' cio' che **non si decide guardando il codice**: o e' testo, o e' una
+scelta che costa qualcosa da una parte o dall'altra.
+
+### 16.1 Due modifiche al testo, esplicitamente chieste
+
+Il prompt elenca due eccezioni alla regola del testo letterale. Sono state fatte
+tutte e due, e sono le uniche due.
+
+**La frase dei pilastri** (voce 9) — era in homepage e sulla pagina «Lo Studio»:
+
+> Innovazione, **P**assione e **T**radizione sono i pilastri che guidano il nostro
+> lavoro quotidiano.
+
+ora:
+
+> Innovazione, **p**assione e **t**radizione sono i pilastri che guidano il nostro
+> lavoro quotidiano.
+
+Le parole sono le stesse; cambiano tre maiuscole e la dimensione (da `large` a
+`medium`, cioe' da titolo a testo d'apertura).
+
+**La frase sull'accoglienza** (voce 15) — è stata **tolta** dalla sezione
+«Contatti» della homepage e da `/contatti/`:
+
+> I nostri pazienti vengono accolti in un ambiente elegante ed amichevole, con
+> professionalita', competenza ed igiene.
+
+**Decisione richiesta:** la stessa frase compare ancora in altri due posti, e
+toglierla di li' non era chiesto:
+
+| Dove | File | Che cosa ci fa |
+|---|---|---|
+| Sezione «Lo Studio», homepage | `patterns/lo-studio.php` | e' il primo dei cinque paragrafi dell'accoglienza: li' e' racconto, non un richiamo |
+| Fascia di chiusura di **ogni** pagina interna | `plugins/.../class-blocks.php` (`sd/cta-prenota`) | e' il testo d'apertura della fascia «Prenota»: si ripete su ~50 pagine |
+
+Il secondo e' quello che si vede di piu'. Dire se toglierla anche li'.
+
+### 16.2 La fascia blu dell'intestazione d'area
+
+Voce 21: `/implantologia/`, `/ortodonzia/`, `/estetica-dentale/`,
+`/denti-e-postura/` e `/trattamenti/` aprivano su una fascia tinta di
+`tertiary`. Ora il fondo e' neutro e la fotografia riempie la colonna.
+
+Il fondo resta un attributo del blocco (`fondo` su `sd/area-intestazione`):
+cambia solo quel che esce di suo. **Decisione richiesta:** confermare che la
+fascia tinta non serve piu' in cima a quelle cinque pagine.
+
+### 16.3 Le cornici delle immagini: via il filetto
+
+Voce 25. I ritagli su fondo trasparente — meta' della libreria — si posavano al
+centro di una lastra bianca bordata, con del padding attorno. Misurato su
+`/implantologia/`: riquadri da 454×303 con dentro immagini da 300×200, cioe'
+**dal 37% al 53%** di riempimento, mentre accanto le fotografie arrivavano al
+bordo. Era l'incoerenza segnalata.
+
+Ora la cornice e' della misura dell'immagine: niente padding, niente bordo,
+niente scatola bianca. Riempimento 0,76–1,00.
+
+**Il filetto era stato messo per un motivo vero** ed e' scritto in `CLAUDE.md`:
+un ritaglio trasparente su pagina bianca si confonde col vuoto, e l'audit
+dell'iterazione 5 aveva letto 500px di nulla. La causa pero' erano i 154px di
+riquadro **oltre** l'immagine, non l'assenza di un bordo: tolto il riquadro, non
+c'e' piu' niente da scambiare per vuoto.
+
+**Decisione richiesta:** guardare `/implantologia/` e `/trattamenti/` e dire se i
+ritagli si leggono ancora bene senza filetto. Se no, la lastra torna con una
+riga di CSS — ma torna su **tutte** le immagini, non su meta'.
+
+### 16.4 Lo spazio sotto i ritagli nelle sottopagine
+
+Voce 22. Sulle sottopagine la fotografia stava in alto e sotto restava tutto lo
+spazio che il testo, piu' lungo, lasciava libero. Misurato a 1440px:
+
+| Pagina | Prima | Dopo |
+|---|---|---|
+| `/trattamenti/conservativa/` | 355px | **75px** |
+| `/tecnologie/ortopantomografo/` | 0px (gia' a posto) | **0px** |
+| `/tecnologie/sterilizzazione/` | 490px | **421px** |
+| `/trattamenti/cannini-inclusi/` | ~620px | **~620px** |
+
+Le prime due righe sono fotografie: la cornice si allunga quanto il testo e il
+problema sparisce. Le ultime due hanno molto testo, e «Cannini inclusi» ha un
+**ritaglio**: un ritaglio non si allunga, perche' allungarlo vuol dire o
+stirarlo o circondarlo di fondo — cioe' rifare la fascia vuota.
+
+**Decisione richiesta:** per le schede con poco disegno e molto testo, va bene
+che sotto l'immagine resti dello spazio, oppure si preferisce mettere
+l'immagine **sopra** il testo a tutta larghezza su quelle pagine?
+
+### 16.5 Il testo di servizio a 15px su mobile
+
+L'audit segnala 9 casi di testo sotto i 16px a 390px: occhielli, etichette
+(«Email», «Telefono»), le fasce orarie, le intestazioni delle tabelle.
+
+Non e' una svista: la sezione 19.2 del foglio li porta **apposta** a 15px, con
+la motivazione scritta («e' un'etichetta, non testo da leggere»). `CLAUDE.md`
+pero' scrive «mai sotto i 16px su mobile» senza eccezioni. Le due cose non
+coincidono.
+
+**Decisione richiesta:** o si alza tutto a 16px — e le etichette diventano
+grandi quanto il testo che etichettano — o si scrive l'eccezione in `CLAUDE.md`.
+Nessuna delle due e' una modifica di impaginazione, quindi non e' stata fatta.
+
+### 16.6 L'entrata dell'hero
+
+Voce 26 chiede «movimento solo in risposta a un'azione, nessuna animazione di
+entrata allo scorrimento». Le animazioni allo scorrimento non ci sono e non ci
+sono mai state. Resta pero' l'entrata dell'hero al **caricamento**: occhiello,
+titolo, testo e scheda salgono di 14px in sequenza (0,9s).
+
+Non e' allo scorrimento, quindi letteralmente non ricade nel divieto; non e'
+nemmeno in risposta a un'azione. Rispetta `prefers-reduced-motion`.
+
+**Decisione richiesta:** tenerla o toglierla. Toglierla e' una riga.
