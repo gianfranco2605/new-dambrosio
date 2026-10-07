@@ -159,6 +159,107 @@ bash docs/migration/verifica-url.sh               # nessun vecchio URL e' un 404
 - **Ogni pagina interna** comincia con `wp:sd/briciole` e finisce con
   `wp:sd/cta-prenota`.
 
+## Il sistema di design — spaziature, immagini, componenti
+
+> Nasce dall'audit dell'iterazione 5 (`docs/AUDIT.md`). Prima di aggiungere una
+> misura, cercare se esiste gia' il token: **nel foglio del tema non c'e' piu'
+> nessun valore scritto a mano** — zero colori, zero `clamp()`, zero `rem`.
+> Si verifica cosi':
+>
+> ```bash
+> grep -cE '(^|[^&])#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' themes/sorriso-dambrosio/style.css   # 0
+> grep -c 'clamp(' themes/sorriso-dambrosio/style.css                                          # 0
+> grep -cE 'max-width: *[0-9.]+rem' themes/sorriso-dambrosio/style.css                         # 0
+> ```
+
+### Le spaziature
+
+Nove passi fluidi in `theme.json → settings.custom.space`, usati in CSS come
+`var(--wp--custom--space--md)`. I sette preset di blocco
+(`var:preset|spacing|large`…) tengono i nomi di Ollie ma i valori del sito.
+
+| token | 390px → 1440px | serve a |
+|---|---|---|
+| `xxxs` `xxs` `xs` | 4→6 · 8→12 · 12→16 | dettagli dentro un componente |
+| `sm` `md` | 16→24 · 20→32 | fra elementi vicini |
+| `lg` `xl` | 28→44 · 36→60 | fra blocchi |
+| `xxl` `xxxl` | 48→88 · 56→112 | fra le sezioni |
+
+> **I nomi dei token sono di sole lettere, e deve restare cosi'.**
+> WordPress trasforma le chiavi di `theme.json` in kebab-case **inserendo un
+> trattino fra cifra e lettera**: una chiave `2xl` diventa
+> `--wp--custom--space--2-xl`. Il CSS che chiede `--wp--custom--space--2xl`
+> non trova niente, e un `var()` inesistente non da' errore: la proprieta'
+> torna al valore iniziale. E' costato un distacco a **zero** fra la
+> fotografia e il testo nella sezione Tecnologie della homepage.
+
+### Le immagini — la lastra
+
+**Una cornice sola per ogni immagine del sito**, `Render::thumb()` nel plugin
+piu' `.sd-plate` nel tema. La libreria e' per meta' fotografie e per meta'
+render 3D ritagliati su fondo trasparente, e la regola e' questa:
+
+```php
+Render::thumb( $post_id, 'medium_large', 'sd-zig__figure', 458 );
+//                                        ^classe          ^larghezza resa a 1440
+```
+
+**La modalita' si decide dal dato, non a occhio:** se l'originale e' largo
+almeno `slot × 1,6` e' una fotografia e riempie la cornice (`cover`);
+altrimenti e' un ritaglio o un'immagine piccola e si posa dentro la cornice
+(`contain`), **mai oltre la sua misura naturale**.
+
+| regola | perche' |
+|---|---|
+| **Non si ingrandisce mai.** Se l'originale e' piccolo si riduce lo **spazio**, non si stira la fotografia | e la si elenca in `DA-VERIFICARE.md` §14 |
+| Una proporzione per ruolo, da `settings.custom.frame` | `hero` 16/9 · `wide` 3/2 · `plate` 4/3 · `portrait` 4/5 |
+| Il fondo della lastra resta chiaro, non tinto | meta' di queste immagini ha gia' il bianco dentro: su fondo tinto diventano adesivi |
+| A dire «qui c'e' qualcosa» e' il **filetto** | un ritaglio trasparente su bianco e' indistinguibile dal vuoto — l'audit lo leggeva come 500px di nulla |
+| I ritratti si tagliano dall'alto (`--sd-focus: 50% 18%`) | una faccia non si taglia mai a meta' |
+| Se manca l'immagine la riga diventa a colonna piena | non si lascia una colonna vuota |
+
+**Non usare `core/post-featured-image` nei template delle schede**: non sa
+quanto e' grande l'originale e lo stira. Si usa `<!-- wp:sd/immagine -->`.
+
+### Le misure di lettura
+
+In `settings.custom.measure`. **La lunghezza di riga si conta in caratteri,
+non in pixel**: `38rem` a 19px fanno 64 caratteri, a 16px ne fanno 76.
+Il testo piccolo ha quindi `narrow` (34rem), non `prose` (38rem).
+**Mai usare `ch`**: in DM Sans lo zero e' largo 0.5em, quindi `62ch` valeva
+811px, cioe' 85 caratteri.
+
+### I componenti
+
+- **Un solo stile di pulsante**: pillola (`999px`), `x-small` 600, altezza
+  minima 44px. Vale anche per `wp-block-button__link` e per l'invio di CF7,
+  che arrivano da fuori il tema.
+- **Un'intestazione di sezione sola**: `Render::head()` / `sorriso_dambrosio_section_head()`.
+- **Ogni pagina interna** comincia con `wp:sd/briciole` e finisce con `wp:sd/cta-prenota`.
+- **Bersagli**: nulla sotto i **44×44**. Per un collegamento dentro un titolo
+  si usa `padding-block` con `margin-block` negativo che lo riassorbe: l'area
+  cresce, la posizione sulla pagina non si sposta di un pixel.
+- **Testo**: mai sotto i **16px** su mobile.
+
+> **Quando serve `!important`, va scritto perche'.** Ce ne sono tre casi, tutti
+> commentati: le classi dei preset di `font-size` escono **gia'** con
+> `!important` da core; il foglio di CF7 e quello di iubenda sono caricati dopo
+> quello del tema. Fuori da questi tre casi, non si usa.
+
+### Il menu su mobile
+
+Lo fa il blocco Navigation di core: apre, chiude, intrappola il fuoco, blocca
+lo scorrimento, tiene i sottomenu chiusi. Il tema ci mette il **disegno**
+(§20 di `style.css`) e due cose:
+
+- telefono e «Prenota» sono **voci vere del menu** (classe `sd-nav-cta` sul
+  post `wp_navigation` 4), nascoste nella barra orizzontale. Non JavaScript.
+- `assets/js/menu.js`, sedici righe: con un sottomenu aperto core assorbe il
+  **primo** Escape. E' l'unico JavaScript del tema.
+
+La riga di una voce con tendina e' una **griglia a due colonne**, non un flex:
+col flex il sottomenu non andava a capo e finiva fuori dallo schermo.
+
 ## Il tema
 
 `themes/sorriso-dambrosio/` — child di **Ollie 1.6.3**, `theme.json` **v3**.

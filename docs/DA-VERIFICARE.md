@@ -3,8 +3,8 @@
 Punti che richiedono una decisione di chi possiede il sito o i contenuti.
 Nessuno di questi blocca la homepage: il lavoro e' completo e funzionante cosi' com'e'.
 
-Aggiornato il 2026-10-07, dopo il rifacimento dell'architettura dei contenuti
-(vedi `ARCHITECTURE.md`). I punti nuovi di questa iterazione sono i §11, §12 e §13.
+Aggiornato il 2026-10-07, dopo la rifinitura di design su tutto il sito
+(vedi `AUDIT.md`). I punti nuovi sono i §11-13 (architettura) e §14-15 (design).
 
 ---
 
@@ -492,3 +492,116 @@ La pagina nuova mostra i tre ritratti in tre colonne da ~310px. Gli originali
 sono 420×554, 420×419 e 486×642: a schermo normale vanno bene, su Retina il
 piu' piccolo resta morbido. E' lo stesso problema gia' segnalato al §2.4,
 nello stesso stato: attenuato dall'impaginazione, non risolto.
+
+
+---
+
+## 14. Le fotografie da rifare — l'elenco completo
+
+L'audit ha misurato ogni immagine del sito: resa, originale, rapporto fra i due.
+**Nessuna immagine viene piu' ingrandita** — dove l'originale era piccolo e' stato
+ridotto lo spazio, non stirata la fotografia. Il risultato e' onesto, ma per queste
+**trentatre** voci lo spazio e' stato ridotto piu' di quanto il disegno vorrebbe.
+
+Con un originale da almeno **980px di larghezza** la cornice si riempie da sola e
+resta nitida anche su schermi retina: non serve toccare il codice, basta sostituire
+l'immagine in Media Library.
+
+| Tipo | Voce | Originale | ID | Serve almeno |
+|---|---|---|---|---|
+| Professionista | Dott.ssa Nicoletta D’Ambrosio | 420×554 | 1201 | 980px di larghezza |
+| Professionista | Dott.ssa Stefania D’Ambrosio | 420×419 | 1085 | 980px di larghezza |
+| Professionista | Dott. Giuseppe D’Ambrosio | 486×642 | 75 | 980px di larghezza |
+| Tecnologia | Fotosan | 300×424 | 1308 | 980px di larghezza |
+| Tecnologia | RX Digitale Intraorale | 370×245 | 167 | 980px di larghezza |
+| Tecnologia | Chirurgia Piezo Electtrica (Piezo-surgery) | 600×450 | 1307 | 980px di larghezza |
+| Tecnologia | Scanner Intraorale | 786×530 | 168 | 980px di larghezza |
+| Trattamento | Ortodonzia Mobile | **nessuna** | — | una fotografia |
+| Trattamento | Carico Immediato | 300×215 | 1227 | 980px di larghezza |
+| Trattamento | Ortodonzia Fissa | 300×200 | 1255 | 980px di larghezza |
+| Trattamento | Chirurgia Computer-guidata | 300×200 | 1229 | 980px di larghezza |
+| Trattamento | Ortodonzia Linguale | 300×167 | 1236 | 980px di larghezza |
+| Trattamento | Chirurgia Minimamente Invasiva | 300×200 | 1230 | 980px di larghezza |
+| Trattamento | Ortodonzia Invisibile | 300×127 | 1429 | 980px di larghezza |
+| Trattamento | Implantologia Post Estrattiva | 300×263 | 1231 | 980px di larghezza |
+| Trattamento | Implantologia Senza Incisione Lembo e Suture | 300×169 | 1232 | 980px di larghezza |
+| Trattamento | Protesi Fissa su Impianto o Denti Naturali | 372×301 | 1297 | 980px di larghezza |
+| Trattamento | Pedana Stabilometrica | 405×350 | 1271 | 980px di larghezza |
+| Trattamento | Trattamenti Specialistici con il Bite | 425×255 | 756 | 980px di larghezza |
+| Trattamento | Intarsi in Ceramica | 433×577 | 1264 | 980px di larghezza |
+| Trattamento | Inesti in Ceramica | 433×577 | 1267 | 980px di larghezza |
+| Trattamento | Sbiancamento Professionale | 448×252 | 833 | 980px di larghezza |
+| Trattamento | Faccette Estetiche | 541×461 | 1263 | 980px di larghezza |
+| Trattamento | Igiene e Profilassi Avanzata | 548×455 | 1857 | 980px di larghezza |
+| Trattamento | Corone Estetiche in Ceramica | 554×451 | 1268 | 980px di larghezza |
+| Trattamento | Chirurgia Rigenerativa | 591×422 | 1285 | 980px di larghezza |
+| Trattamento | Chirurgia per L’Ortodonzia | 594×420 | 1287 | 980px di larghezza |
+| Trattamento | Protesi Removibili Parziali | 600×338 | 1295 | 980px di larghezza |
+| Trattamento | Laser Terapia | 665×375 | 1291 | 980px di larghezza |
+| Trattamento | Prevenzione e Profilassi | 705×591 | 1293 | 980px di larghezza |
+| Trattamento | Protesi Fissa Estetica | 768×576 | 1294 | 980px di larghezza |
+| Trattamento | Endodonzia o Terapia Canalare | 800×600 | 1298 | 980px di larghezza |
+| Trattamento | Chirurgia dei Cannini Inclusi negli Adulti | 900×450 | 1299 | 980px di larghezza |
+
+### 14.1 Le sedici fotografie delle gallerie prima/dopo
+
+Tutte **400×300**. In due colonne su una pagina da 1320px ciascuna veniva resa a
+606px, cioe' ingrandita di una volta e mezza. Ora la griglia si ferma a 2 × 400:
+le gallerie sono nitide ma piccole.
+
+Con originali da **800×600** la griglia tornerebbe a riempire la colonna — e'
+un solo numero da cambiare in `style.css` (`.sd-cases`, oggi `25rem`).
+
+### 14.2 Le tre che contano di piu'
+
+Se si potesse rifare solo una parte:
+
+1. **I tre ritratti dei medici.** Sono 420×554, 420×419 e 486×642, in tre contesti
+   diversi (studio, poltrona, riunito) e si vede. Vanno scattati con la **stessa
+   inquadratura e lo stesso sfondo**, verticali, almeno 1000px di lato corto.
+   E' il punto gia' aperto al §2.4, e ora che compaiono su `/professionisti/` a
+   tre colonne la disomogeneita' si nota molto di piu'.
+2. **«Ortodonzia Mobile» non ha nessuna immagine.** E' l'unico trattamento senza:
+   la sua riga esce a colonna piena, il che funziona, ma e' l'unica diversa.
+3. **Le nove immagini da 300px** dei trattamenti di Implantologia e Ortodonzia.
+   Sono le aree piu' importanti del sito e hanno il materiale peggiore.
+
+**Decisione richiesta:** commissionare un servizio fotografico, o accettare la
+resa attuale. Nel secondo caso non c'e' niente da fare: il sito e' gia' tarato
+sul materiale che ha.
+
+---
+
+## 15. Punti di design ancora aperti
+
+### 15.1 Il collegamento alla privacy di iubenda resta un bersaglio piccolo
+
+91×22px, sotto la soglia dei 44. iubenda lo inietta con uno stile in linea e un
+foglio caricato dopo quello del tema; il plugin non si tocca (regola 4). Si e'
+provato ad alzarne la specificita' senza risultato: probabilmente lo ridimensiona
+via JavaScript dopo il caricamento.
+
+**Decisione richiesta:** accettare, oppure valutare le impostazioni di iubenda.
+
+### 15.2 Cinque immagini restano sotto i 240px di larghezza
+
+Sono scelte, non difetti: i ritratti nell'elenco «Chi se ne occupa» (216px) e la
+scheda Fotosan, che e' **verticale** (300×424) dentro una cornice orizzontale e
+quindi limitata dall'altezza. Ingrandirle vorrebbe dire ingrandire l'originale,
+che e' esattamente quel che non si fa.
+
+### 15.3 L'animazione del menu e' solo in apertura
+
+Il pannello entra con una dissolvenza; in chiusura no, perche' core toglie
+l'elemento dal flusso e non c'e' niente da animare. Per animare anche la chiusura
+servirebbe sostituire il comportamento di core con JavaScript proprio: non vale
+il prezzo.
+
+### 15.4 Il fondo della mappa
+
+Prima del consenso ai cookie l'area della mappa mostra ora l'indirizzo su fondo
+tinto invece di un rettangolo bianco. Il testo e' quello di
+`sorriso_dambrosio_contacts()`, quindi **nessuna parola nuova**.
+
+**Decisione richiesta:** va bene cosi', o si preferisce una frase esplicita del
+tipo «Accetta i cookie per vedere la mappa»? Sarebbe testo nuovo.

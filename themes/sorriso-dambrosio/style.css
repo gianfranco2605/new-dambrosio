@@ -3524,3 +3524,73 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	height: auto !important;
 	min-height: var(--wp--custom--tap) !important;
 }
+
+/* ---------------------------------------------------------------
+   20.5 Una lastra `contain` non va messa in cassetta
+
+   Dove la lastra sta in una griglia a piu' colonne la proporzione
+   fissa serve: tiene le celle allineate. Dove sta da sola — una
+   riga dello zig-zag, la fotografia di una scheda — no: un ritaglio
+   piccolo dentro una cornice 16/9 larga quanto lo schermo lascia
+   quattrocento pixel di fondo attorno a se', e a 768px era la fascia
+   vuota piu' alta rimasta sul sito. La cornice si stringe addosso
+   all'immagine, con un tetto perche' un ritaglio verticale non
+   diventi una torre.
+   --------------------------------------------------------------- */
+
+.sd-zig__figure.sd-plate--contain,
+.sd-entry__figure.sd-plate--contain,
+.sd-areahead__figure.sd-plate--contain {
+	aspect-ratio: auto;
+	max-height: 26rem;
+}
+
+.sd-zig__figure.sd-plate--contain img,
+.sd-entry__figure.sd-plate--contain img,
+.sd-areahead__figure.sd-plate--contain img {
+	max-height: 24rem;
+}
+
+@media (max-width: 900px) {
+	/* Il tetto vale anche per le lastre `cover`.
+	   La scelta fra riempire e posare si fa su quanto e' grande
+	   l'originale rispetto allo spazio **a 1440px**; quando la
+	   colonna diventa larga quanto lo schermo quella stessa
+	   fotografia si trova a coprire 768×544, e se e' chiara — mezza
+	   libreria lo e' — quella fascia si legge come vuota. Il tetto
+	   la riporta a una striscia. */
+	.sd-zig__figure,
+	.sd-entry__figure,
+	.sd-areahead__figure {
+		max-height: 20rem;
+	}
+
+	.sd-zig__figure.sd-plate--contain,
+	.sd-entry__figure.sd-plate--contain,
+	.sd-areahead__figure.sd-plate--contain {
+		max-height: 20rem;
+	}
+
+	.sd-zig__figure.sd-plate--contain img,
+	.sd-entry__figure.sd-plate--contain img,
+	.sd-areahead__figure.sd-plate--contain img {
+		max-height: 18rem;
+	}
+}
+
+/* ---------------------------------------------------------------
+   20.6 La mappa bloccata occupa meno spazio
+
+   Finche' iubenda non ha il consenso l'iframe punta a una pagina
+   vuota: tenere alta la fascia come se la mappa ci fosse vuol dire
+   mostrare quattrocento pixel di fondo tinto. Quando la mappa
+   arriva, la fascia torna alla sua altezza piena.
+   --------------------------------------------------------------- */
+
+.sd-visit__map:has(iframe._iub_cs_activate:not(._iub_cs_activate-activated)) {
+	height: 16rem;
+}
+
+.sd-visit__map:has(iframe._iub_cs_activate:not(._iub_cs_activate-activated)) iframe {
+	height: 100%;
+}

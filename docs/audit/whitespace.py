@@ -48,8 +48,39 @@ def bande_vuote(path, min_h):
             fasce.append({'y': inizio * PASSO, 'h': h})
     return fasce, H
 
+def dentro_immagine(fascia, occupato):
+    """La fascia cade dentro una fotografia?
+
+    Il rilevatore lavora sui pixel e non puo' sapere che una fotografia
+    chiara e' una fotografia: per lui e' una riga piatta come il bianco.
+    Senza questo filtro meta' delle segnalazioni sono immagini, e si
+    finisce a "correggere" cose che ci sono.
+    """
+    a, b = fascia['y'], fascia['y'] + fascia['h']
+    for t, bo in occupato:
+        # sovrapposizione di almeno il 60% della fascia
+        inter = min(b, bo) - max(a, t)
+        if inter > 0 and inter >= 0.6 * fascia['h']:
+            return True
+    return False
+
+
 if __name__ == '__main__':
     d = sys.argv[1]
+    metriche = {}
+    if len(sys.argv) > 2 and os.path.exists(sys.argv[2]):
+        metriche = json.load(open(sys.argv[2]))
+
+    # url -> slug, come li nomina audit.mjs
+    def slug(u):
+        return (u.strip('/').replace('/', '--') or 'home') if u != '/' else 'home'
+
+    occ = {}
+    for url, perw in metriche.items():
+        for w, m in perw.items():
+            if isinstance(m, dict) and 'occupato' in m:
+                occ[(slug(url), int(w))] = m['occupato']
+
     out = {}
     for f in sorted(glob.glob(os.path.join(d, '*.png'))):
         nome = os.path.basename(f)[:-4]
@@ -57,6 +88,8 @@ if __name__ == '__main__':
         pagina = nome.rsplit('-', 1)[0]
         lim = 160 if w >= 1024 else 96
         fasce, H = bande_vuote(f, lim)
+        immagini = occ.get((pagina, w), [])
+        fasce = [x for x in fasce if not dentro_immagine(x, immagini)]
         if fasce:
             out.setdefault(pagina, {})[w] = {'alt': H, 'fasce': fasce}
     print(json.dumps(out, indent=1))

@@ -111,8 +111,15 @@ const METRICS = () => {
 
   const icons = [...document.querySelectorAll('svg.sd-icon')].filter(vis).map(i => Math.round(Math.max(i.getBoundingClientRect().width, i.getBoundingClientRect().height)));
 
+  // Le fasce occupate da un'immagine o da una mappa: servono al
+  // rilevatore di spazi vuoti, che lavora sui pixel e non saprebbe
+  // distinguere una fotografia chiara dal nulla.
+  const occupato = [...document.querySelectorAll('img, iframe, video, svg')]
+    .filter(vis)
+    .map(e => { const b = e.getBoundingClientRect(); return [Math.round(b.top + scrollY), Math.round(b.bottom + scrollY)]; });
+
   return {
-    vw, docW: document.documentElement.scrollWidth, height: Math.round(document.body.scrollHeight),
+    vw, docW: document.documentElement.scrollWidth, height: Math.round(document.body.scrollHeight), occupato,
     images, gaps, emptySections, tapSmall, smallText, longLines, overflow, headings, sectionPads, buttons,
     iconsMax: icons.length ? Math.max(...icons) : 0,
     h1: document.querySelectorAll('main h1').length,
@@ -131,7 +138,7 @@ for (const u of urls) {
       await p.evaluate(() => { const a = document.querySelector('.iubenda-cs-accept-btn'); if (a) a.click(); });
       await p.waitForTimeout(350);
       await p.evaluate(async () => { const h = document.body.scrollHeight; for (let y = 0; y < h; y += 600) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 70)); } window.scrollTo(0, 0); });
-      await p.waitForTimeout(700);
+      await p.waitForTimeout(1600);
       all[u][w] = await p.evaluate(METRICS);
       if (shoot) await p.screenshot({ path: path.join(outDir, `${slug(u)}-${w}.png`), fullPage: true });
     } catch (e) { all[u][w] = { error: e.message }; }
