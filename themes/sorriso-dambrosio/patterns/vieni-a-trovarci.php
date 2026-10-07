@@ -22,6 +22,24 @@ $sd_map = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2968.6339163717
 <!-- wp:group {"className":"sd-visit","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-visit" style="margin-top:0;margin-bottom:0"><!-- wp:html -->
 <div class="sd-visit__map">
+	<?php
+	/*
+	 * Dietro l'iframe c'e' un fondo con l'indirizzo.
+	 *
+	 * Non e' un vezzo: finche' il visitatore non accetta i cookie, iubenda
+	 * sostituisce il `src` della mappa con una pagina vuota del suo CDN.
+	 * Misurato: 736px di bianco a 1440px, 416px a 390px — la fascia vuota
+	 * piu' grande del sito, e la vedono tutti al primo arrivo. Il plugin non
+	 * si tocca (regola 4 di CLAUDE.md): si mette qualcosa sotto.
+	 *
+	 * Quando la mappa si carica lo copre. Nessuna parola nuova: indirizzo e
+	 * collegamento sono gia' quelli di sorriso_dambrosio_contacts().
+	 */
+	?>
+	<a class="sd-visit__fallback" href="<?php echo esc_url( $sd_c['map_href'] ); ?>" rel="noopener">
+		<?php echo sorriso_dambrosio_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<span><?php echo wp_kses_post( $sd_c['address'] ); ?></span>
+	</a>
 	<iframe title="Mappa dello Studio Odontoiatrico D&#8217;Ambrosio, Lungotevere Flaminio 34, Roma" src="<?php echo esc_url( $sd_map ); ?>" width="800" height="450" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </div>
 <!-- /wp:html -->

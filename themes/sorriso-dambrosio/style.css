@@ -107,15 +107,15 @@ Text Domain: sorriso-dambrosio
 /* Misura di lettura: ~68 caratteri. In DM Sans lo zero e' largo 0.69em,
    quindi "62ch" valeva 811px, cioe' 85 caratteri: le misure stanno in rem. */
 .sd-prose > p {
-	max-width: 40rem;
+	max-width: var(--wp--custom--measure--column);
 }
 
 .sd-why__lede {
-	max-width: 36rem;
+	max-width: var(--wp--custom--measure--narrow);
 }
 
 .sd-hero__lede {
-	max-width: 26rem;
+	max-width: var(--wp--custom--measure--short);
 }
 
 /* Il collegamento che chiude un blocco di testo: niente sottolineatura
@@ -349,7 +349,7 @@ Text Domain: sorriso-dambrosio
 .sd-hero__copy {
 	color: var(--wp--preset--color--base);
 	margin-bottom: auto;
-	max-width: 46rem;
+	max-width: var(--wp--custom--measure--wide);
 }
 
 /* Nel riferimento l'occhiello e' una frase breve in grassetto, non
@@ -371,7 +371,7 @@ Text Domain: sorriso-dambrosio
 
 .sd-hero__lede {
 	margin: var(--wp--custom--space--md) 0 0;
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 }
 
 /* La scheda contatti: bianca, completamente arrotondata, ancorata in basso. */
@@ -873,7 +873,7 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-roster__text p {
-	max-width: 40rem;
+	max-width: var(--wp--custom--measure--column);
 }
 
 @media (max-width: 899px) {
@@ -1049,11 +1049,13 @@ Text Domain: sorriso-dambrosio
 	white-space: nowrap;
 }
 
+/* Il testo e' `small` (16px): 38rem fanno 76 caratteri, due oltre il
+   limite. La lunghezza di riga si conta in caratteri, non in pixel. */
 .sd-tech__row > p:not(.sd-more) {
 	grid-column: 1 / -1;
 	grid-row: 2;
 	margin: 0;
-	max-width: 38rem;
+	max-width: var(--wp--custom--measure--narrow);
 }
 
 @media (max-width: 899px) {
@@ -1331,7 +1333,7 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-prenota__lede {
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 }
 
 .sd-prenota__contacts {
@@ -1890,7 +1892,7 @@ img {
 .sd-areahead__lede {
 	line-height: 1.5;
 	margin: 0;
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 }
 
 /* La fotografia esce verso destra fino al bordo della finestra: e'
@@ -2003,7 +2005,7 @@ img {
 .sd-zig__text {
 	color: var(--wp--preset--color--secondary);
 	margin: 0 0 1rem;
-	max-width: 38rem;
+	max-width: var(--wp--custom--measure--prose);
 }
 
 @media (max-width: 860px) {
@@ -2264,7 +2266,7 @@ img {
 .sd-doc__body > *,
 .sd-areatext > * {
 	margin-block: 0 1.1em;
-	max-width: 40rem;
+	max-width: var(--wp--custom--measure--column);
 }
 
 .sd-entry__body > :last-child,
@@ -2331,7 +2333,10 @@ img {
 	border-bottom: 1px solid var(--wp--custom--border--hairline);
 	display: grid;
 	gap: var(--wp--custom--space--md);
-	grid-template-columns: 10rem minmax(0, 1fr);
+	/* 160 → 216px: gli originali sono larghi 420-486, a 216 il rapporto
+	   e' 1,9-2,2 — nitido anche su retina. Accanto a una biografia da
+	   38rem una miniatura da 160px sembrava un francobollo. */
+	grid-template-columns: 13.5rem minmax(0, 1fr);
 	padding-block: var(--wp--custom--space--lg);
 }
 
@@ -2359,7 +2364,7 @@ img {
 
 .sd-people__bio {
 	margin: 0 0 1rem;
-	max-width: 42rem;
+	max-width: var(--wp--custom--measure--column);
 }
 
 .sd-section--tint .sd-people,
@@ -2412,7 +2417,7 @@ img {
 	}
 
 	.sd-people__portrait {
-		max-width: 11rem;
+		max-width: var(--wp--custom--measure--thumb-wide);
 	}
 }
 
@@ -2424,10 +2429,17 @@ img {
    mette da se'.
    --------------------------------------------------------------- */
 
+/* Le gallerie prima/dopo hanno originali da **400×300**: in due colonne
+   su 1320px ciascuna veniva resa a 606px, cioe' ingrandita di una volta
+   e mezza. Lo spazio si adatta al materiale, non viceversa — la griglia
+   si ferma a 2 × 400 piu' il distacco. Le sedici fotografie sono
+   elencate in DA-VERIFICARE.md §14: se arrivano piu' grandi, questo
+   limite si alza e basta. */
 .sd-cases {
 	display: grid;
 	gap: var(--wp--custom--space--lg);
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 25rem));
+	justify-content: start;
 }
 
 .sd-cases__group {
@@ -2476,9 +2488,10 @@ img {
 	text-underline-offset: 0.2em;
 }
 
+/* Idem per il caso singolo: 400px e' quanto esiste. */
 .sd-case {
 	margin-inline: auto;
-	max-width: 48rem;
+	max-width: var(--wp--custom--measure--media);
 }
 
 .sd-case__meta {
@@ -2487,7 +2500,7 @@ img {
 	gap: var(--wp--custom--space--lg);
 	list-style: none;
 	margin: var(--wp--custom--space--lg) auto 0;
-	max-width: 48rem;
+	max-width: var(--wp--custom--measure--media);
 	padding: 0;
 }
 
@@ -2499,9 +2512,9 @@ img {
 	margin-bottom: 0.2rem;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
 	.sd-cases {
-		grid-template-columns: minmax(0, 1fr);
+		grid-template-columns: minmax(0, 25rem);
 	}
 }
 
@@ -2516,8 +2529,13 @@ img {
 	align-items: start;
 }
 
+/* Il ritratto si ferma a 300px: il piu' piccolo dei tre originali e'
+   486px di larghezza, e sotto i 300 di spazio ha finalmente il margine
+   per riempire la cornice invece di posarcisi dentro. Misura decisa
+   dal materiale, non dalla griglia. */
 .sd-doctor__portrait {
 	margin: 0;
+	max-width: var(--wp--custom--measure--portrait);
 	position: sticky;
 	top: var(--sd-sticky-top);
 }
@@ -2537,7 +2555,7 @@ img {
 
 .sd-doctor__bio > * {
 	margin-block: 0 1.1em;
-	max-width: 40rem;
+	max-width: var(--wp--custom--measure--column);
 }
 
 @media (max-width: 860px) {
@@ -2546,7 +2564,7 @@ img {
 	}
 
 	.sd-doctor__portrait {
-		max-width: 16rem;
+		max-width: var(--wp--custom--measure--thumb);
 		position: static;
 	}
 }
@@ -2650,7 +2668,7 @@ img {
 
 .sd-cta__lede {
 	margin: 0;
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 }
 
 .sd-cta__actions {
@@ -2752,7 +2770,7 @@ img {
    --------------------------------------------------------------- */
 
 .sd-areatext {
-	max-width: 46rem;
+	max-width: var(--wp--custom--measure--wide);
 }
 
 .sd-areatext .wp-block-details {
@@ -2781,7 +2799,7 @@ img {
 .sd-chapter__lede {
 	line-height: 1.35;
 	margin: 0 0 var(--wp--custom--space--lg);
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 }
 
 .sd-head--minor {
@@ -2792,7 +2810,7 @@ img {
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	line-height: 1.35;
 	margin: var(--wp--custom--space--lg) 0 var(--wp--custom--space--md);
-	max-width: 32rem;
+	max-width: var(--wp--custom--measure--lede);
 	padding-top: var(--wp--custom--space--md);
 }
 
@@ -2801,11 +2819,11 @@ img {
    file invece di stringersi in una. */
 .sd-prenota--wide .sd-prenota__lede {
 	margin-bottom: var(--wp--custom--space--lg);
-	max-width: 36rem;
+	max-width: var(--wp--custom--measure--narrow);
 }
 
 .sd-prenota--wide .sd-form-wrapper {
-	max-width: 54rem;
+	max-width: var(--wp--custom--measure--form);
 }
 
 /* ===============================================================
@@ -2913,16 +2931,28 @@ img {
    85 caratteri. Le misure stanno in rem e sono in theme.json.
    --------------------------------------------------------------- */
 
+/* 38rem a 19px fanno ~64 caratteri; a 16px ne fanno 76, due sopra il
+   limite. Il testo piccolo ha quindi una misura sua: la lunghezza di
+   riga si conta in caratteri, non in pixel. */
 .sd-prose > p,
-.sd-rows__text,
 .sd-zig__text,
-.sd-matrix__text,
 .sd-people__bio,
 .sd-entry__body > p,
 .sd-doc__body > p,
 .sd-doctor__bio > p,
 .sd-areatext > p {
 	max-width: var(--wp--custom--measure--prose);
+}
+
+.sd-rows__text,
+.sd-matrix__text,
+.sd-cases__caption,
+.sd-tech__row p,
+.sd-why__cell p,
+.sd-panel__body p,
+.sd-roster__text p,
+.sd-visit__panel p {
+	max-width: var(--wp--custom--measure--narrow);
 }
 
 .sd-chapter__lede,
@@ -3343,4 +3373,59 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 .sd-header .wp-block-navigation__responsive-container-open svg {
 	height: 22px;
 	width: 22px;
+}
+
+
+/* ---------------------------------------------------------------
+   20.4 Il fondo della mappa
+
+   Finche' il visitatore non accetta i cookie, iubenda sostituisce il
+   `src` dell'iframe con una pagina vuota del suo CDN: 736px di bianco
+   a 1440px. Era la fascia vuota piu' grande del sito e la vedono tutti
+   al primo arrivo. Il plugin non si tocca: si mette qualcosa sotto.
+   --------------------------------------------------------------- */
+
+.sd-visit__map {
+	background-color: var(--wp--preset--color--tertiary);
+	position: relative;
+}
+
+.sd-visit__fallback {
+	align-items: center;
+	color: var(--wp--preset--color--main);
+	display: flex;
+	flex-direction: column;
+	font-size: var(--wp--preset--font-size--small);
+	gap: var(--wp--custom--space--xs);
+	inset: 0;
+	justify-content: center;
+	padding: var(--wp--custom--space--md);
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+	z-index: 0;
+}
+
+.sd-visit__fallback .sd-icon {
+	height: 2rem;
+	width: 2rem;
+}
+
+.sd-visit__fallback:hover span,
+.sd-visit__fallback:focus-visible span {
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+
+/* L'iframe sta sopra il fondo: quando la mappa arriva lo copre. */
+.sd-visit__map iframe {
+	position: relative;
+	z-index: 1;
+}
+
+/* Finche' iubenda non l'ha attivato, l'iframe punta a una pagina vuota:
+   si toglie di mezzo e lascia vedere il fondo. */
+.sd-visit__map iframe._iub_cs_activate:not(._iub_cs_activate-activated) {
+	opacity: 0;
+	pointer-events: none;
 }

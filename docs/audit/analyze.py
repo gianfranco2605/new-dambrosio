@@ -57,7 +57,8 @@ def problemi(data):
                 per_parent = collections.defaultdict(set)
                 for i in m['images']:
                     if i['parent']:
-                        per_parent[i['parent']].add(i['ar'])
+                        # si confronta la cornice, che e' quel che si vede
+                        per_parent[i['parent']].add(i.get('far') or i['ar'])
                 for par, ars in per_parent.items():
                     if len(ars) > 1:
                         out[url].append(('medium', 'immagine', f"proporzioni diverse in .{par}: {sorted(ars)}"))

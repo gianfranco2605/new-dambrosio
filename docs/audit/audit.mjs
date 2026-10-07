@@ -35,7 +35,14 @@ const METRICS = () => {
         ar: +(b.width / Math.max(1, b.height)).toFixed(3),
         nar: i.naturalHeight ? +(i.naturalWidth / i.naturalHeight).toFixed(3) : 0,
         ratio: +(i.naturalWidth / Math.max(1, b.width)).toFixed(2),
-        parent: (i.closest('figure,article,div')?.className || '').toString().split(' ').filter(c => c.startsWith('sd-')).slice(0, 2).join('.'),
+        // il RUOLO, non il modificatore della lastra: due lastre `cover`
+        // in due griglie diverse non devono confrontarsi fra loro
+        parent: (i.closest('figure,article,div')?.className || '').toString().split(' ')
+          .filter(c => c.startsWith('sd-') && c !== 'sd-plate' && !c.startsWith('sd-plate--')).slice(0, 2).join('.'),
+        // La proporzione che si vede e' quella della CORNICE, non quella
+        // dell'immagine: dentro una lastra `contain` i ritagli hanno
+        // proporzioni diverse fra loro ma la griglia resta allineata.
+        far: (() => { const f = i.closest('.sd-plate, figure'); if (!f) return 0; const r = f.getBoundingClientRect(); return +(r.width / Math.max(1, r.height)).toFixed(3); })(),
         cls: (i.className || '').toString().slice(0, 60),
       };
     });

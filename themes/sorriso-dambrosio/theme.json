@@ -225,7 +225,15 @@
 				"lede": "32rem",
 				"short": "26rem",
 				"hero": "clamp(26rem, 36vw, 33rem)",
-				"panel": "clamp(26rem, 54vw, 46rem)"
+				"panel": "clamp(26rem, 54vw, 46rem)",
+				"narrow": "34rem",
+				"wide": "46rem",
+				"column": "40rem",
+				"form": "54rem",
+				"media": "25rem",
+				"portrait": "19rem",
+				"thumb": "16rem",
+				"thumb-wide": "11rem"
 			},
 			"frame": {
 				"hero": "16 / 9",

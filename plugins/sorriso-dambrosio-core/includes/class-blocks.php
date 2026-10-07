@@ -63,6 +63,7 @@ final class Blocks {
 			'area-contenuto'      => array( self::class, 'area_contenuto' ),
 			'indice'              => array( self::class, 'indice' ),
 			'caso'                => array( self::class, 'caso' ),
+			'immagine'            => array( self::class, 'immagine' ),
 		);
 
 		foreach ( $blocks as $name => $callback ) {
@@ -224,8 +225,26 @@ final class Blocks {
 			. '</div>';
 
 		if ( $cover > 0 ) {
-			$img   = wp_get_attachment_image( $cover, 'large', false, array( 'class' => 'sd-img' ) );
-			$body .= '<figure class="sd-areahead__figure">' . $img . '</figure>';
+			/*
+			 * `large` e' 1024px e il browser sceglieva il taglio da 768 per uno
+			 * spazio da 744: nessun margine per uno schermo retina. `sizes`
+			 * dice quanto spazio occupa davvero, cosi' srcset sceglie bene.
+			 */
+			$img = wp_get_attachment_image(
+				$cover,
+				'full',
+				false,
+				array(
+					'class' => 'sd-img',
+					'sizes' => '(max-width: 900px) 100vw, 62vw',
+				)
+			);
+
+			$meta    = wp_get_attachment_metadata( $cover );
+			$natural = isset( $meta['width'] ) ? (int) $meta['width'] : 0;
+			$mode    = $natural >= 1190 ? 'sd-plate--cover' : 'sd-plate--contain';
+
+			$body .= '<figure class="sd-plate ' . esc_attr( $mode ) . ' sd-areahead__figure">' . $img . '</figure>';
 		}
 
 		return Render::section( $body . '</div>', trim( 'sd-areahead ' . self::attr( $attrs, 'fondo', 'sd-section--tint' ) ) );
@@ -367,7 +386,7 @@ final class Blocks {
 			$link = (string) get_permalink( $doctor );
 
 			$body .= '<article class="sd-people__row">'
-				. Render::thumb( $doctor->ID, 'medium_large', 'sd-people__portrait', 160 )
+				. Render::thumb( $doctor->ID, 'medium_large', 'sd-people__portrait', 216 )
 				. '<div class="sd-people__text">'
 				. '<' . $tag . ' class="sd-people__name"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-people__bio">' . esc_html( Render::excerpt( $doctor, 40 ) ) . '</p>'
@@ -570,6 +589,31 @@ final class Blocks {
 		}
 
 		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
+	}
+
+	/**
+	 * L'immagine in evidenza dell'articolo in pagina, dentro la lastra.
+	 *
+	 * Sostituisce `core/post-featured-image` nei template delle schede: quello
+	 * non sa niente di quanto e' grande l'originale, e su `.sd-entry__figure`
+	 * rendeva un 300×215 a 652×489 — un ingrandimento di oltre due volte.
+	 * `Render::thumb()` conosce il dato e non lo supera mai.
+	 *
+	 * @param array<string, mixed> $attrs Attributi.
+	 */
+	public static function immagine( array $attrs ): string {
+		$post = self::current_post();
+
+		if ( ! $post instanceof \WP_Post ) {
+			return '';
+		}
+
+		return Render::thumb(
+			$post->ID,
+			self::attr( $attrs, 'dimensione', 'large' ),
+			self::attr( $attrs, 'classe' ),
+			(int) self::attr( $attrs, 'slot', '0' )
+		);
 	}
 
 	/**
