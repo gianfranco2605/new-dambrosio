@@ -94,8 +94,28 @@ final class Render {
 
 		$meta    = wp_get_attachment_metadata( $id );
 		$natural = isset( $meta['width'] ) ? (int) $meta['width'] : 0;
+		$tall    = isset( $meta['height'] ) ? (int) $meta['height'] : 0;
 		$fills   = ( 0 === $slot ) || ( $natural >= (int) round( $slot * 1.6 ) );
 		$mode    = $fills ? 'sd-plate--cover' : 'sd-plate--contain';
+
+		/*
+		 * Una panoramica non si allunga.
+		 *
+		 * Una cornice che cresce fino all'altezza della riga va bene per
+		 * una fotografia di proporzioni normali: ritaglia i lati e tiene
+		 * il centro. Su una panoramica — l'ortopantomografia e' larga
+		 * 2560x1179, cioe' 2,17 a 1 — per arrivare a quell'altezza
+		 * bisognerebbe ingrandirla di un quarto e del referto resterebbe
+		 * una fetta. Oltre 1,9 a 1 la cornice tiene la sua proporzione.
+		 */
+		$style = '';
+
+		if ( $fills && $tall > 0 && $natural / $tall > 1.9 ) {
+			$mode .= ' sd-plate--panorama';
+			// La proporzione vera, non una di repertorio: una 2,17 a 1
+			// dentro una cornice 3/2 verrebbe comunque ingrandita.
+			$style = ' style="--sd-ar:' . $natural . '/' . $tall . '"';
+		}
 
 		$attr = array( 'class' => 'sd-img' );
 
@@ -110,7 +130,7 @@ final class Render {
 
 		$img = wp_get_attachment_image( $id, $size, false, $attr );
 
-		return '<figure class="' . esc_attr( trim( 'sd-plate ' . $mode . ' ' . $class ) ) . '">'
+		return '<figure class="' . esc_attr( trim( 'sd-plate ' . $mode . ' ' . $class ) ) . '"' . $style . '>'
 			. $img . '</figure>';
 	}
 

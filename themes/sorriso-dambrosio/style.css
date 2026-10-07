@@ -673,12 +673,38 @@ Text Domain: sorriso-dambrosio
 	line-height: 1.2;
 }
 
+/* Con la freccia visibile, core non mette un `<span>` dentro il
+   collegamento: mette un `<button>` a parte, fratello del
+   collegamento. Quel bottone apre la tendina da tastiera e da tocco,
+   quindi e' un comando, e misurava 8x8.
+
+   In altezza prende tutti e 44 i pixel della riga, che la riga ce li
+   ha gia': non cresce niente. In larghezza no, e non e' una svista.
+   Sette frecce da 44 vorrebbero dire 250px in piu' sulla barra, e la
+   barra non li ha — a quel punto la navigazione passerebbe alla
+   tendina gia' a 1370px. Restano 24, che e' il minimo di WCAG 2.5.8
+   per un bersaglio in linea, con 6px di margine negativo per lato
+   perche' lo stacco fra le voci resti quello di prima. Il bersaglio
+   grande resta il collegamento accanto, che apre la stessa tendina
+   al passaggio del cursore e al fuoco da tastiera.
+
+   Da 8x8 a 24x44. */
 .sd-header .wp-block-navigation__submenu-icon {
+	align-items: center;
 	display: inline-flex;
 	flex: 0 0 auto;
-	margin: 0;
+	justify-content: center;
+	block-size: var(--wp--custom--tap);
+	inline-size: 24px;
+	margin-inline: -6px;
 	padding: 0;
 	transition: transform var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+}
+
+.sd-header .wp-block-navigation__submenu-icon:focus-visible {
+	border-radius: 999px;
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: -4px;
 }
 
 .sd-header .wp-block-navigation__submenu-icon svg {
@@ -1167,14 +1193,14 @@ Text Domain: sorriso-dambrosio
 	/* Il ritratto prende tutta la riga. Era fermo a 220px: su uno
 	   schermo da 390 restavano 140px di bianco accanto a una faccia
 	   grande come un francobollo. A tutta larghezza il rapporto passa
-	   a 3/2, perche' un 4/5 da 358px di larghezza sarebbe alto 448 e
-	   mangerebbe mezza schermata. */
+	   a 3/2, perche' un 4/5 da 350px di larghezza sarebbe alto 438 e
+	   mangerebbe mezza schermata.
+
+	   La proporzione della cornice sta in 19.6, che e' piu' in basso
+	   nel foglio: a pari peso vince, quindi l'eccezione per mobile e'
+	   scritta li' e non qui. */
 	.sd-roster__portrait {
 		max-width: none;
-	}
-
-	.sd-roster__portrait img {
-		aspect-ratio: var(--wp--custom--frame--wide);
 	}
 }
 
@@ -3272,6 +3298,12 @@ img {
 	.sd-eyebrow {
 		font-size: 0.875rem;
 	}
+
+	/* Le etichette della scheda dell'hero erano rimaste a 13px: sotto
+	   il pavimento che questa sezione stessa si da'. */
+	.sd-hero__bar-label {
+		font-size: 0.9375rem;
+	}
 }
 
 /* ---------------------------------------------------------------
@@ -3469,6 +3501,22 @@ img {
 .sd-roster__portrait,
 .sd-doctor__portrait {
 	aspect-ratio: var(--wp--custom--frame--portrait);
+}
+
+/* Su mobile il ritratto dei medici e' a tutta larghezza (voce 12), e un
+   4/5 largo 350px sarebbe alto 438: mezza schermata per una faccia.
+   La proporzione passa a 3/2.
+
+   Va cambiata sulla **cornice**, non solo sull'immagine: cambiando
+   solo l'immagine la cornice restava alta 438 con dentro una
+   fotografia alta 233, e fra la faccia e il nome si aprivano 204px di
+   fondo tinto. Sta qui, e non nella sezione 7, perche' la regola
+   sopra e' piu' in basso nel foglio e a pari peso vincerebbe. */
+@media (max-width: 599px) {
+	.sd-roster__portrait,
+	.sd-roster__portrait img {
+		aspect-ratio: var(--wp--custom--frame--wide);
+	}
 }
 
 /* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'. */
@@ -3955,6 +4003,16 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	width: 100%;
 }
 
+/* La panoramica tiene la sua proporzione: allungarla vorrebbe dire
+   ingrandirla e ridurre il referto a una fetta. Chi e' panoramica lo
+   decide `Render::thumb()` dal dato — oltre 1,9 a 1 — non il CSS. */
+.sd-plate--panorama.sd-entry__figure {
+	align-self: start;
+	aspect-ratio: var(--sd-ar);
+	max-height: none;
+	min-height: 0;
+}
+
 /* Il ritaglio no: quello resta nella sua cornice 4/3 col suo tetto.
    Allungarlo vorrebbe dire o stirarlo o circondarlo di fondo, che e'
    esattamente la fascia vuota che il tetto era stato scritto per
@@ -3999,6 +4057,25 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	.sd-entry__figure,
 	.sd-areahead__figure {
 		max-height: 17rem;
+	}
+
+	/* Su una colonna sola la cornice della scheda non ha piu' un
+	   testo accanto da raggiungere: il pavimento di 20rem servirebbe
+	   solo a stirare. Misurato su /tecnologie/ortopantomografo/ a
+	   390px: l'originale servito e' 390x179 e la cornice lo tirava a
+	   350x320, cioe' 1.79 volte. Torna la proporzione larga — tranne
+	   che per le panoramiche, che tengono la loro. */
+	.sd-plate--cover.sd-entry__figure:not(.sd-plate--panorama) {
+		align-self: auto;
+		aspect-ratio: var(--wp--custom--frame--wide);
+		min-height: 0;
+	}
+
+	.sd-plate--panorama.sd-entry__figure,
+	.sd-plate--panorama.sd-zig__figure,
+	.sd-plate--panorama.sd-areahead__figure {
+		aspect-ratio: var(--sd-ar);
+		max-height: none;
 	}
 }
 
