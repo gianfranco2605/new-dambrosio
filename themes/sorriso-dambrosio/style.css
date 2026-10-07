@@ -342,15 +342,24 @@ Text Domain: sorriso-dambrosio
 	z-index: -1;
 }
 
+/* Il blocco — testo, scheda, social — sta al centro verticale della
+   fotografia, non spalmato dal bordo di sopra a quello di sotto.
+
+   Prima `.sd-hero__copy` aveva `margin-bottom: auto`: il testo restava in
+   alto, la scheda scendeva in fondo e in mezzo si apriva tutto quello che
+   avanzava. Misurato a 1440x900: 227px di vuoto fra l'ultima riga e la
+   scheda, e su uno schermo piu' alto sarebbe cresciuto ancora, perche' un
+   margine automatico non ha un tetto. Centrando, lo stacco e' quello
+   scritto — `space--lg` — a ogni altezza di finestra. */
 .sd-hero__frame {
 	display: flex;
 	flex-direction: column;
-	padding-block: var(--wp--custom--space--xxl) var(--wp--custom--space--lg);
+	justify-content: center;
+	padding-block: var(--wp--custom--space--xl);
 }
 
 .sd-hero__copy {
 	color: var(--wp--preset--color--base);
-	margin-bottom: auto;
 	max-width: var(--wp--custom--measure--wide);
 }
 
@@ -385,7 +394,7 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--main);
 	display: flex;
 	gap: var(--wp--custom--space--md);
-	margin-top: var(--wp--custom--space--xl);
+	margin-top: var(--wp--custom--space--lg);
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
@@ -436,12 +445,21 @@ Text Domain: sorriso-dambrosio
 	padding-block: 1.1em;
 }
 
+/* I social stanno a sinistra, dove il velo e' al suo massimo
+   (`veil--deep` da 0 a 28%): a destra cadevano sul soggetto chiaro
+   della fotografia e il bianco ci spariva dentro.
+
+   Il primo e' allineato al bordo del testo: il quadrato del bersaglio
+   e' piu' largo dell'icona, quindi va scalato indietro di quanto
+   avanza per lato, altrimenti l'icona parte rientrata rispetto al
+   titolo. */
 .sd-hero__social {
 	display: flex;
-	gap: 0.85rem;
-	justify-content: flex-end;
+	gap: var(--wp--custom--space--xxs);
+	justify-content: flex-start;
 	list-style: none;
 	margin: var(--wp--custom--space--sm) 0 0;
+	margin-left: calc((var(--wp--custom--tap) - 26px) / -2);
 	padding: 0;
 }
 
@@ -449,21 +467,34 @@ Text Domain: sorriso-dambrosio
 	align-items: center;
 	color: var(--wp--preset--color--base);
 	display: inline-flex;
-	height: 2.25rem;
+	height: var(--wp--custom--tap);
 	justify-content: center;
 	text-decoration: none;
-	transition: opacity 0.2s ease;
-	width: 2.25rem;
+	width: var(--wp--custom--tap);
 }
 
 .sd-hero__social a:hover,
 .sd-hero__social a:focus-visible {
-	opacity: 0.7;
+	color: var(--wp--preset--color--primary);
 }
 
+.sd-hero__social a:focus-visible {
+	border-radius: 999px;
+	outline: 2px solid var(--wp--preset--color--base);
+	outline-offset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.sd-hero__social a {
+		transition: color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+	}
+}
+
+/* Erano 21px: su una fotografia, sotto i 24, un'icona di linea si
+   legge come sporco. */
 .sd-hero__social .sd-icon {
-	height: 21px;
-	width: 21px;
+	height: 26px;
+	width: 26px;
 }
 
 /* Una sola entrata orchestrata, al caricamento. Nient'altro si muove. */
@@ -3708,15 +3739,6 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 		display: inline-block;
 		margin-block: -0.75rem;
 		padding-block: 0.75rem;
-	}
-
-	/* Le icone social dell'hero: lo stesso quadrato da 44 del footer. */
-	.sd-hero__social a {
-		align-items: center;
-		display: inline-flex;
-		height: var(--wp--custom--tap);
-		justify-content: center;
-		width: var(--wp--custom--tap);
 	}
 
 	/* Le etichette del modulo: CF7 le stampa con le proprie classi. */
