@@ -243,7 +243,15 @@
 				"portrait": "4 / 5",
 				"panel": "3 / 4"
 			},
-			"tap": "2.75rem"
+			"tap": "2.75rem",
+			"motion": {
+				"duration": "180ms",
+				"ease": "cubic-bezier(0.22, 0.61, 0.36, 1)"
+			},
+			"radius": {
+				"panel": "1.25rem",
+				"field": "6px"
+			}
 		},
 		"spacing": {
 			"defaultSpacingSizes": false,
@@ -414,6 +422,11 @@
 						},
 						"typography": {
 							"textDecoration": "none"
+						},
+						":hover": {
+							"typography": {
+								"textDecoration": "none"
+							}
 						}
 					}
 				}
