@@ -2422,6 +2422,21 @@ img {
 	}
 }
 
+/* Sotto i 600px il ritratto non sta piu' accanto alla biografia: a 390px
+   restavano 190px di colonna e il testo andava a capo ogni tre parole.
+   Il ritratto sale sopra e il testo prende tutta la riga. */
+@media (max-width: 600px) {
+	.sd-people__row,
+	.sd-people--schede .sd-people__row {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1rem;
+	}
+
+	.sd-people__portrait {
+		max-width: 11rem;
+	}
+}
+
 /* ---------------------------------------------------------------
    18.9 I casi prima/dopo
 
