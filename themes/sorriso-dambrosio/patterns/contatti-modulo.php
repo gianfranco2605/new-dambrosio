@@ -27,9 +27,6 @@ $sd_form = do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" h
 <div class="wp-block-group sd-wrap">
 <?php echo sorriso_dambrosio_section_head( 'Appuntamenti', 'Prenota un appuntamento' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:paragraph {"className":"sd-prenota__lede","fontSize":"large"} -->
-<p class="sd-prenota__lede has-large-font-size">I nostri pazienti vengono accolti in un ambiente elegante ed amichevole, con professionalit&agrave;, competenza ed igiene.</p>
-<!-- /wp:paragraph -->
 
 <!-- wp:html -->
 <?php echo $sd_form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

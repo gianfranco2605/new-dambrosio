@@ -31,7 +31,11 @@ Text Domain: sorriso-dambrosio
 	--sd-max: 1320px;
 	--sd-gutter: var(--wp--custom--space--md);
 	--sd-rhythm: var(--wp--custom--space--xxl);
-	--sd-sticky-top: 7.5rem;
+	/* L'altezza dell'header appiccicato, da cui dipendono le ancore
+	   (`scroll-margin-top`) e l'altezza della fotografia del capitolo.
+	   Coi due piani e il logo a 220px e' stata rimisurata: 155px a
+	   1440, 142 a 768, 134 a 390. */
+	--sd-sticky-top: 9.75rem;
 
 	/* Quanto manca, da dentro il contenitore, per arrivare al bordo della
 	   finestra. `calc(50% - 50vw)` funziona solo se il contenitore e'
@@ -112,8 +116,12 @@ Text Domain: sorriso-dambrosio
 
 /* Non e' testo corrente ma una dichiarazione a 34px: la misura corta
    e' voluta (DESIGN-SPEC §4.7), ma 34rem la stringeva a 30 caratteri. */
+/* Dentro la spaccatura la misura la da' `.sd-split__body`: qui resta
+   solo l'interlinea, che a `medium` non ha bisogno dell'ariosita' di
+   un testo corrente. */
 .sd-why__lede {
-	max-width: var(--wp--custom--measure--statement);
+	line-height: 1.5;
+	margin: 0;
 }
 
 .sd-hero__lede {
@@ -154,20 +162,21 @@ Text Domain: sorriso-dambrosio
 	margin-top: var(--wp--custom--space--xxl);
 }
 
-.sd-eyebrow {
-	align-items: center;
-	color: var(--wp--preset--color--secondary);
-	display: flex;
-	gap: var(--wp--custom--space--sm);
-	letter-spacing: 0.06em;
-	margin: 0 0 var(--wp--custom--space--xs);
-}
+/* L'occhiello: una etichetta piccola sopra il titolo, allineata a
+   sinistra come il titolo. Nient'altro.
 
-.sd-eyebrow::before {
-	background-color: var(--wp--custom--border--hairline);
-	content: "";
-	flex: 1 1 auto;
-	height: 1px;
+   Prima era un filetto che attraversava tutta la colonna con la parola
+   appesa in fondo a destra: a 1440px fra «Lo Studio» e «Dal 1956» ci
+   passavano 700px di riga vuota, l'occhio doveva fare il viaggio di
+   andata e ritorno per leggere due parole, e su ogni fascia il filetto
+   andava ritinto perche' sul fondo scuro spariva. Era anche l'unico
+   posto del sito dove un elemento di testo partiva da destra. */
+.sd-eyebrow {
+	color: var(--wp--preset--color--secondary);
+	display: block;
+	letter-spacing: 0.06em;
+	margin: 0 0 var(--wp--custom--space--xxs);
+	text-align: left;
 }
 
 .sd-head h1,
@@ -194,20 +203,12 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--main-accent);
 }
 
-.sd-section--dark .sd-eyebrow::before,
-.sd-visit__panel .sd-eyebrow::before {
-	background-color: var(--wp--custom--rule--on-dark);
-}
 
 /* Su tertiary il testo secondario farebbe 3,3:1. Tutto passa a main. */
 .sd-section--tint .sd-eyebrow {
 	color: var(--wp--preset--color--main);
 }
 
-.sd-section--tint .sd-eyebrow::before {
-	background-color: var(--wp--preset--color--main);
-	opacity: 0.28;
-}
 
 
 /* ---------------------------------------------------------------
@@ -985,13 +986,25 @@ Text Domain: sorriso-dambrosio
 	padding-left: var(--wp--custom--space--xxl);
 }
 
-/* La fotografia riempie tutta l'altezza della colonna. Con position:sticky
+/* La fotografia accompagna la colonna del testo restando alta quanto la
+   finestra.
+
+   Prima riempiva l'intera colonna (`position: absolute; inset: 0`). Con
+   due fotografie in piu' nel racconto la colonna e' arrivata a 2135px, e
+   l'originale servito ne ha 713: `object-fit: cover` lo ingrandiva tre
+   volte: sfocato, e il ritaglio cadeva su un pezzo di muro vuoto. La
+   regola del tema e' che una fotografia non si ingrandisce mai.
+
+   `position: sticky` da sola era stata provata e scartata — la figura
    restava alta quanto la sua proporzione e sotto si apriva un vuoto di
-   centinaia di pixel: in una schermata a pagina intera si vedeva benissimo. */
+   centinaia di pixel. Il pezzo che mancava era l'altezza: con `100vh`
+   la figura e' sempre alta quanto la finestra, quindi vuoto non ce n'e'
+   mai, e la fotografia si riduce invece di essere stirata. */
 .sd-chapter__figure {
-	inset: 0;
+	height: calc(100vh - var(--sd-sticky-top));
 	margin: 0;
-	position: absolute;
+	position: sticky;
+	top: var(--sd-sticky-top);
 }
 
 .sd-chapter__figure img {
@@ -1012,18 +1025,57 @@ Text Domain: sorriso-dambrosio
 	margin-top: var(--wp--custom--space--xxl);
 }
 
-.sd-columns3 {
-	column-gap: var(--wp--custom--space--xl);
-	columns: 3;
+/* La spaccatura: titolo a sinistra, testo in una colonna sola a destra.
+
+   Nasce da due difetti che erano lo stesso difetto. «I Nostri Pazienti»
+   spalmava cinque paragrafi su tre colonne tipografiche: tre righe per
+   colonna, l'occhio costretto a tre risalite, e nessuna delle tre
+   colonne con una misura di lettura decente. «Perche' noi» aveva il
+   titolo sopra e il testo d'apertura largo meno della meta' della
+   fascia: a destra restavano 600px di niente.
+
+   Qui la colonna del titolo si prende lo spazio che li' avanzava, e il
+   testo sta su una misura di lettura sola — `prose`, che a 19px fa 64
+   caratteri. (La misura si conta in caratteri: `ch` in DM Sans vale
+   mezzo em e darebbe il doppio.) */
+.sd-split {
+	align-items: start;
+	display: grid;
+	gap: var(--wp--custom--space--md) var(--wp--custom--space--xxl);
+	grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
 }
 
-.sd-columns3 p {
-	break-inside: avoid;
+.sd-split > .sd-head {
+	margin-bottom: 0;
+}
+
+/* L'intestazione portava con se' il suo stacco (`.sd-head`,
+   `margin-bottom: lg`); dentro la griglia quel margine non serve piu'
+   e lo stacco passa alla spaccatura intera — altrimenti quel che segue
+   (i quattro motivi di «Perche' noi») va a toccare l'ultima riga. */
+.sd-split:not(:last-child) {
+	margin-bottom: var(--wp--custom--space--xl);
+}
+
+.sd-split__body {
+	max-width: var(--wp--custom--measure--prose);
+}
+
+.sd-split__body > p {
 	margin: 0 0 1em;
 }
 
-.sd-columns3 p:last-child {
+.sd-split__body > p:last-child {
 	margin-bottom: 0;
+}
+
+/* Sotto i 900px le due colonne non hanno piu' senso: il titolo
+   torna sopra il testo. */
+@media (max-width: 899px) {
+	.sd-split {
+		gap: var(--wp--custom--space--sm);
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 @media (max-width: 1023px) {
@@ -1051,30 +1103,25 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-@media (max-width: 1023px) {
-	.sd-columns3 {
-		columns: 2;
-	}
-}
-
-@media (max-width: 699px) {
-	.sd-columns3 {
-		columns: 1;
-	}
-}
-
 /* ---------------------------------------------------------------
    7. I Professionisti — elenco redazionale, non tre card
 
-   I ritratti scendono a 260px: i tre originali (420x554, 420x419, 486x642)
-   tornano nitidi anche su Retina senza chiedere scatti nuovi.
+   I ritratti sono a 335px, e 335 e' un numero misurato, non scelto: il
+   piu' piccolo dei tre originali e' 420x419 (Stefania), e nel rapporto
+   4/5 un riquadro largo W ne chiede 1.25W di altezza. 1.25 x 335 = 419.
+   Un pixel di piu' e la fotografia verrebbe ingrandita, e il tema non
+   ingrandisce mai una fotografia.
+
+   Erano 260, e la riga finiva a 956 su un contenitore largo 1256: 392px
+   di vuoto sulla destra, misurati. Ora il ritratto cresce di 75px, il
+   testo arriva alla sua misura piena e il vuoto scende sotto i 100.
    --------------------------------------------------------------- */
 
 .sd-roster__row {
 	align-items: start;
 	display: grid;
-	gap: var(--wp--custom--space--xl);
-	grid-template-columns: 260px minmax(0, 1fr);
+	gap: var(--wp--custom--space--xxl);
+	grid-template-columns: 335px minmax(0, 1fr);
 	padding-block: var(--wp--custom--space--lg);
 }
 
@@ -1106,10 +1153,6 @@ Text Domain: sorriso-dambrosio
 	margin-top: 0;
 }
 
-.sd-roster__text p {
-	max-width: var(--wp--custom--measure--column);
-}
-
 @media (max-width: 899px) {
 	.sd-roster__row {
 		grid-template-columns: 180px minmax(0, 1fr);
@@ -1121,8 +1164,17 @@ Text Domain: sorriso-dambrosio
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	/* Il ritratto prende tutta la riga. Era fermo a 220px: su uno
+	   schermo da 390 restavano 140px di bianco accanto a una faccia
+	   grande come un francobollo. A tutta larghezza il rapporto passa
+	   a 3/2, perche' un 4/5 da 358px di larghezza sarebbe alto 448 e
+	   mangerebbe mezza schermata. */
 	.sd-roster__portrait {
-		max-width: 220px;
+		max-width: none;
+	}
+
+	.sd-roster__portrait img {
+		aspect-ratio: var(--wp--custom--frame--wide);
 	}
 }
 
@@ -1228,17 +1280,26 @@ Text Domain: sorriso-dambrosio
 	flex-direction: column;
 }
 
-/* Come nel capitolo: la fotografia prende l'altezza che avanza, cosi' la
-   colonna di sinistra non resta mezza vuota accanto alle sette righe. */
+/* La fotografia ha un rapporto suo — `portrait`, 4/5 — e non si stira
+   piu' per arrivare in fondo all'elenco.
+
+   Prima prendeva tutta l'altezza che avanzava (`flex: 1 1 auto` piu'
+   `height: 100%`), e accanto a sette righe quell'altezza era 560px su
+   una colonna larga 390: una fessura verticale, con l'originale
+   ingrandito per riempirla. Il rapporto fisso la riporta a una
+   proporzione leggibile; la colonna non resta vuota perche' la
+   fotografia e' appiccicata e accompagna lo scorrimento dell'elenco. */
 .sd-tech__figure {
-	flex: 1 1 auto;
+	flex: 0 0 auto;
 	margin: 0;
-	min-height: 18rem;
+	position: sticky;
+	top: var(--sd-sticky-top);
 }
 
 .sd-tech__figure img {
+	aspect-ratio: var(--wp--custom--frame--portrait);
 	display: block;
-	height: 100%;
+	height: auto;
 	object-fit: cover;
 	object-position: 46% 50%;
 	width: 100%;
@@ -1298,12 +1359,11 @@ Text Domain: sorriso-dambrosio
 	}
 
 	.sd-tech__figure {
-		min-height: 0;
+		position: static;
 	}
 
 	.sd-tech__figure img {
-		aspect-ratio: 16 / 9;
-		height: auto;
+		aspect-ratio: var(--wp--custom--frame--wide);
 	}
 }
 
@@ -1841,6 +1901,15 @@ Text Domain: sorriso-dambrosio
 .sd-hours table {
 	border-collapse: collapse;
 	width: 100%;
+}
+
+/* La tabella veniva resa a 14px — il valore di Ollie per `table` —
+   mentre il testo che le sta accanto nel footer e' a 16. Gli orari
+   sono l'informazione che la gente cerca davvero in fondo a una
+   pagina di studio medico: vanno almeno al corpo del testo che li
+   circonda, e mai sotto i 16px (regola del tema). */
+.sd-hours table {
+	font-size: var(--wp--preset--font-size--small);
 }
 
 .sd-hours th,
@@ -3036,6 +3105,25 @@ img {
 	padding-top: var(--wp--custom--space--md);
 }
 
+/* Le due fotografie dentro il racconto (voce 17): quella del corridoio
+   con la targa «dr. venanzio» e quella di una sala operativa oggi.
+   Niente cornice, niente scatola bianca: riempiono la colonna di
+   lettura e basta. Il rapporto e' `wide` perche' sono due scatti
+   d'ambiente, non ritratti. */
+.sd-chapter__shot {
+	margin: var(--wp--custom--space--md) 0 var(--wp--custom--space--lg);
+	max-width: var(--wp--custom--measure--column);
+}
+
+.sd-chapter__shot img {
+	aspect-ratio: var(--wp--custom--frame--wide);
+	border-radius: var(--wp--custom--radius--panel);
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 100%;
+}
+
 /* Su /contatti/ il modulo non ha i recapiti accanto — stanno gia' in cima
    alla pagina — quindi occupa la colonna intera e i campi restano su due
    file invece di stringersi in una. */
@@ -3172,6 +3260,7 @@ img {
 .sd-entry__body > p,
 .sd-doc__body > p,
 .sd-doctor__bio > p,
+.sd-roster__text p,
 .sd-areatext > p {
 	max-width: var(--wp--custom--measure--prose);
 }
@@ -3182,7 +3271,6 @@ img {
 .sd-tech__row p,
 .sd-why__cell p,
 .sd-panel__body p,
-.sd-roster__text p,
 .sd-visit__panel p {
 	max-width: var(--wp--custom--measure--narrow);
 }

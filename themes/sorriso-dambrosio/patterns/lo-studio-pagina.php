@@ -25,8 +25,10 @@
  * completo). Qui il testo e' integrale, compreso il paragrafo «A distanza di
  * quasi 70 anni...» che in homepage non c'e'.
  *
- * L'immagine 645 e' quella che la pagina aveva gia'; la 654 (il bancone con
- * «Dal 1956») e' la stessa usata dal capitolo in homepage.
+ * La 654 (il bancone con «Dal 1956») e' la stessa usata dal capitolo in
+ * homepage. Le due fotografie dentro il racconto — la 1315, il corridoio
+ * con la targa «dr. venanzio», e la 1496, una sala operativa oggi — sono
+ * quelle che la pagina 48 aveva sotto i titoli «Dal 1956» e «Ad oggi».
  */
 $sd_c = sorriso_dambrosio_contacts();
 ?>
@@ -34,7 +36,7 @@ $sd_c = sorriso_dambrosio_contacts();
 <div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__grid"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
-<?php echo sorriso_dambrosio_image( 654, 'large', 'sd-chapter__figure' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_image( 654, '1536x1536', 'sd-chapter__figure', array( 'loading' => 'eager', 'sizes' => '(max-width: 1023px) 100vw, 800px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
 <!-- /wp:group -->
 
@@ -55,11 +57,11 @@ $sd_c = sorriso_dambrosio_contacts();
 
 <!-- wp:group {"className":"sd-head sd-head--minor","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-head sd-head--minor"><!-- wp:paragraph {"className":"sd-eyebrow","fontSize":"x-small"} -->
-<p class="sd-eyebrow has-x-small-font-size">Dal 1956</p>
+<p class="sd-eyebrow has-x-small-font-size">Storia</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2,"fontSize":"medium"} -->
-<h2 class="wp-block-heading has-medium-font-size">Storia</h2>
+<h2 class="wp-block-heading has-medium-font-size">Dal 1956</h2>
 <!-- /wp:heading --></div>
 <!-- /wp:group -->
 
@@ -73,13 +75,11 @@ $sd_c = sorriso_dambrosio_contacts();
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"sd-head sd-head--minor","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-head sd-head--minor"><!-- wp:paragraph {"className":"sd-eyebrow","fontSize":"x-small"} -->
-<p class="sd-eyebrow has-x-small-font-size">Ad oggi</p>
-<!-- /wp:paragraph -->
+<?php echo sorriso_dambrosio_image( 1315, 'large', 'sd-chapter__shot' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:heading {"level":2,"fontSize":"medium"} -->
-<h2 class="wp-block-heading has-medium-font-size">Storia</h2>
+<!-- wp:group {"className":"sd-head sd-head--minor","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-head sd-head--minor"><!-- wp:heading {"level":2,"fontSize":"medium"} -->
+<h2 class="wp-block-heading has-medium-font-size">Ad oggi</h2>
 <!-- /wp:heading --></div>
 <!-- /wp:group -->
 
@@ -93,8 +93,10 @@ $sd_c = sorriso_dambrosio_contacts();
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
-<!-- wp:paragraph {"className":"sd-chapter__pillars","fontSize":"large"} -->
-<p class="sd-chapter__pillars has-large-font-size">Innovazione, Passione e Tradizione sono i pilastri che guidano il nostro lavoro quotidiano.</p>
+<?php echo sorriso_dambrosio_image( 1496, 'large', 'sd-chapter__shot' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+
+<!-- wp:paragraph {"className":"sd-chapter__pillars","fontSize":"medium"} -->
+<p class="sd-chapter__pillars has-medium-font-size">Innovazione, passione e tradizione sono i pilastri che guidano il nostro lavoro quotidiano.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"className":"sd-more","fontSize":"x-small"} -->

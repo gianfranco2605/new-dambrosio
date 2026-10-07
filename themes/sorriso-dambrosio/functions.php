@@ -64,6 +64,29 @@ function sorriso_dambrosio_enqueue_menu_script() {
 add_action( 'wp_enqueue_scripts', 'sorriso_dambrosio_enqueue_menu_script' );
 
 /**
+ * Niente `sizes="auto"` sulle immagini pigre.
+ *
+ * Da WordPress 6.7 ogni immagine `loading="lazy"` esce con
+ * `sizes="auto, …"`. Con `auto` il browser sceglie dalla srcset
+ * guardando **solo la larghezza resa** e ignora tutto il resto.
+ *
+ * Qui dentro non va bene: mezzo sito monta le fotografie con
+ * `object-fit: cover` dentro riquadri piu' alti che larghi. Un ritratto
+ * reso a 335px di larghezza ne chiede 419 di altezza, ma col calcolo
+ * sulla sola larghezza il browser si ferma al file da 335x334 e lo
+ * ingrandisce del 25%. Misurato sui tre ritratti dei medici.
+ *
+ * Tolto `auto`, torna a contare il `sizes` scritto, e con esso il
+ * rapporto del riquadro.
+ *
+ * @return bool
+ */
+function sorriso_dambrosio_no_auto_sizes() {
+	return false;
+}
+add_filter( 'wp_img_tag_add_auto_sizes', 'sorriso_dambrosio_no_auto_sizes' );
+
+/**
  * Usa lo stesso foglio di stile anche negli editor, cosi' l'anteprima
  * corrisponde al front-end.
  *
