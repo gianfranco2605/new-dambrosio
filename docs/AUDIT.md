@@ -199,3 +199,133 @@ chiusura, telefono e «Prenota» dentro, animazione che rispetta
 ## 6. Esito — compilato dopo le correzioni
 
 Vedi `AUDIT-DOPO.md`.
+
+---
+
+# 6. ESITO — rimisurato sul sito in esecuzione
+
+Stesse 68 URL, stesse tre larghezze, stesso strumento. `after/`,
+`metrics-after.json`, `issues-after.json`, `whitespace-after.json`.
+
+| | prima | dopo | |
+|---|---:|---:|---|
+| **Problemi gravi** | **95** | **0** | ✔ |
+| Problemi medi | 2.185 | 274 | −87% |
+| Problemi bassi | 11 | 11 | orfani nei titoli, vedi §6.4 |
+| — mobile (bersagli, testo) | 1.868 | 101 | −95% |
+| — tipografia (righe lunghe) | 244 | 20 | −92% |
+| — immagini ingrandite | 166 | 145 | nessuna **sotto ×1**: §6.3 |
+| — proporzioni miste | 4 | **0** | ✔ |
+| Bande vuote | 764 | 557 | −27% |
+| Bande oltre 330px | 11 | **0** (filtrate le immagini) | ✔ |
+| Banda vuota piu' alta | 682px | 322px | −53% |
+
+La pagina piu' pesante del sito, `/trattamenti/` a 768px, passa da **10.706 a
+8.757 pixel di altezza senza perdere una parola**: −1.949px, quasi due schermi.
+
+## 6.1 Le diciotto cause, una per una
+
+| # | Causa | Esito |
+|---|---|---|
+| H1 | La mappa e' un rettangolo bianco prima del consenso | **risolto** — fondo tinto con l'indirizzo dietro l'iframe, e la fascia si stringe da 416 a 256px finche' la mappa e' bloccata |
+| H2 | I ritagli trasparenti si leggono come vuoti | **risolto** — la lastra con il filetto |
+| H3 | 95 immagini rese piu' grandi dell'originale | **risolto** — nessuna immagine e' piu' ingrandita |
+| H4 | «Ortodonzia Mobile» non ha immagine | **risolto** — la riga passa a colonna piena |
+| M1 | Icone social 36×36 | **risolto** — 44×44 |
+| M2 | Testo a 15px su mobile | **risolto** — minimo 16px |
+| M3 | Pulsanti alti 40px | **risolto** — minimo 44px |
+| M4 | Pulsante del menu 32×32 | **risolto** — 44×44 |
+| M5 | Etichetta del pulsante a 13px | **risolto** |
+| M6 | Briciole a 13px | **risolto** |
+| M7 | Privacy Policy di iubenda 91×22 | **aperto** — §6.2 |
+| M8 | Recapiti nel footer 152×25 | **risolto** |
+| M9 | Menu mobile non progettato | **risolto** — §6.5 |
+| T1 | Righe da 79 caratteri | **risolto** — misura per corpo del testo |
+| T2 | Righe da 101 caratteri nel contenuto | **risolto** |
+| T3 | Orfani nei titoli | **attenuato** — `text-wrap: balance` |
+| C1 | Due stili di pulsante | **risolto** — uno solo |
+| C2 | Invio del modulo piu' alto degli altri | **risolto** |
+| C3 | La spaziatura non e' un sistema | **risolto** — §6.6 |
+
+## 6.2 Quel che resta aperto, e perche'
+
+- **Il collegamento alla privacy di iubenda** resta 91×22px. Lo inietta il
+  plugin con uno stile in linea e un foglio caricato dopo quello del tema;
+  alzare la specificita' non e' bastato, probabilmente lo ridimensiona via
+  JavaScript. Il plugin non si tocca (regola 4). → `DA-VERIFICARE.md` §15.1
+- **Diciannove immagini sotto i 240px di larghezza.** Sono scelte: i ritratti
+  nell'elenco «Chi se ne occupa» (216px) e le schede verticali dentro cornici
+  orizzontali. Ingrandirle vorrebbe dire ingrandire l'originale.
+- **Cinquecentoventi bande vuote** restano, tutte **sotto i 330px**. Sono le
+  giunture fra una sezione e l'altra: due padding da 86px che si incontrano
+  fanno 172px di stacco, ed e' il ritmo voluto (`DESIGN-SPEC.md` §3.1 ne
+  prevedeva fino a 272). La soglia di 160px dello strumento e' piu' severa
+  del disegno.
+
+## 6.3 Le immagini: 145 segnalazioni, zero ingrandimenti
+
+Il rilevatore marca come «media» ogni immagine il cui originale sia largo meno
+di **una volta e mezza** lo spazio che occupa — cioe' nitida a schermo normale
+ma morbida su retina. Marca come «grave» quelle con un originale **piu' piccolo
+dello spazio**, cioe' ingrandite davvero.
+
+**Le gravi sono zero.** Le 145 medie sono l'elenco delle fotografie da rifare,
+scritto una per una in `DA-VERIFICARE.md` §14 con la misura che servirebbe.
+Dove l'originale era piccolo e' stato ridotto lo **spazio**: e' la regola del
+mandato, e si vede — le gallerie prima/dopo sono nitide ma piccole, perche'
+400×300 e' quanto esiste.
+
+## 6.4 Gli undici problemi bassi
+
+Sono orfani nei titoli: «anni» che resta solo sull'ultima riga negli otto
+titoli dei casi clinici, piu' «Bite» e «c'e'». `text-wrap: balance` distribuisce
+le righe dove il browser lo supporta, ma su «Paziente "F.N". 41 anni» non c'e'
+molto da bilanciare. Si risolverebbe solo cambiando il testo.
+
+## 6.5 Il menu mobile — i quattordici controlli
+
+Verificati con Playwright, uno per uno:
+
+```
+✔ si apre                      ✔ il sottomenu si espande
+✔ scorrimento del corpo bloccato ✔ aria-expanded passa a true
+✔ barra fissa in fondo nascosta  ✔ la freccia ruota
+✔ telefono dentro il pannello    ✔ Escape chiude
+✔ «Prenota» dentro il pannello   ✔ scorrimento sbloccato
+✔ sottomenu chiusi all'apertura  ✔ il pulsante di chiusura chiude
+✔ bersagli tutti >= 44px         ✔ fuoco dentro il pannello (10 Tab)
+```
+
+Stati fotografati in `compare/menu-390-chiuso.png`, `-aperto.png`,
+`-sottomenu.png`.
+
+## 6.6 Il sistema, adesso
+
+Nel foglio di stile del tema non c'e' **nessun valore scritto a mano**:
+
+```
+colori hardcoded   0
+clamp()            0
+max-width in rem   0
+```
+
+Tutto viene da `theme.json`: nove passi di spaziatura, undici misure di
+lettura, cinque proporzioni di cornice, un bersaglio minimo. Le regole stanno
+in `CLAUDE.md` § Il sistema di design.
+
+## 6.7 Che cosa ha insegnato questa misura
+
+Due volte lo strumento ha mentito, e in due direzioni opposte.
+
+**La prima**: il rilevatore basato sul DOM diceva «zero spazi vuoti» mentre il
+titolare ne vedeva ovunque. Gli elementi annidati riempiono ogni intervallo,
+quindi fra due blocchi non c'e' **mai** spazio — anche quando mezza schermata
+e' bianca. Misurando i pixel ne sono saltati fuori 764.
+
+**La seconda**: il rilevatore a pixel conta come vuota qualsiasi riga piatta, e
+per lui una fotografia chiara e' piatta come il bianco. Senza saperlo si finisce
+a «correggere» cose che ci sono. Ora l'audit registra dove stanno immagini,
+mappe e video, e le fasce che ci cadono dentro non si contano.
+
+La lezione: **uno strumento che misura va misurato a sua volta**, e il modo di
+farlo e' guardare la pagina.

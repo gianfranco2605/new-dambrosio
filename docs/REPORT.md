@@ -679,3 +679,110 @@ Non ho diviso la scheda «Chirurgia Piezo Elettrica», che mescola ultrasuoni e
 laser: dividerla vuol dire decidere dove tagliare un testo, e quello non e' un
 mandato che ho. Non ho corretto «Inesti» e «Cannini»: sono titoli, cioe' testo.
 Tutt'e tre stanno in `DA-VERIFICARE.md` con la domanda gia' formulata.
+
+---
+
+## 13. Quinta iterazione — la rifinitura di design
+
+Data: 2026-10-07. Misure complete in `docs/AUDIT.md`.
+Confronti affiancati in `../../../redesign/audit/compare/`.
+
+### 13.1 In cinque minuti
+
+Il sito funzionava e la direzione era giusta, ma sembrava fatto di fretta.
+Ho misurato **tutte le 68 pagine a tre larghezze** — 204 schermate — e trovato
+**1.700 segnalazioni che venivano da diciotto cause**. Corrette le cause.
+
+| | prima | dopo |
+|---|---:|---:|
+| Problemi gravi | **95** | **0** |
+| Problemi su telefono | 1.868 | 101 |
+| Immagini ingrandite oltre l'originale | 95 | **0** |
+| Righe di testo troppo lunghe | 244 | 20 |
+| La fascia vuota piu' grande | 682px | 322px |
+| `/trattamenti/` su tablet | 10.706px | **8.757px** |
+
+Quest'ultima riga e' la piu' parlante: la pagina piu' pesante del sito si e'
+accorciata di **quasi due schermate senza perdere una parola**.
+
+### 13.2 Le quattro cose che non andavano davvero
+
+**La mappa era un rettangolo bianco.** Finche' il visitatore non accetta i
+cookie, iubenda sostituisce la mappa con una pagina vuota. Nessun segnaposto,
+nessun messaggio: 736 pixel di bianco, e lo vedevano **tutti** al primo arrivo.
+Ora dietro c'e' l'indirizzo su fondo tinto, e la fascia si stringe finche' la
+mappa non arriva.
+
+**Meta' delle immagini non sono fotografie.** Sono render 3D ritagliati su
+fondo trasparente, e il tema li trattava come fotografie: riempire il riquadro,
+tagliare quel che avanza. Su una pagina bianca un ritaglio trasparente e'
+**indistinguibile dal vuoto** — la fascia da 500 pixel su `/trattamenti/` non
+era spazio, era un'immagine. Ora ogni immagine sta in una cornice con un
+filetto, e il programma decide da solo se riempirla o posarcela dentro.
+
+**Novantacinque immagini erano stirate**, alcune fino a due volte e mezza:
+un originale da 300 pixel reso a 652. Non era un problema tecnico da
+sistemare: **tredici originali su trenta non arrivano a 440 pixel**, il file
+grande non esiste. Ho quindi ridotto lo spazio invece di stirare la
+fotografia. Il risultato e' onesto e le immagini sono nitide, ma per quelle
+tredici lo spazio e' piu' piccolo di quanto il disegno vorrebbe:
+l'elenco completo, con la misura che servirebbe, e' in `DA-VERIFICARE.md` §14.
+
+**Il menu sul telefono** era l'elenco predefinito di WordPress: 48 voci buttate
+sullo schermo. Ora e' un pannello disegnato, con le sezioni che si aprono una
+per volta, il telefono e «Prenota un appuntamento» in fondo, e quattordici
+controlli automatici che verificano che funzioni.
+
+### 13.3 La causa di «sembra fatto di fretta»
+
+Il foglio di stile conteneva **83 misure di spaziatura inventate riga per
+riga**, trentacinque valori diversi: `1→1.5rem` accanto a `1→1.4rem` accanto a
+`0.75→1.25rem`. Nessuna sbagliava da sola. Insieme non facevano un ritmo.
+
+Ora la scala sta in un posto solo (`theme.json`) e nel foglio del tema non c'e'
+**nessun valore scritto a mano**: zero colori, zero misure, zero spaziature.
+E' la differenza fra un sito disegnato e un sito aggiustato.
+
+### 13.4 Che cosa ho sbagliato lungo la strada
+
+Tre cose, tutte trovate guardando la pagina e non il codice:
+
+1. **Quattro passi della scala non esistevano.** WordPress trasforma le chiavi
+   di `theme.json` in kebab-case e infila un trattino fra cifra e lettera:
+   `2xl` diventa `2-xl`. Il CSS chiedeva `2xl`, non trovava niente, e un
+   `var()` inesistente non da' errore — semplicemente non fa nulla. Nella
+   sezione Tecnologie della homepage lo stacco fra la fotografia e il testo
+   era **zero**: le righe cominciavano esattamente dove finiva l'immagine.
+2. **Il sottomenu del menu mobile finiva fuori dallo schermo** (a 370px su un
+   telefono da 390) e in pagina si vedeva solo un riquadro grigio vuoto.
+3. **La prima correzione alle cornici aveva ragione sul problema e torto sul
+   rimedio**: lasciando che ogni cornice si stringesse addosso alla sua
+   immagine il vuoto spariva, ma l'elenco diventava frastagliato. La soluzione
+   era un tetto d'altezza, non una proporzione variabile.
+
+### 13.5 E una cosa che ho sbagliato come misuratore
+
+Lo strumento con cui cercavo gli spazi vuoti diceva **zero**. Il titolare
+diceva «troppo spazio vuoto». Aveva ragione lui: contando gli elementi non si
+trova mai un buco, perche' gli elementi annidati riempiono tutto. Contando i
+**pixel** ne sono saltati fuori 764.
+
+Poi lo strumento ha mentito nell'altra direzione: per un contatore di pixel una
+fotografia chiara e' piatta come il bianco. Ora l'audit registra dove stanno le
+immagini e non conta le fasce che ci cadono dentro.
+
+**Uno strumento che misura va misurato a sua volta**, e il modo di farlo e'
+guardare la pagina.
+
+### 13.6 Quel che resta
+
+- **Le fotografie.** Trentatre voci hanno un originale troppo piccolo per lo
+  spazio che il disegno vorrebbe dargli, e le sedici gallerie prima/dopo sono
+  tutte 400×300. L'elenco e' in `DA-VERIFICARE.md` §14, con la misura che
+  servirebbe per ciascuna. Se arrivano fotografie migliori **non serve
+  toccare il codice**: la cornice si riempie da sola.
+- **Il collegamento alla privacy di iubenda** resta un bersaglio piccolo.
+  Lo scrive il plugin, e il plugin non si tocca.
+- **I tre ritratti dei medici** restano disomogenei fra loro: tre contesti
+  diversi, tre inquadrature diverse. Ora che compaiono affiancati su
+  `/professionisti/` si nota di piu' di prima.

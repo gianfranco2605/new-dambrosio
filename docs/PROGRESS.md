@@ -7,9 +7,17 @@
 | Fase | Che cosa | Stato |
 |---|---|---|
 | 1 | Crawl e misura: 68 URL × 3 larghezze | **fatto** — `docs/AUDIT.md` |
-| 2 | Correzioni di sistema (scala, lastra, bersagli, menu, mappa, pulsanti) | in corso |
-| 3 | Pagina per pagina | da fare |
-| 4 | Rimisura, confronti, documentazione | da fare |
+| 2 | Correzioni di sistema (scala, lastra, bersagli, menu, mappa, pulsanti) | **fatto** |
+| 3 | Pagina per pagina | **fatto** — tutto risolto a livello di sistema |
+| 4 | Rimisura, confronti, documentazione | **fatto** — `AUDIT.md` §6, `REPORT.md` §13 |
+
+**Esito: 95 problemi gravi → 0.** Medi 2.185 → 274, mobile 1.868 → 101,
+immagini ingrandite 95 → 0, fascia vuota piu' alta 682 → 322px.
+`/trattamenti/` a 768px: 10.706 → 8.757 pixel senza perdere una parola.
+
+**Da non fare senza il titolare** (lista "ask"): nessuna importazione di
+database, nessun search-replace, nessuna cancellazione, **nessun push** — i
+commit sono tutti locali sul ramo `redesign/altre-pagine`.
 
 **Strumenti** (versionati in `docs/audit/`, si rieseguono):
 ```bash
@@ -18,13 +26,19 @@ python3 docs/audit/whitespace.py <cartella>     # bande vuote sui pixel
 python3 docs/audit/analyze.py <metrics.json>    # problemi con severita'
 ```
 
-**Diciotto cause radice** per 1.700 segnalazioni. Le alte: la mappa e' un rettangolo
-bianco prima del consenso cookie; i ritagli trasparenti su bianco si leggono come
-vuoti; 95 immagini rese piu' grandi dell'originale (13 originali su 30 non arrivano a
-440px); «Ortodonzia Mobile» non ha immagine.
+**Diciotto cause radice** per 1.700 segnalazioni, tutte corrette tranne una
+(il collegamento alla privacy di iubenda, che lo scrive il plugin).
 
-**Da non fare senza il titolare** (lista "ask"): nessuna importazione di database,
-nessun search-replace, nessuna cancellazione, nessun push.
+### Rieseguire la misura
+
+```bash
+node docs/audit/audit.mjs ../../../redesign/audit/urls.txt <cartella> 1440,768,390
+python3 docs/audit/analyze.py <metrics.json>                 # problemi con severita'
+python3 docs/audit/whitespace.py <cartella> <metrics.json>   # bande vuote, immagini escluse
+```
+
+Il secondo argomento di `whitespace.py` non e' facoltativo per davvero: senza, lo
+strumento conta come vuota ogni fotografia chiara.
 
 ---
 
