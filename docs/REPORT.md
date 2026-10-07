@@ -481,3 +481,201 @@ fa82050  README e documentazione di progetto dentro il repository
 93527ab  Header, hero, orari in evidenza e modulo di prenotazione
 b6ba780  Hero: velo tarato sul contrasto misurato, e stacking su mobile
 ```
+
+---
+
+## 12. Quarta iterazione — l'architettura dei contenuti e le pagine interne
+
+Data: 2026-10-07. Specifica: `ARCHITECTURE.md`, scritta prima del codice.
+Materiali: `../../../redesign/screenshots/before-iter4/` (prima),
+`final-it4/` (dopo), `compare/it4-*.png` (affiancati).
+
+### 12.1 Il problema vero non era il design
+
+La homepage era approvata; le altre pagine erano ancora quelle di Ollie, con
+una colonna da 740px e mezza pagina vuota. Ma rifarle col sistema nuovo
+sarebbe stato curare il sintomo.
+
+> **Il menu aveva 45 voci di secondo livello. Tutte e 45 puntavano a un'ancora
+> dentro una di sette pagine monolitiche.**
+
+«Carico Immediato» non era una pagina: era `#carico-inmediato`. Non si poteva
+condividere, Google non lo indicizzava come risorsa, non aveva un titolo, una
+descrizione, un'immagine sociale. `/trattamenti/` era **lunga 13.352 pixel** a
+1440px: dodici prestazioni diversissime in un rotolo solo. E per aggiungerne
+una bisognava aprire 46 KB di blocchi, duplicare un gruppo, cambiare l'ancora
+e poi ricordarsi del menu.
+
+### 12.2 Che cosa e' stato costruito
+
+| | Prima | Dopo |
+|---|---|---|
+| Trattamenti | 30 ancore dentro 5 pagine | **30 schede**, un indirizzo ciascuna |
+| Tecnologie | 8 ancore dentro 1 pagina | **8 schede** |
+| Professionisti | 3 blocchi di testo nel tema | **3 schede**, con relazioni |
+| Casi clinici | 8 shortcode sparsi su 3 pagine | **8 schede** |
+| Aree | 5 pagine da 371 a 1.762 parole | **5 termini**, una tassonomia sola |
+| Pagina contatti | non esisteva | `/contatti/` |
+| Dove sta il contenuto | nel tema e nelle pagine | in un **plugin**, che sopravvive al tema |
+
+`plugins/sorriso-dambrosio-core/`: quattro tipi, una tassonomia condivisa,
+post meta nativo (niente ACF: non c'era, e non valeva una dipendenza
+commerciale), tredici blocchi a resa server, le regole di riscrittura, la
+mappa dei redirect, gli orari, i recapiti e il JSON-LD.
+
+Il tema guadagna dieci template e un capitolo di CSS (§18), e **perde** gli
+orari e i recapiti: erano contenuto nel posto sbagliato.
+
+### 12.3 Gli indirizzi: tutti tenuti, nessun redirect
+
+Il vincolo era «nessun 404». Il risultato e' piu' stretto: **otto indirizzi su
+otto restano identici e rispondono 200 senza nemmeno un redirect**. Le vecchie
+pagine passano in bozza e il loro indirizzo viene raccolto da un termine
+d'area o da un archivio che mostra lo stesso contenuto, arricchito.
+
+Le aree stanno alla radice (`/implantologia/`) con **una regola per termine**,
+generata dall'elenco reale. Una tassonomia con slug vuoto avrebbe risolto il
+problema ingoiando ogni URL di primo livello del sito.
+
+I quattro indirizzi rotti del vecchio menu (`/estetica/`,
+`/implantologia/implantologia/`…) ora hanno un 301 dichiarato invece di una
+correzione indovinata da WordPress.
+
+```
+bash docs/migration/verifica-url.sh
+  — Le vecchie pagine e gli articoli      15 × 200
+  — Le voci rotte del vecchio menu         4 × 200 (dopo 1 redirect)
+  — I nuovi indirizzi                     52 × 200
+  Controllati: 71 · falliti: 0
+```
+
+Le 45 vecchie ancore (`#flapes`, `#piezo`, `#carico-inmediato`…) restano come
+`id` sulle righe delle pagine d'area: un vecchio link esterno atterra ancora
+nel punto giusto. Gli **slug** pero' sono scritti bene — un refuso dentro
+un'ancora e' invisibile, dentro un URL resta per sempre.
+
+### 12.4 Il testo e' verificato, non dichiarato
+
+`docs/migration/verifica-testi.php` prende ogni vecchia sezione, la spezza in
+frasi e controlla che ognuna sia arrivata a destinazione.
+
+```
+Voci confrontate: 38 · frasi: 176 · mancanti: 0
+```
+
+Si ignorano solo le etichette dei pulsanti «Prenota un appuntamento», che sono
+diventate la fascia di chiusura identica su tutte le pagine interne.
+
+La FAQ di sei domande che chiudeva `/implantologia/` non e' ne' un trattamento
+ne' una tecnologia: sta nel meta del termine e la pagina d'area la rende.
+Senza quel passaggio si sarebbe persa.
+
+### 12.5 Gli impianti nuovi
+
+Nessuno compare in homepage: la regola 3 di DESIGN FIRST vale anche fra la
+home e le pagine interne.
+
+| Impianto | Dove | Che cos'e' |
+|---|---|---|
+| **Intestazione d'area** | `/implantologia/` e le altre 4 | fascia tinta, titolo a sinistra, fotografia che esce a destra |
+| **Zig-zag** | gli elenchi dei trattamenti | righe alternate, fotografia a sinistra poi a destra |
+| **Matrice a filetti** | `/tecnologie/` | celle divise da linee, niente riquadri e niente ombre |
+| **Scheda** | un trattamento | titolo a sinistra, fotografia che esce **a destra** |
+| **Scheda a specchio** | una tecnologia, un articolo | la fotografia esce **a sinistra** |
+| **Tre colonne** | `/professionisti/` | i tre medici a confronto, divisi da filetti verticali |
+| **Indice per aree** | `/prestazioni/` e la 404 | tutti i trattamenti in un colpo d'occhio, 2.283px invece di 13.352 |
+| **Fascia di prenotazione** | fondo di ogni pagina interna | una sola, identica ovunque |
+
+### 12.6 Quattro difetti che solo la pagina resa mostrava
+
+Nessuno dei quattro si vedeva leggendo il codice.
+
+1. **Il sanguinamento non arrivava da nessuna parte.** `calc(50% - 50vw)`
+   funziona solo se il contenitore e' l'elemento stesso: dentro una cella di
+   griglia quel 50% si misura sulla cella. Ora c'e' `--sd-bleed`, che si
+   misura sempre sul viewport.
+2. **Nello zig-zag la fotografia finiva nella colonna larga.** `order` sposta
+   la cella, non la colonna: sulle righe pari l'immagine prendeva il 62% e il
+   testo si stringeva nel 38%. Si scambiano le colonne, non gli elementi.
+3. **La prima voce di menu finiva sopra il logo.** Misurato a 1440px: voce a
+   221px, logo fino a 232. Con otto voci la riga chiedeva 1.290px contro i
+   1.256 disponibili. Il menu e' sceso a sette (vedi `DA-VERIFICARE` §0.5).
+4. **`<h2></h2>` vuoti.** `block.json` dichiara i valori di partenza, quindi
+   un attributo arriva sempre valorizzato — anche a `''` — e un `isset()`
+   secco faceva vincere quel vuoto sul ripiego scritto in PHP.
+
+E due di contorno, trovati misurando il JSON-LD:
+
+5. **`&rsquo;` e' un'entita' nominata di HTML5.** Senza `ENT_HTML5` la tabella
+   di default (HTML 4.01) non la conosce e la lascia li'. In una pagina HTML
+   non si vede; dentro un JSON-LD si'.
+6. **iubenda rimonta tutta la pagina con un parser DOM** e ogni carattere non
+   ASCII torna indietro come entita' numerica — dentro il JSON-LD, testo
+   letterale. Il plugin non si tocca: il JSON esce tutto in `\uXXXX`.
+   Verificato con `?iub_no_parse=1`, che spegne quel passaggio.
+
+### 12.7 Criteri di accettazione
+
+| Criterio | Esito |
+|---|---|
+| `ARCHITECTURE.md` esiste e corrisponde a quanto costruito | ✔ `docs/ARCHITECTURE.md` |
+| Ogni vecchio URL risponde 200, o 301 verso un 200. Zero 404 | ✔ **71 controllati, 0 falliti** |
+| Ogni frammento di testo e' presente a destinazione | ✔ **176 frasi, 0 mancanti** |
+| Ogni tipo ha singolo e archivio funzionanti | ✔ 4 tipi × 2 viste |
+| Ogni area elenca i suoi trattamenti dinamicamente | ✔ 5 aree |
+| Un trattamento di prova da WP-CLI compare nelle liste giuste | ✔ area, indice, tecnologia collegata, altri trattamenti; **non** nelle altre aree; sparisce quando si cancella |
+| Gli orari vengono da una fonte sola | ✔ `Studio::hours()` → home, footer, contatti, lo-studio, JSON-LD |
+| Navigazione con link veri a 1440 e 390px | ✔ 7 voci, 45 sottovoci con indirizzi reali |
+| Briciole corrette | ✔ e generano il `BreadcrumbList` |
+| Before/after funziona dove era usato | ✔ **25 gallerie, tutte inizializzate** |
+| CF7 funziona, Mailpit riceve | ✔ con tutti i campi e `Reply-To` del paziente |
+| JSON-LD valido, solo dati esistenti | ✔ `Dentist` + `BreadcrumbList` + `MedicalProcedure`/`Physician` |
+| Niente overflow a 1440/768/390, un `h1` per pagina | ✔ 14 pagine × 3 larghezze |
+| PHPStan livello 5, PHP 8.3, su plugin e tema | ✔ `[OK] No errors` su entrambi |
+| `debug.log` pulito | ✔ |
+| `git status` traccia solo i percorsi ammessi | ✔ `docs/`, `themes/sorriso-dambrosio/`, `plugins/sorriso-dambrosio-core/` |
+| Confronto affiancato vecchio/nuovo | ✔ 5 coppie in `screenshots/compare/it4-*.png` |
+
+### 12.8 Autocritica
+
+**Dove funziona.**
+
+`/prestazioni/` mostra trenta trattamenti in **2.283px**. La vecchia
+`/trattamenti/` ne mostrava dodici in **13.352px**. Non e' una pagina piu'
+corta: e' una pagina che fa un lavoro diverso — indicizza invece di
+raccontare, e il racconto sta nelle trenta schede.
+
+Il modello regge la prova vera: un trattamento nuovo creato da riga di comando
+compare da solo in cinque punti. Nessuno di quei cinque e' stato scritto a
+mano, quindi nessuno dei cinque puo' dimenticarsene.
+
+**Dove e' ancora sotto.**
+
+- **Le pagine d'area sono lunghe.** `/implantologia/` fa 5.964px con cinque
+  trattamenti; `/trattamenti/`, con dodici, va oltre. Lo zig-zag e' leggibile
+  ma generoso. Una variante piu' compatta sopra le otto voci sarebbe giusta.
+- **Molte schede non hanno ne' tecnologie ne' medici collegati.** Delle trenta,
+  sei hanno una tecnologia collegata e sei un medico: le altre chiudono con la fascia
+  di prenotazione e basta. Non e' un difetto del codice — e' che le relazioni
+  si potevano derivare solo dal testo esistente, e il testo non le dice. Si
+  riempiono dal pannello in un pomeriggio (`DA-VERIFICARE` §11).
+- **«Denti e postura» non si presenta**: e' l'unica area senza introduzione,
+  perche' quel testo non esiste da nessuna parte.
+- **I ritratti su `/professionisti/`** sono resi a ~310px da originali di
+  420px: su Retina il piu' piccolo resta morbido. Problema vecchio, attenuato
+  due volte, mai risolto.
+- **Le gallerie prima/dopo hanno testi alternativi inutilizzabili** e una
+  coppia scambiata. Sono dati del plugin: correggerli significa scrivere otto
+  descrizioni cliniche nuove, che e' una decisione di contenuto.
+- **Gli orari restano in un file.** Una fonte sola e' un progresso netto
+  rispetto a tre copie, ma «una fonte sola che richiede uno sviluppatore» non
+  e' lo stesso di «una fonte sola che il cliente puo' cambiare».
+
+**Quello che non ho fatto, e perche'.**
+
+Non ho aggiunto una schermata di opzioni per orari e recapiti: cambiano una
+volta ogni molti anni e sarebbe una superficie in piu' da mantenere.
+Non ho diviso la scheda «Chirurgia Piezo Elettrica», che mescola ultrasuoni e
+laser: dividerla vuol dire decidere dove tagliare un testo, e quello non e' un
+mandato che ho. Non ho corretto «Inesti» e «Cannini»: sono titoli, cioe' testo.
+Tutt'e tre stanno in `DA-VERIFICARE.md` con la domanda gia' formulata.

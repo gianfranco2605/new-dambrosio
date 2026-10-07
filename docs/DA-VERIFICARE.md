@@ -3,7 +3,8 @@
 Punti che richiedono una decisione di chi possiede il sito o i contenuti.
 Nessuno di questi blocca la homepage: il lavoro e' completo e funzionante cosi' com'e'.
 
-Aggiornato il 2026-10-06, dopo il rifacimento del layout (vedi `DESIGN-SPEC.md`).
+Aggiornato il 2026-10-07, dopo il rifacimento dell'architettura dei contenuti
+(vedi `ARCHITECTURE.md`). I punti nuovi di questa iterazione sono i §11, §12 e §13.
 
 ---
 
@@ -106,6 +107,14 @@ riferimento ne ha sei. «Estetica» e «Denti e postura» potrebbero stare sotto
 «Trattamenti».
 
 **Decisione richiesta:** accettare cosi', oppure riorganizzare il menu.
+
+> **Aggiornamento 2026-10-07 — questa e' stata presa.** Con i nuovi indirizzi
+> le etichette si erano allungate e la **prima voce finiva sopra il logo** a
+> 1440px (voce a 221px, logo fino a 232). Il menu e' sceso a **sette** voci:
+> «Contatti» sta sotto «Lo Studio», insieme a «I Professionisti» e «Casi
+> Studi». Resta raggiungibile anche dal pulsante «Prenota un appuntamento»
+> nell'header, dalla fascia di chiusura di ogni pagina interna e dal footer.
+> Se il titolare preferisce «Contatti» di primo livello, deve cedere qualcos'altro.
 
 ### 0.6 La barra fissa in fondo su mobile ora e' ridondante
 
@@ -318,3 +327,168 @@ Nel tema c'e' un `composer.json` con **PHPStan** come sola dipendenza di svilupp
 analizzare il codice con target **PHP 8.3**. `vendor/` e' escluso da Git e **non va caricato in
 produzione**: se la pipeline FTP sincronizza l'intera cartella del tema, vanno escluse
 `vendor/`, `composer.json`, `composer.lock` e `phpstan.neon.dist`.
+
+
+---
+
+## 11. Le relazioni inferite fra i contenuti
+
+Il nuovo modello collega trattamenti, tecnologie, medici e casi.
+**Tutte le relazioni derivano dal testo o dalla struttura gia' pubblicati**:
+nessuna e' inventata. Ma non tutte hanno la stessa forza, e queste vanno
+confermate da chi conosce lo studio.
+
+### 11.1 Strutturali — nessun dubbio
+
+Vengono da dove una cosa stava, non da come era scritta.
+
+| Relazione | Da dove |
+|---|---|
+| ogni trattamento → la sua area | la pagina in cui la sezione viveva |
+| Dott.ssa Stefania → Ortodonzia | `/ortodonzia/` conteneva il suo titolo e i suoi casi |
+| Dott. Giuseppe → Estetica Dentale | `/estetica-dentale/` conteneva il suo titolo e i suoi casi |
+| i 4 casi `966 980 1012 1015` → Stefania, Ortodonzia | stavano sotto il suo titolo in `/casi-studi/` |
+| i 4 casi `1598 1022 1026 1030` → Giuseppe, Estetica | idem |
+
+### 11.2 Testuali — il testo lo dice
+
+| Relazione | La frase |
+|---|---|
+| Chirurgia Computer-guidata → Software per la Chirurgia Guidata | «grazie all'utilizzo di un software innovativo… progettazione computerizzata» |
+| Senza Incisione Lembo e Suture → Software per la Chirurgia Guidata | «nota come chirurgia computer-guidata» |
+| Senza Incisione Lembo e Suture → TC Cone-Beam | «i risultati della Cone-Beam (radiografia 3D)» |
+| Nicoletta → Parodontologia | «si distingue nell'ambito della Parodontologia» |
+| Nicoletta → area Estetica Dentale | «e dell'estetica del sorriso» |
+| Stefania → Ortodonzia Fissa, Linguale, Invisibile | «tecniche tradizionali, linguali e invisibili» |
+| Giuseppe → area Implantologia | «eccelle nei campi dell'Implantologia» |
+| Giuseppe → Parodontologia, Protesi Fissa Estetica | «Parodontologia e Protesi Estetica» |
+
+**Nota:** «Ortodonzia Mobile» **non** e' attribuita a Stefania. La sua
+biografia nomina tre tecniche e quella non c'e': dedurla sarebbe inventare.
+Se se ne occupa, va spuntata.
+
+### 11.3 Inferite — DA CONFERMARE, una per una
+
+Qui ho dedotto. Ognuna e' plausibile, nessuna e' scritta.
+
+| # | Relazione | Perche' l'ho dedotta | Il dubbio |
+|---|---|---|---|
+| a | Implantologia Post Estrattiva → RX Digitale Intraorale | «ogni caso va pianificato mediante un attento studio radiografico» | «radiografico» e' generico: potrebbe essere la TC Cone-Beam o l'ortopantomografo |
+| b | Chirurgia dei Cannini Inclusi → Ortopantomografo | «esami radiografici», e la scheda dell'Ortopantomografo cita proprio i «denti inclusi» | come sopra |
+| c | Laser Terapia → Chirurgia Piezo Elettrica | la scheda «Piezo» descrive il laser a diodi in uso «sin dal 1998» | **la scheda Piezo mescola due argomenti**: comincia con gli ultrasuoni e prosegue sul laser. Potrebbe essere un errore del testo originale |
+| d | Sbiancamento Professionale → Chirurgia Piezo Elettrica | «sbiancamento dei denti con il laser», stessa scheda | come sopra: se il laser diventasse una scheda sua, questo legame andrebbe li' |
+| e | Giuseppe → Chirurgia Rigenerativa | «Chirurgia Orale e Osseo-Ricostruttiva» | «osseo-ricostruttiva» e «rigenerativa» non sono sinonimi esatti |
+
+**Decisione richiesta:** confermare o correggere le cinque. Si fa dal pannello,
+senza toccare il codice: il riquadro «Tecnologie collegate» sul trattamento e
+«Si occupa di» sul medico (vedi `GUIDA-CLIENTE.md`).
+
+**Collegata:** la scheda **«Chirurgia Piezo Electtrica (Piezo-surgery)»**
+contiene due argomenti diversi — la chirurgia piezoelettrica e il laser a
+diodi. Se il laser merita una scheda sua, il testo va diviso; ma dividerlo
+significa decidere dove tagliare, e quella e' una scelta di contenuto.
+
+---
+
+## 12. Gli orari e i recapiti non sono modificabili dall'admin
+
+Stavano nel tema, ora stanno nel plugin: una fonte sola, letta da intestazione,
+hero, fascia orari, pagina contatti, footer e dati strutturati. Cambiarli in un
+punto li cambia in tutti e sei.
+
+Il limite onesto: **sono in un file, non in una schermata**. Per modificarli
+serve uno sviluppatore.
+
+Non e' stata fatta una pagina di opzioni perche' questi dati cambiano una volta
+ogni molti anni, e una schermata in piu' e' una schermata in piu' da mantenere.
+
+**Decisione richiesta:** va bene cosi', oppure si vuole poterli modificare dal
+pannello? E' un lavoro breve e non tocca nient'altro.
+
+---
+
+## 13. Punti aperti dell'iterazione 4
+
+### 13.1 «Denti e postura» non ha un testo introduttivo
+
+Quattro aree su cinque hanno un'introduzione, presa dai pannelli «Nostri
+servizi» della homepage — testo gia' pubblicato. Per «Denti e postura» quel
+pannello **non e' mai esistito**: in homepage le quattro voci erano Estetica,
+Ortodonzia, Implantologia e «Altri Servizi».
+
+La sua pagina oggi parte dal titolo e va dritta ai tre trattamenti. Funziona,
+ma e' l'unica area che non si presenta.
+
+**Decisione richiesta:** una frase di presentazione (2-3 righe, tono
+informativo), oppure lasciare cosi'.
+
+### 13.2 Il testo `alt` delle fotografie prima/dopo
+
+Le sedici immagini delle otto gallerie hanno come testo alternativo il nome
+di lavorazione del file. Misurato sulla pagina resa:
+
+- «after case 4», «before case3», «caso 1 before», «after image case 2»… —
+  per chi usa un lettore di schermo non dicono niente;
+- due gallerie danno **lo stesso** testo a entrambe le immagini
+  («case 3 giuseppe d'ambrosio» due volte), quindi prima e dopo non si
+  distinguono;
+- una coppia e' **scambiata**: l'immagine «prima» porta «After case 1 dott
+  Giuseppe» e quella «dopo» porta «Before case 1 dott Giuseppe».
+
+Non e' stato toccato: sono dati del plugin before/after, e correggerli vuol
+dire scrivere otto descrizioni cliniche nuove.
+
+**Decisione richiesta:** autorizzare la scrittura di otto testi alternativi
+descrittivi e neutri (per esempio «Arcata superiore prima e dopo il
+trattamento ortodontico»), o lasciare come sta.
+
+### 13.3 Le gallerie prima/dopo salvano indirizzi assoluti
+
+Il plugin before/after salva nel database l'indirizzo completo delle immagini
+(`http://sorrisodambrosio.local/wp-content/uploads/...`). **Non e' un problema
+introdotto da questo lavoro**, ma al momento di andare in produzione quelle
+sedici immagini non si vedranno finche' non si fa un search-replace sul
+database.
+
+Tutto il resto del sito non ha questo problema: le immagini del tema e dei
+nuovi contenuti si risolvono a runtime.
+
+**Da fare al deploy:** `wp search-replace 'sorrisodambrosio.local' 'sorrisodambrosio.it'`
+sulla tabella dei post meta, dopo il backup.
+
+### 13.4 Gli slug non riproducono i refusi delle vecchie ancore
+
+Le vecchie ancore contengono errori: `carico-inmediato`, `flapes`,
+`ortodonzia-invisiblile`, `igieneprofesionale`, `inesti-in-ceramica`,
+`facette-estetiche`, `cannini-inclusi`. Gli indirizzi nuovi sono scritti bene
+(`carico-immediato`, `senza-lembo-e-suture`, `ortodonzia-invisibile`,
+`igiene-e-profilassi-avanzata`...). Un refuso dentro un'ancora e' invisibile;
+dentro un URL resta per sempre.
+
+**Le vecchie ancore restano** come `id` sulle righe delle pagine d'area, quindi
+un vecchio link esterno atterra ancora nel punto giusto.
+
+Restano invece com'erano gli slug dove il **titolo** contiene il refuso
+(`inesti-in-ceramica`, `cannini-inclusi`): correggere lo slug senza correggere
+il titolo sarebbe incoerente, e il titolo e' testo (vedi §4).
+
+**Decisione richiesta:** autorizzare la correzione dei due titoli — «Inesti» →
+«Innesti», «Cannini» → «Canini» — e dei rispettivi indirizzi.
+
+### 13.5 La pagina «70 anni attivita» e' vuota
+
+`/70-anni-attivita/` (pagina 1874) e' **pubblicata e completamente vuota**: non
+contiene nessun blocco. Ha pero' una descrizione per Google che parla del 1956.
+
+Non e' stata toccata (regola: non si cancella niente). Oggi risponde 200 e
+mostra solo intestazione e fondo pagina.
+
+**Decisione richiesta:** cosa farne — riempirla, metterla in bozza, o
+reindirizzarla a `/lo-studio/`.
+
+### 13.6 I ritratti dei medici su `/professionisti/`
+
+La pagina nuova mostra i tre ritratti in tre colonne da ~310px. Gli originali
+sono 420×554, 420×419 e 486×642: a schermo normale vanno bene, su Retina il
+piu' piccolo resta morbido. E' lo stesso problema gia' segnalato al §2.4,
+nello stesso stato: attenuato dall'impaginazione, non risolto.
