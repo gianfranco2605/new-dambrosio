@@ -247,7 +247,7 @@ final class Blocks {
 			$body .= '<figure class="sd-plate ' . esc_attr( $mode ) . ' sd-areahead__figure">' . $img . '</figure>';
 		}
 
-		return Render::section( $body . '</div>', trim( 'sd-areahead ' . self::attr( $attrs, 'fondo', 'sd-section--tint' ) ) );
+		return Render::section( $body . '</div>', trim( 'sd-areahead ' . self::attr( $attrs, 'fondo', '' ) ) );
 	}
 
 	/**

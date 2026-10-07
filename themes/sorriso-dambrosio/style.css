@@ -233,7 +233,7 @@ Text Domain: sorriso-dambrosio
 	padding: 0.85em 1.5em;
 	text-align: center;
 	text-decoration: none;
-	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	transition: background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	white-space: nowrap;
 }
 
@@ -1699,7 +1699,7 @@ Text Domain: sorriso-dambrosio
 	font-size: var(--wp--preset--font-size--small);
 	line-height: 1.5;
 	padding: 0.75em 0.9em;
-	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	transition: border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), box-shadow var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	width: 100%;
 }
 
@@ -1759,7 +1759,7 @@ Text Domain: sorriso-dambrosio
 	font-weight: 500;
 	letter-spacing: 0.02em;
 	padding: 0.95em 2em;
-	transition: background-color 0.2s ease, border-color 0.2s ease;
+	transition: background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 }
 
 .sd-form__submit:hover,
@@ -2115,7 +2115,21 @@ img {
 	padding-block: 0.85rem;
 }
 
+/* Tutte le voci stanno sulla stessa riga ottica: i collegamenti, i
+   separatori e la pagina corrente.
+
+   Prima non era cosi', e la causa stava altrove: la regola dei bersagli
+   (19.1) da' ai collegamenti delle briciole `min-height: 44px` e
+   `display: inline-flex`, cosi' il testo di una voce **con** link e'
+   centrato dentro 44px. L'ultima voce non ha link — e' la pagina in cui
+   si e' — quindi il suo testo restava in cima alla riga, insieme al «/»
+   che la precede, visibilmente piu' alto delle altre.
+
+   Non si toglie il bersaglio: si da' a ogni voce lo stesso
+   incolonnamento, cosi' testo, separatori e pagina corrente si centrano
+   tutti sulla stessa riga alta 44px. */
 .sd-crumbs__list {
+	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	font-size: var(--wp--preset--font-size--x-small);
@@ -2126,7 +2140,11 @@ img {
 }
 
 .sd-crumbs__item {
+	align-items: center;
 	color: var(--wp--preset--color--secondary);
+	display: inline-flex;
+	line-height: 1.4;
+	min-height: var(--wp--custom--tap);
 }
 
 .sd-crumbs__item + .sd-crumbs__item::before {
@@ -2497,13 +2515,19 @@ img {
    devono sembrare la stessa pagina.
    --------------------------------------------------------------- */
 
+/* La scheda e' il modello di ogni sottopagina: trattamenti, tecnologie,
+   casi. Lo spazio verticale si stringe qui una volta sola (voce 22).
+   Era `--sd-rhythm` (86px sopra e sotto a 1440): troppo per una pagina
+   che si apre con un titolo e una fotografia. */
 .sd-entry {
 	overflow: hidden;
+	padding-block: var(--wp--custom--space--xl);
 }
 
 .sd-entry__grid {
+	column-gap: var(--wp--custom--space--lg);
 	display: grid;
-	gap: var(--wp--custom--space--lg);
+	row-gap: var(--wp--custom--space--md);
 	grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
 	grid-template-areas:
 		"head figure"
@@ -2533,8 +2557,15 @@ img {
 	margin: 0;
 }
 
-/* Proporzione e riempimento li governa la lastra (§19.6). */
+/* Proporzione e riempimento li governa la lastra (§19.6).
 
+   La proporzione pero' qui e' `plate` (4/3) e non `wide` (3/2), e la
+   fotografia e' appiccicata. E' la voce 22: sotto l'immagine restavano
+   355px di colonna vuota, misurati su /trattamenti/conservativa/,
+   perche' il testo e' alto il doppio della fotografia e la fotografia
+   stava ferma in cima. Il 4/3 le da' 54px in piu' di altezza, e
+   `sticky` fa il resto: scorrendo accompagna la lettura invece di
+   uscire di scena al primo schermo. */
 .sd-entry__figure {
 	margin-right: calc(var(--sd-bleed) * -1);
 }
@@ -3387,34 +3418,37 @@ img {
 	width: 100%;
 }
 
-/* Il ritaglio si posa su una lastra chiara con un filetto attorno.
-   Il fondo NON e' tinto: meta' di queste immagini ha gia' il bianco
-   dentro, e su fondo tinto diventavano adesivi bianchi incollati.
-   A risolvere il problema del «sembra vuoto» non e' il colore, e' il
-   **filetto**: delimita l'immagine, quindi non la si confonde piu'
-   con il nulla, e il bianco dell'immagine continua nel bianco della
-   lastra senza giunture. */
+/* Il ritaglio non sta dentro una scatola: e' la cornice che si fa della
+   sua misura (voce 25).
+
+   Prima il ritaglio si posava al centro di una lastra bianca con un
+   filetto attorno e del padding. Il risultato, misurato su
+   /implantologia/: riquadri da 454x303 con dentro immagini da 300x200
+   — l'immagine occupava **dal 37% al 53%** del riquadro, e il resto
+   era bianco bordato. Accanto, le fotografie riempivano il loro
+   riquadro fino al bordo. Due trattamenti diversi nello stesso elenco:
+   e' l'incoerenza della voce 25, ed era anche spazio sprecato.
+
+   Il filetto era stato messo per un motivo vero — un ritaglio
+   trasparente su pagina bianca si confonde col vuoto, e l'audit aveva
+   letto 500px di niente. Ma la causa di quei 500px era il riquadro
+   piu' grande dell'immagine, non la mancanza di un bordo. Tolto il
+   riquadro, il problema non si pone: l'immagine e' esattamente grande
+   quanto se' stessa, e quel che le sta attorno e' la pagina.
+
+   Niente padding, niente bordo, niente scatola bianca: come le
+   fotografie. */
 .sd-plate--contain {
-	background-color: var(--wp--custom--surface--pure);
-	border: 1px solid var(--wp--custom--border--hairline);
-	padding: var(--wp--custom--space--sm);
+	aspect-ratio: auto;
+	justify-content: flex-start;
+	max-width: 100%;
+	width: fit-content;
 }
 
 .sd-plate--contain img {
 	height: auto;
-	max-height: 100%;
 	object-fit: contain;
 	width: auto;
-}
-
-/* Sulle fasce tinte e scure il filetto cambia tono, il fondo resta chiaro:
-   il bianco dentro l'immagine non si puo' cambiare. */
-.sd-section--tint .sd-plate--contain {
-	border-color: var(--wp--preset--color--main);
-}
-
-.sd-section--dark .sd-plate--contain {
-	border-color: var(--wp--custom--rule--on-dark);
 }
 
 /* Le proporzioni per ruolo. Una per griglia, mai due. */
@@ -3610,7 +3644,7 @@ img {
 /* L'indicatore: una freccia che ruota, non un simbolo che cambia. */
 .sd-header .is-menu-open .wp-block-navigation__submenu-icon {
 	margin-left: auto;
-	transition: transform 0.22s ease;
+	transition: transform var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 }
 
 .sd-header .is-menu-open [aria-expanded="true"] > .wp-block-navigation__submenu-icon {
@@ -3888,10 +3922,47 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
    --------------------------------------------------------------- */
 
 .sd-zig__figure,
-.sd-entry__figure,
 .sd-areahead__figure {
 	aspect-ratio: var(--wp--custom--frame--wide);
-	max-height: 20rem;
+}
+
+/* La scheda e' l'unica cornice che sta accanto a una colonna di testo
+   di lunghezza imprevedibile: cresce con la riga invece di tenere una
+   proporzione fissa (voce 22).
+
+   Una proporzione fissa accanto a un testo variabile lascia sotto
+   l'immagine tutto quello che avanza: misurati 144px su «Conservativa»,
+   476 su «Cannini inclusi», 490 su «Sterilizzazione». Allungare la
+   cornice a mano avrebbe stirato le fotografie corte.
+
+   Qui la cornice si allunga quanto la riga, ma non oltre l'altezza
+   naturale della sua fotografia: il tetto arriva da `Render::thumb()`
+   come `--sd-cap`, che e' l'altezza del file. Fin li' `object-fit:
+   cover` ritaglia e non ingrandisce mai; oltre, si ferma. Il
+   pavimento resta il 4/3, perche' con un testo corto la cornice non
+   deve ridursi a una fessura. */
+.sd-plate--cover.sd-entry__figure {
+	align-self: stretch;
+	aspect-ratio: auto;
+	max-height: 44rem;
+	min-height: 20rem;
+}
+
+.sd-plate--cover.sd-entry__figure img {
+	height: 100%;
+	max-height: none;
+	object-fit: cover;
+	width: 100%;
+}
+
+/* Il ritaglio no: quello resta nella sua cornice 4/3 col suo tetto.
+   Allungarlo vorrebbe dire o stirarlo o circondarlo di fondo, che e'
+   esattamente la fascia vuota che il tetto era stato scritto per
+   togliere. Dove il testo e' molto piu' alto del ritaglio, sotto
+   resta dello spazio: e' il prezzo di non ingrandire un ritaglio, ed
+   e' elencato in DA-VERIFICARE. */
+.sd-plate--contain.sd-entry__figure {
+	aspect-ratio: var(--wp--custom--frame--plate);
 }
 
 .sd-zig__figure img,
@@ -3900,11 +3971,30 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	max-height: 100%;
 }
 
+/* Il tetto vale per i ritagli, non per le fotografie.
+
+   Era scritto su tutte le cornici larghe, e su una fotografia faceva
+   il contrario di quel che doveva: la cornice ha una proporzione
+   fissa, quindi un tetto d'altezza le taglia anche la **larghezza**.
+   Nell'intestazione d'area la colonna e' larga 741px e la fotografia
+   ne occupava 480 — 262px di colonna inutilizzati, misurati — con
+   l'aria che restava a sinistra dell'immagine. Era la voce 21.
+
+   La fascia vuota che il tetto doveva togliere nasce solo quando
+   dentro la cornice c'e' un ritaglio che non la riempie. Li' il tetto
+   resta. Una fotografia riempie la cornice per definizione: di fascia
+   vuota non ne produce, e puo' prendersi la colonna. */
+.sd-plate--contain.sd-zig__figure,
+.sd-plate--contain.sd-entry__figure,
+.sd-plate--contain.sd-areahead__figure {
+	max-height: 20rem;
+}
+
 @media (max-width: 900px) {
 	/* Su una colonna larga quanto lo schermo anche una fotografia
 	   vera copre 768×512: se e' chiara — mezza libreria lo e' —
-	   quella fascia si legge come vuota. Il tetto la riporta a una
-	   striscia. */
+	   quella fascia si legge come vuota. Qui il tetto torna su
+	   tutte, fotografie comprese. */
 	.sd-zig__figure,
 	.sd-entry__figure,
 	.sd-areahead__figure {

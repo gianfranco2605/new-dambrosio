@@ -14,7 +14,7 @@
 	"attributes": {
 		"fondo": {
 			"type": "string",
-			"default": "sd-section--tint"
+			"default": ""
 		}
 	},
 	"supports": {
