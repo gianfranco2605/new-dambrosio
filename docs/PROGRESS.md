@@ -1,3 +1,33 @@
+# PROGRESS — Iterazione 5: rifinitura di design su tutto il sito
+
+> Aggiornato: 2026-10-07. **Fase 1 (audit) fatta.** Il resto sotto.
+
+## Iterazione 5 — stato
+
+| Fase | Che cosa | Stato |
+|---|---|---|
+| 1 | Crawl e misura: 68 URL × 3 larghezze | **fatto** — `docs/AUDIT.md` |
+| 2 | Correzioni di sistema (scala, lastra, bersagli, menu, mappa, pulsanti) | in corso |
+| 3 | Pagina per pagina | da fare |
+| 4 | Rimisura, confronti, documentazione | da fare |
+
+**Strumenti** (versionati in `docs/audit/`, si rieseguono):
+```bash
+node docs/audit/audit.mjs ../../../redesign/audit/urls.txt <cartella> 1440,768,390
+python3 docs/audit/whitespace.py <cartella>     # bande vuote sui pixel
+python3 docs/audit/analyze.py <metrics.json>    # problemi con severita'
+```
+
+**Diciotto cause radice** per 1.700 segnalazioni. Le alte: la mappa e' un rettangolo
+bianco prima del consenso cookie; i ritagli trasparenti su bianco si leggono come
+vuoti; 95 immagini rese piu' grandi dell'originale (13 originali su 30 non arrivano a
+440px); «Ortodonzia Mobile» non ha immagine.
+
+**Da non fare senza il titolare** (lista "ask"): nessuna importazione di database,
+nessun search-replace, nessuna cancellazione, nessun push.
+
+---
+
 # PROGRESS — Iterazione 4: architettura dell'informazione e pagine interne
 
 > Questo file e' il punto di ripresa. Se la sessione si interrompe, una nuova
