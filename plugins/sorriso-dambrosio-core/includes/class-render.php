@@ -62,22 +62,64 @@ final class Render {
 	}
 
 	/**
-	 * L'immagine in evidenza di un articolo, o niente.
+	 * L'immagine in evidenza di un articolo, dentro una lastra.
 	 *
 	 * `wp_get_attachment_image()` e non un URL scritto a mano: srcset,
 	 * dimensioni, `alt` e caricamento pigro arrivano gratis, e l'indirizzo si
 	 * adatta al dominio dell'ambiente senza search-replace al deploy.
+	 *
+	 * **La modalita' si decide dal dato, non a occhio.** La libreria di questo
+	 * studio e' fatta per meta' di fotografie vere e per meta' di render 3D
+	 * ritagliati su fondo trasparente. Trattare un ritaglio come una fotografia
+	 * — riempire il riquadro con `cover` — lo ingrandisce, lo taglia a caso e su
+	 * pagina bianca lo rende **indistinguibile dal vuoto**: e' la fascia da
+	 * 500px che l'audit ha trovato su `/trattamenti/`.
+	 *
+	 * Quindi: se l'originale e' largo almeno `$slot` × 1,6 ha risoluzione da
+	 * vendere ed e' una fotografia, e riempie la cornice. Altrimenti e' un
+	 * ritaglio o un'immagine piccola, e si posa dentro la cornice alla sua
+	 * misura naturale, su fondo tinto, senza mai essere ingrandito.
+	 *
+	 * @param int    $post_id ID dell'articolo.
+	 * @param string $size    Dimensione registrata da servire.
+	 * @param string $class   Classi aggiuntive sulla cornice.
+	 * @param int    $slot    Larghezza in px che la cornice occupa a 1440.
 	 */
-	public static function thumb( int $post_id, string $size = 'large', string $class = '' ): string {
-		$id = get_post_thumbnail_id( $post_id );
+	public static function thumb( int $post_id, string $size = 'large', string $class = '', int $slot = 0 ): string {
+		$id = (int) get_post_thumbnail_id( $post_id );
 
 		if ( ! $id ) {
 			return '';
 		}
 
-		$img = wp_get_attachment_image( (int) $id, $size, false, array( 'class' => 'sd-img' ) );
+		$meta    = wp_get_attachment_metadata( $id );
+		$natural = isset( $meta['width'] ) ? (int) $meta['width'] : 0;
+		$fills   = ( 0 === $slot ) || ( $natural >= (int) round( $slot * 1.6 ) );
+		$mode    = $fills ? 'sd-plate--cover' : 'sd-plate--contain';
 
-		return '<figure class="' . esc_attr( trim( 'sd-figure ' . $class ) ) . '">' . $img . '</figure>';
+		$attr = array( 'class' => 'sd-img' );
+
+		if ( ! $fills && $natural > 0 ) {
+			// Non superare mai la misura naturale: e' il tetto contro
+			// l'ingrandimento, e vale anche se il CSS cambia.
+			$attr['style'] = 'max-width:' . $natural . 'px';
+		}
+
+		$img = wp_get_attachment_image( $id, $size, false, $attr );
+
+		return '<figure class="' . esc_attr( trim( 'sd-plate ' . $mode . ' ' . $class ) ) . '">'
+			. $img . '</figure>';
+	}
+
+	/**
+	 * Un articolo ha un'immagine in evidenza?
+	 *
+	 * Serve a far collassare una riga invece di lasciare una colonna vuota:
+	 * «Ortodonzia Mobile» e' l'unico trattamento senza immagine, e nello
+	 * zig-zag teneva un 38% di nulla.
+	 */
+	public static function has_thumb( int $post_id ): bool {
+		return (bool) get_post_thumbnail_id( $post_id );
 	}
 
 	/**
@@ -144,9 +186,12 @@ final class Render {
 			$anchor = (string) get_post_meta( $post->ID, Fields::ANCORA, true );
 			$link   = (string) get_permalink( $post );
 
-			$out .= '<article class="sd-zig__row sd-zig__row--' . esc_attr( $side ) . '"'
+			$has = self::has_thumb( $post->ID );
+
+			$out .= '<article class="sd-zig__row sd-zig__row--' . esc_attr( $side )
+				. ( $has ? '' : ' sd-zig__row--senza-immagine' ) . '"'
 				. ( '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '' ) . '>'
-				. self::thumb( $post->ID, 'medium_large', 'sd-zig__figure' )
+				. self::thumb( $post->ID, 'medium_large', 'sd-zig__figure', 458 )
 				. '<div class="sd-zig__body">'
 				. '<' . $tag . ' class="sd-zig__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-zig__text">' . esc_html( self::excerpt( $post, 34 ) ) . '</p>'
@@ -180,7 +225,7 @@ final class Render {
 			$link   = (string) get_permalink( $post );
 
 			$out .= '<article class="sd-matrix__cell"' . ( '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '' ) . '>'
-				. self::thumb( $post->ID, 'medium', 'sd-matrix__figure' )
+				. self::thumb( $post->ID, 'medium_large', 'sd-matrix__figure', 387 )
 				. '<' . $tag . ' class="sd-matrix__title"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-matrix__text">' . esc_html( self::excerpt( $post, 22 ) ) . '</p>'
 				. '</article>';

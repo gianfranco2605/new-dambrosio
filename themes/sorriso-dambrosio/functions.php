@@ -40,6 +40,30 @@ function sorriso_dambrosio_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'sorriso_dambrosio_enqueue_styles', 20 );
 
 /**
+ * L'unico JavaScript del tema: il primo Escape sul menu mobile.
+ *
+ * Sedici righe, nessuna dipendenza, in coda al documento. Tutto il resto del
+ * comportamento del menu lo fa gia' il blocco Navigation di core — vedi il
+ * commento in cima a assets/js/menu.js per che cosa non fa.
+ */
+function sorriso_dambrosio_enqueue_menu_script() {
+	$path = get_stylesheet_directory() . '/assets/js/menu.js';
+
+	if ( ! file_exists( $path ) ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'sorriso-dambrosio-menu',
+		get_stylesheet_directory_uri() . '/assets/js/menu.js',
+		array(),
+		(string) filemtime( $path ),
+		array( 'in_footer' => true, 'strategy' => 'defer' )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'sorriso_dambrosio_enqueue_menu_script' );
+
+/**
  * Usa lo stesso foglio di stile anche negli editor, cosi' l'anteprima
  * corrisponde al front-end.
  *

@@ -29,8 +29,8 @@ Text Domain: sorriso-dambrosio
 .wp-site-blocks,
 .editor-styles-wrapper {
 	--sd-max: 1320px;
-	--sd-gutter: clamp(1.5rem, 4vw, 2rem);
-	--sd-rhythm: clamp(3.25rem, 6.6vw, 6rem);
+	--sd-gutter: var(--wp--custom--space--md);
+	--sd-rhythm: var(--wp--custom--space--2xl);
 	--sd-sticky-top: 7.5rem;
 
 	/* Quanto manca, da dentro il contenitore, per arrivare al bordo della
@@ -144,21 +144,21 @@ Text Domain: sorriso-dambrosio
    --------------------------------------------------------------- */
 
 .sd-head {
-	margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+	margin-bottom: var(--wp--custom--space--lg);
 }
 
 .sd-head + .sd-head,
 .sd-prose + .sd-head {
-	margin-top: clamp(3rem, 6vw, 5rem);
+	margin-top: var(--wp--custom--space--2xl);
 }
 
 .sd-eyebrow {
 	align-items: center;
 	color: var(--wp--preset--color--secondary);
 	display: flex;
-	gap: clamp(1rem, 2vw, 1.5rem);
+	gap: var(--wp--custom--space--sm);
 	letter-spacing: 0.06em;
-	margin: 0 0 clamp(0.75rem, 1.5vw, 1.25rem);
+	margin: 0 0 var(--wp--custom--space--xs);
 }
 
 .sd-eyebrow::before {
@@ -343,7 +343,7 @@ Text Domain: sorriso-dambrosio
 .sd-hero__frame {
 	display: flex;
 	flex-direction: column;
-	padding-block: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 3vw, 2.5rem);
+	padding-block: var(--wp--custom--space--2xl) var(--wp--custom--space--lg);
 }
 
 .sd-hero__copy {
@@ -360,7 +360,7 @@ Text Domain: sorriso-dambrosio
 	max-width: max-content;
 	font-weight: 600;
 	letter-spacing: 0.01em;
-	margin: 0 0 clamp(0.75rem, 1.6vw, 1.25rem);
+	margin: 0 0 var(--wp--custom--space--xs);
 }
 
 .sd-hero__title {
@@ -370,7 +370,7 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-hero__lede {
-	margin: clamp(1.25rem, 2.6vw, 2rem) 0 0;
+	margin: var(--wp--custom--space--md) 0 0;
 	max-width: 32rem;
 }
 
@@ -382,9 +382,9 @@ Text Domain: sorriso-dambrosio
 	box-shadow: 0 24px 60px -30px var(--wp--custom--shadow--bar);
 	color: var(--wp--preset--color--main);
 	display: flex;
-	gap: clamp(0.75rem, 2vw, 2rem);
-	margin-top: clamp(2rem, 5vw, 3.5rem);
-	padding: 0.6rem 0.6rem 0.6rem clamp(1.25rem, 2.4vw, 2.25rem);
+	gap: var(--wp--custom--space--md);
+	margin-top: var(--wp--custom--space--xl);
+	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
 .sd-hero__bar-item {
@@ -439,7 +439,7 @@ Text Domain: sorriso-dambrosio
 	gap: 0.85rem;
 	justify-content: flex-end;
 	list-style: none;
-	margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+	margin: var(--wp--custom--space--sm) 0 0;
 	padding: 0;
 }
 
@@ -530,7 +530,7 @@ Text Domain: sorriso-dambrosio
 
 	.sd-hero__frame {
 		background-color: var(--wp--preset--color--main);
-		padding-block: clamp(2rem, 7vw, 3rem);
+		padding-block: var(--wp--custom--space--lg);
 	}
 
 	.sd-hero__title {
@@ -560,7 +560,7 @@ Text Domain: sorriso-dambrosio
 	align-items: center;
 	display: flex;
 	flex-wrap: nowrap;
-	gap: clamp(0.6rem, 1.2vw, 1.15rem);
+	gap: var(--wp--custom--space--xs);
 	justify-content: space-between;
 	padding-block: 0.7rem;
 }
@@ -581,7 +581,7 @@ Text Domain: sorriso-dambrosio
    partiva a 221px mentre il logo finiva a 232 — si sovrapponevano di 11px
    senza che nulla, nel codice, lo facesse sospettare. */
 .sd-header__logo {
-	margin-right: clamp(0.5rem, 1.4vw, 1.25rem);
+	margin-right: var(--wp--custom--space--xs);
 }
 
 /* Sette voci di primo livello piu' due pulsanti: la riga e' piena. Le voci
@@ -748,7 +748,7 @@ Text Domain: sorriso-dambrosio
 .sd-chapter__body {
 	grid-column: body-start / wrap-end;
 	min-width: 0;
-	padding-left: clamp(2rem, 4.5vw, 5rem);
+	padding-left: var(--wp--custom--space--2xl);
 }
 
 /* La fotografia riempie tutta l'altezza della colonna. Con position:sticky
@@ -769,17 +769,17 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-pillars {
-	margin-top: clamp(1.5rem, 3vw, 2.25rem);
+	margin-top: var(--wp--custom--space--md);
 }
 
 /* I cinque paragrafi dell'accoglienza su tre colonne tipografiche, a tutta
    larghezza sotto il capitolo: un muro di prosa diventa una pagina. */
 .sd-welcome {
-	margin-top: clamp(3rem, 6vw, 5rem);
+	margin-top: var(--wp--custom--space--2xl);
 }
 
 .sd-columns3 {
-	column-gap: clamp(2rem, 4vw, 3.5rem);
+	column-gap: var(--wp--custom--space--xl);
 	columns: 3;
 }
 
@@ -804,7 +804,7 @@ Text Domain: sorriso-dambrosio
 	}
 
 	.sd-chapter__media {
-		margin-bottom: clamp(2rem, 5vw, 3rem);
+		margin-bottom: var(--wp--custom--space--lg);
 	}
 
 	.sd-chapter__figure {
@@ -839,9 +839,9 @@ Text Domain: sorriso-dambrosio
 .sd-roster__row {
 	align-items: start;
 	display: grid;
-	gap: clamp(1.5rem, 3.5vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: 260px minmax(0, 1fr);
-	padding-block: clamp(2rem, 3.5vw, 3rem);
+	padding-block: var(--wp--custom--space--lg);
 }
 
 .sd-roster__row + .sd-roster__row {
@@ -902,14 +902,14 @@ Text Domain: sorriso-dambrosio
 .sd-panels {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	margin-top: clamp(2.5rem, 5vw, 4rem);
+	margin-top: var(--wp--custom--space--xl);
 }
 
 .sd-panel {
 	align-items: flex-end;
 	display: flex;
 	isolation: isolate;
-	min-height: clamp(26rem, 36vw, 33rem);
+	min-height: var(--wp--custom--measure--hero);
 	overflow: hidden;
 	position: relative;
 }
@@ -943,7 +943,7 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-panel__body {
-	padding: clamp(1.5rem, 2.5vw, 2.25rem);
+	padding: var(--wp--custom--space--md);
 	width: 100%;
 }
 
@@ -956,7 +956,7 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-panel__body .sd-more {
-	margin-top: clamp(1rem, 2vw, 1.5rem);
+	margin-top: var(--wp--custom--space--sm);
 }
 
 @media (max-width: 899px) {
@@ -985,7 +985,7 @@ Text Domain: sorriso-dambrosio
 .sd-tech__grid {
 	align-items: stretch;
 	display: grid;
-	gap: clamp(2rem, 5vw, 5rem);
+	gap: var(--wp--custom--space--2xl);
 	grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
 }
 
@@ -1013,10 +1013,10 @@ Text Domain: sorriso-dambrosio
 .sd-tech__row {
 	align-items: baseline;
 	border-top: 1px solid var(--wp--custom--border--hairline);
-	column-gap: clamp(1rem, 2vw, 2rem);
+	column-gap: var(--wp--custom--space--md);
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
-	padding-block: clamp(1.25rem, 2vw, 1.75rem);
+	padding-block: var(--wp--custom--space--md);
 	row-gap: 0.35rem;
 }
 
@@ -1093,7 +1093,7 @@ Text Domain: sorriso-dambrosio
    --------------------------------------------------------------- */
 
 .sd-why__lede {
-	margin-block: 0 clamp(2.5rem, 5vw, 4rem);
+	margin-block: 0 var(--wp--custom--space--xl);
 	max-width: 46ch;
 }
 
@@ -1104,7 +1104,7 @@ Text Domain: sorriso-dambrosio
 
 .sd-why__cell {
 	border-left: 1px solid var(--wp--custom--rule--on-dark);
-	padding: 0 clamp(1.25rem, 2vw, 2rem);
+	padding: 0 var(--wp--custom--space--md);
 }
 
 .sd-why__cell:first-child {
@@ -1119,7 +1119,7 @@ Text Domain: sorriso-dambrosio
 
 @media (max-width: 899px) {
 	.sd-why__grid {
-		gap: clamp(1.75rem, 4vw, 2.5rem) 0;
+		gap: var(--wp--custom--space--lg) 0;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
@@ -1151,7 +1151,7 @@ Text Domain: sorriso-dambrosio
 .sd-visit__map iframe {
 	border: 0;
 	display: block;
-	height: clamp(26rem, 54vw, 46rem);
+	height: var(--wp--custom--measure--panel);
 	width: 100%;
 }
 
@@ -1164,17 +1164,17 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-visit__panel {
-	padding: clamp(1.75rem, 3vw, 2.5rem);
+	padding: var(--wp--custom--space--lg);
 	pointer-events: auto;
 	width: min(100%, 27rem);
 }
 
 .sd-visit__panel .sd-head {
-	margin-bottom: clamp(1rem, 2vw, 1.5rem);
+	margin-bottom: var(--wp--custom--space--sm);
 }
 
 .sd-visit__panel .sd-hours + .sd-head {
-	margin-top: clamp(1.5rem, 3vw, 2rem);
+	margin-top: var(--wp--custom--space--md);
 }
 
 .sd-visit__panel p {
@@ -1188,7 +1188,7 @@ Text Domain: sorriso-dambrosio
 	}
 
 	.sd-visit__layer {
-		padding-block: var(--sd-rhythm) clamp(2rem, 5vw, 3rem);
+		padding-block: var(--sd-rhythm) var(--wp--custom--space--lg);
 		position: static;
 	}
 
@@ -1209,7 +1209,7 @@ Text Domain: sorriso-dambrosio
 .sd-hours-band__grid {
 	align-items: center;
 	display: grid;
-	gap: clamp(2rem, 5vw, 4.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
 }
 
@@ -1221,7 +1221,7 @@ Text Domain: sorriso-dambrosio
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.75rem;
-	margin-top: clamp(1.5rem, 3vw, 2.25rem);
+	margin-top: var(--wp--custom--space--md);
 }
 
 .sd-hours-week {
@@ -1236,7 +1236,7 @@ Text Domain: sorriso-dambrosio
 	display: grid;
 	gap: 0.5rem 1rem;
 	grid-template-columns: minmax(0, 1fr) auto;
-	padding-block: clamp(0.7rem, 1.4vw, 1rem);
+	padding-block: var(--wp--custom--space--xs);
 }
 
 .sd-hours-week__day:first-child {
@@ -1255,7 +1255,7 @@ Text Domain: sorriso-dambrosio
    Il marcatore "oggi" e' testo, non solo colore. */
 .sd-hours-week__day.is-today {
 	box-shadow: inset 3px 0 0 var(--wp--preset--color--primary);
-	padding-left: clamp(0.75rem, 1.5vw, 1.25rem);
+	padding-left: var(--wp--custom--space--xs);
 }
 
 .sd-hours-week__today {
@@ -1326,7 +1326,7 @@ Text Domain: sorriso-dambrosio
 .sd-prenota__grid {
 	align-items: start;
 	display: grid;
-	gap: clamp(2rem, 5vw, 4.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
 }
 
@@ -1336,7 +1336,7 @@ Text Domain: sorriso-dambrosio
 
 .sd-prenota__contacts {
 	list-style: none;
-	margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+	margin: var(--wp--custom--space--md) 0 0;
 	padding: 0;
 }
 
@@ -1370,12 +1370,12 @@ Text Domain: sorriso-dambrosio
 }
 
 .sd-form__row {
-	margin-bottom: clamp(1rem, 2vw, 1.4rem);
+	margin-bottom: var(--wp--custom--space--sm);
 }
 
 .sd-form__row--2col {
 	display: grid;
-	gap: clamp(1rem, 2vw, 1.4rem);
+	gap: var(--wp--custom--space--sm);
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -1423,7 +1423,7 @@ Text Domain: sorriso-dambrosio
 
 .sd-form__privacy {
 	font-size: var(--wp--preset--font-size--small);
-	margin-bottom: clamp(1rem, 2vw, 1.4rem);
+	margin-bottom: var(--wp--custom--space--sm);
 }
 
 .sd-form__privacy .wpcf7-list-item {
@@ -1500,7 +1500,7 @@ Text Domain: sorriso-dambrosio
 	border-left-width: 3px;
 	border-radius: 4px;
 	font-size: var(--wp--preset--font-size--small);
-	margin: clamp(1rem, 2vw, 1.4rem) 0 0;
+	margin: var(--wp--custom--space--sm) 0 0;
 	padding: 0.9em 1.1em;
 }
 
@@ -1870,7 +1870,7 @@ img {
 .sd-areahead__grid {
 	align-items: end;
 	display: grid;
-	gap: clamp(2rem, 4vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
 }
 
@@ -1879,7 +1879,7 @@ img {
 }
 
 .sd-areahead .sd-head {
-	margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+	margin-bottom: var(--wp--custom--space--md);
 }
 
 .sd-areahead h1 {
@@ -1915,7 +1915,7 @@ img {
 	}
 
 	.sd-areahead__text {
-		padding-bottom: clamp(1.75rem, 4vw, 2.5rem);
+		padding-bottom: var(--wp--custom--space--lg);
 	}
 
 	.sd-areahead__figure {
@@ -1944,10 +1944,10 @@ img {
 	align-items: center;
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	display: grid;
-	gap: clamp(1.5rem, 3.5vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
 	grid-template-areas: "figure body";
-	padding-block: clamp(2rem, 4vw, 3.25rem);
+	padding-block: var(--wp--custom--space--lg);
 }
 
 .sd-zig__row:last-child {
@@ -1976,12 +1976,7 @@ img {
 	margin: 0;
 }
 
-.sd-zig__figure img {
-	aspect-ratio: 4 / 3;
-	display: block;
-	object-fit: cover;
-	width: 100%;
-}
+/* La proporzione e il riempimento li governa la lastra (§19.6). */
 
 /* Qui le fotografie NON sanguinano. Il sanguinamento e' il gesto
    dell'intestazione d'area e del capitolo in homepage: ripetuto
@@ -2041,9 +2036,9 @@ img {
 	align-items: baseline;
 	border-bottom: 1px solid var(--wp--custom--border--hairline);
 	display: grid;
-	gap: 0.35rem clamp(1.5rem, 3vw, 3rem);
+	gap: 0.35rem var(--wp--custom--space--lg);
 	grid-template-columns: minmax(0, 34fr) minmax(0, 52fr) auto;
-	padding-block: clamp(1.1rem, 2.2vw, 1.6rem);
+	padding-block: var(--wp--custom--space--sm);
 }
 
 .sd-rows__title {
@@ -2121,7 +2116,7 @@ img {
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	display: flex;
 	flex-direction: column;
-	padding: clamp(1.25rem, 2.5vw, 2rem);
+	padding: var(--wp--custom--space--md);
 }
 
 .sd-matrix__cell:nth-child(3n + 1) {
@@ -2134,15 +2129,10 @@ img {
 }
 
 .sd-matrix__figure {
-	margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+	margin: 0 0 var(--wp--custom--space--sm);
 }
 
-.sd-matrix__figure img {
-	aspect-ratio: 3 / 2;
-	display: block;
-	object-fit: cover;
-	width: 100%;
-}
+/* idem */
 
 .sd-matrix__title {
 	font-size: var(--wp--preset--font-size--medium);
@@ -2174,7 +2164,7 @@ img {
 	.sd-matrix__cell:nth-child(3n + 1),
 	.sd-matrix__cell:nth-child(3n) {
 		border-left: 1px solid var(--wp--custom--border--hairline);
-		padding-inline: clamp(1.25rem, 2.5vw, 2rem);
+		padding-inline: var(--wp--custom--space--md);
 	}
 
 	.sd-matrix__cell:nth-child(2n + 1) {
@@ -2215,7 +2205,7 @@ img {
 
 .sd-entry__grid {
 	display: grid;
-	gap: clamp(1.75rem, 3.5vw, 3rem);
+	gap: var(--wp--custom--space--lg);
 	grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
 	grid-template-areas:
 		"head figure"
@@ -2240,7 +2230,7 @@ img {
 	    sarebbe piu' largo della colonna che lo porta — l'errore della prima
 	    iterazione. Scende fino a 60px, che resta sopra la soglia dei 56. */
 .sd-entry__title {
-	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	font-size: var(--wp--preset--font-size--title);
 	line-height: 1.08;
 	margin: 0;
 }
@@ -2314,11 +2304,11 @@ img {
    --------------------------------------------------------------- */
 
 .sd-doc__head {
-	margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+	margin-bottom: var(--wp--custom--space--lg);
 }
 
 .sd-doc__title {
-	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	font-size: var(--wp--preset--font-size--title);
 	line-height: 1.08;
 	margin: 0;
 	max-width: 22ch;
@@ -2340,21 +2330,16 @@ img {
 	align-items: start;
 	border-bottom: 1px solid var(--wp--custom--border--hairline);
 	display: grid;
-	gap: clamp(1.25rem, 3vw, 2.5rem);
+	gap: var(--wp--custom--space--md);
 	grid-template-columns: 10rem minmax(0, 1fr);
-	padding-block: clamp(1.5rem, 3vw, 2.5rem);
+	padding-block: var(--wp--custom--space--lg);
 }
 
 .sd-people__portrait {
 	margin: 0;
 }
 
-.sd-people__portrait img {
-	aspect-ratio: 4 / 5;
-	display: block;
-	object-fit: cover;
-	width: 100%;
-}
+/* idem */
 
 .sd-people__name {
 	font-size: var(--wp--preset--font-size--medium);
@@ -2397,16 +2382,10 @@ img {
 	background-color: var(--wp--preset--color--base);
 	border: 0;
 	grid-template-columns: minmax(0, 1fr);
-	padding: clamp(1.25rem, 2.5vw, 2rem);
+	padding: var(--wp--custom--space--md);
 }
 
- /* Stessa proporzione e nessun tetto d'altezza: con `max-height` i tre
-	    ritratti uscivano alti 3-4px diversi l'uno dall'altro e i nomi sotto
-	    non si allineavano. */
-.sd-people--schede .sd-people__portrait img {
-	aspect-ratio: 4 / 5;
-	object-position: top center;
-}
+/* Stessa proporzione per tutti e tre: la governa la lastra (§19.6). */
 
 @media (max-width: 860px) {
 	.sd-people__row {
@@ -2447,13 +2426,13 @@ img {
 
 .sd-cases {
 	display: grid;
-	gap: clamp(1.5rem, 3vw, 2.5rem);
+	gap: var(--wp--custom--space--lg);
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .sd-cases__group {
 	font-size: var(--wp--preset--font-size--medium);
-	margin: clamp(2rem, 4vw, 3rem) 0 clamp(1rem, 2vw, 1.5rem);
+	margin: var(--wp--custom--space--lg) 0 var(--wp--custom--space--sm);
 }
 
 .sd-cases__group:first-child {
@@ -2505,9 +2484,9 @@ img {
 .sd-case__meta {
 	display: flex;
 	flex-wrap: wrap;
-	gap: clamp(1.5rem, 3vw, 3rem);
+	gap: var(--wp--custom--space--lg);
 	list-style: none;
-	margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+	margin: var(--wp--custom--space--lg) auto 0;
 	max-width: 48rem;
 	padding: 0;
 }
@@ -2532,7 +2511,7 @@ img {
 
 .sd-doctor__grid {
 	display: grid;
-	gap: clamp(1.75rem, 4vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 30fr) minmax(0, 70fr);
 	align-items: start;
 }
@@ -2551,9 +2530,9 @@ img {
 }
 
 .sd-doctor__name {
-	font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+	font-size: var(--wp--preset--font-size--title);
 	line-height: 1.08;
-	margin: 0 0 clamp(1.25rem, 2.5vw, 2rem);
+	margin: 0 0 var(--wp--custom--space--md);
 }
 
 .sd-doctor__bio > * {
@@ -2579,9 +2558,9 @@ img {
 .sd-index__area {
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	display: grid;
-	gap: clamp(0.75rem, 2vw, 2rem);
+	gap: var(--wp--custom--space--md);
 	grid-template-columns: minmax(0, 28fr) minmax(0, 72fr);
-	padding-block: clamp(1.5rem, 3vw, 2.25rem);
+	padding-block: var(--wp--custom--space--md);
 }
 
 .sd-index__area:last-child {
@@ -2661,12 +2640,12 @@ img {
 .sd-cta__grid {
 	align-items: center;
 	display: grid;
-	gap: clamp(1.75rem, 4vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
 }
 
 .sd-cta .sd-head {
-	margin-bottom: clamp(1rem, 2vw, 1.5rem);
+	margin-bottom: var(--wp--custom--space--sm);
 }
 
 .sd-cta__lede {
@@ -2703,7 +2682,7 @@ img {
 
 .sd-contactpage__grid {
 	display: grid;
-	gap: clamp(1.75rem, 4vw, 3.5rem);
+	gap: var(--wp--custom--space--xl);
 	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
 	align-items: start;
 }
@@ -2755,7 +2734,7 @@ img {
 	border: 0;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0 clamp(1.5rem, 3vw, 3rem);
+	gap: 0 var(--wp--custom--space--lg);
 }
 
 .sd-contacts--inline .sd-contacts__item {
@@ -2801,30 +2780,567 @@ img {
 
 .sd-chapter__lede {
 	line-height: 1.35;
-	margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+	margin: 0 0 var(--wp--custom--space--lg);
 	max-width: 32rem;
 }
 
 .sd-head--minor {
-	margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+	margin-bottom: var(--wp--custom--space--xs);
 }
 
 .sd-chapter__pillars {
 	border-top: 1px solid var(--wp--custom--border--hairline);
 	line-height: 1.35;
-	margin: clamp(2rem, 4vw, 3rem) 0 clamp(1.25rem, 2.5vw, 2rem);
+	margin: var(--wp--custom--space--lg) 0 var(--wp--custom--space--md);
 	max-width: 32rem;
-	padding-top: clamp(1.5rem, 3vw, 2.25rem);
+	padding-top: var(--wp--custom--space--md);
 }
 
 /* Su /contatti/ il modulo non ha i recapiti accanto — stanno gia' in cima
    alla pagina — quindi occupa la colonna intera e i campi restano su due
    file invece di stringersi in una. */
 .sd-prenota--wide .sd-prenota__lede {
-	margin-bottom: clamp(2rem, 4vw, 3rem);
+	margin-bottom: var(--wp--custom--space--lg);
 	max-width: 36rem;
 }
 
 .sd-prenota--wide .sd-form-wrapper {
 	max-width: 54rem;
+}
+
+/* ===============================================================
+   19. REGOLE GLOBALI — bersagli, misura di lettura, componenti
+
+   Misurate nell'audit dell'iterazione 5 (`docs/AUDIT.md`), non scelte:
+   1.868 segnalazioni su mobile venivano da otto regole mancanti.
+   =============================================================== */
+
+/* ---------------------------------------------------------------
+   19.1 Bersagli: niente sotto i 44×44
+
+   Il minimo non si applica ai collegamenti dentro il testo corrente:
+   li' un bersaglio da 44px spezzerebbe l'interlinea. Si applica a
+   tutto cio' che e' un comando: pulsanti, icone, voci di menu.
+   --------------------------------------------------------------- */
+
+.sd-btn,
+.wp-block-button__link,
+.wpcf7-submit,
+.sd-header__phone,
+.sd-mobile-cta a,
+.wp-block-social-link-anchor,
+.wp-block-navigation-item__content,
+.sd-crumbs__item a,
+.sd-contacts__value,
+.sd-more a {
+	min-height: var(--wp--custom--tap);
+	min-width: var(--wp--custom--tap);
+}
+
+/* Un collegamento in linea non e' un pulsante: torna a scorrere col testo. */
+.sd-more a,
+.sd-crumbs__item a,
+.sd-contacts__value,
+.wp-block-navigation-item__content {
+	align-items: center;
+	display: inline-flex;
+	min-width: 0;
+}
+
+/* Le icone social: il quadrato da 36px diventa 44, l'icona resta 24. */
+.sd-footer .wp-block-social-link {
+	height: var(--wp--custom--tap);
+	width: var(--wp--custom--tap);
+}
+
+.sd-footer .wp-block-social-link-anchor {
+	align-items: center;
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	width: 100%;
+}
+
+/* iubenda inietta da se' il collegamento alla privacy: non si tocca il
+   plugin, si veste il collegamento che mette. */
+.sd-footer a.iubenda-white,
+.sd-footer a.iubenda-nostyle {
+	align-items: center;
+	display: inline-flex;
+	min-height: var(--wp--custom--tap);
+}
+
+/* ---------------------------------------------------------------
+   19.2 Tipografia: mai sotto i 16px su mobile
+
+   `small` scende a .9375rem (15px) e `x-small` a .8125rem (13px).
+   Su desktop sono misure di servizio corrette; su un telefono sono
+   sotto la soglia di leggibilita'. Sotto i 782px salgono.
+   --------------------------------------------------------------- */
+
+@media (max-width: 781px) {
+	.wp-site-blocks .has-small-font-size,
+	.sd-rows__text,
+	.sd-matrix__text,
+	.sd-cases__caption,
+	.sd-people__bio,
+	.sd-zig__text,
+	.sd-hours-band__note,
+	.sd-hero__bar-value,
+	.sd-prenota__lede {
+		font-size: 1rem;
+	}
+
+	.wp-site-blocks .has-x-small-font-size,
+	.sd-crumbs__list,
+	.sd-btn,
+	.sd-contacts__label,
+	.sd-case__meta-label {
+		font-size: 0.9375rem;
+	}
+
+	/* L'occhiello resta piccolo: e' un'etichetta, non testo da leggere. */
+	.sd-eyebrow {
+		font-size: 0.875rem;
+	}
+}
+
+/* ---------------------------------------------------------------
+   19.3 Misura di lettura
+
+   Nessuna colonna di testo corrente oltre i ~66 caratteri. In DM Sans
+   lo zero e' largo 0.5em, quindi `ch` mente: 62ch valeva 811px, cioe'
+   85 caratteri. Le misure stanno in rem e sono in theme.json.
+   --------------------------------------------------------------- */
+
+.sd-prose > p,
+.sd-rows__text,
+.sd-zig__text,
+.sd-matrix__text,
+.sd-people__bio,
+.sd-entry__body > p,
+.sd-doc__body > p,
+.sd-doctor__bio > p,
+.sd-areatext > p {
+	max-width: var(--wp--custom--measure--prose);
+}
+
+.sd-chapter__lede,
+.sd-areahead__lede,
+.sd-cta__lede,
+.sd-prenota__lede,
+.sd-why__lede {
+	max-width: var(--wp--custom--measure--lede);
+}
+
+/* Il contenuto di una pagina generica o di un articolo arriva da
+   `post-content`, che non porta le classi del tema: la misura si
+   impone sul contenitore. */
+.sd-doc__body > *,
+.sd-entry__body > *,
+.sd-areatext > * {
+	max-width: var(--wp--custom--measure--prose);
+}
+
+.sd-doc__body > .wp-block-image,
+.sd-doc__body > .wp-block-gallery,
+.sd-doc__body > figure,
+.sd-entry__body > .wp-block-image,
+.sd-entry__body > figure {
+	max-width: 100%;
+}
+
+/* ---------------------------------------------------------------
+   19.4 Un solo stile di pulsante
+
+   L'audit ne ha trovati due: `.sd-btn` con raggio 999px alto 43px, e
+   `wp-block-button__link` con raggio 4px alto 50px — quest'ultimo nel
+   contenuto degli articoli, che non passa dal tema. Si allineano.
+   --------------------------------------------------------------- */
+
+.wp-block-button__link,
+.wpcf7-submit {
+	border-radius: 999px;
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--x-small);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	line-height: 1.2;
+	padding-block: 0.75rem;
+	padding-inline: 1.5rem;
+}
+
+.wp-block-button__link {
+	align-items: center;
+	display: inline-flex;
+	gap: 0.5rem;
+	justify-content: center;
+}
+
+/* ---------------------------------------------------------------
+   19.5 Titoli: nessuna parola orfana
+
+   Otto `h1` andavano a capo lasciando «anni» da solo sull'ultima
+   riga. `text-wrap: balance` distribuisce le righe di un titolo
+   corto; `pretty` evita l'orfano nei paragrafi. Dove non e'
+   supportato non succede nulla di male.
+   --------------------------------------------------------------- */
+
+.wp-site-blocks h1,
+.wp-site-blocks h2,
+.wp-site-blocks h3,
+.sd-entry__title,
+.sd-doc__title,
+.sd-doctor__name {
+	text-wrap: balance;
+}
+
+.sd-prose > p,
+.sd-zig__text,
+.sd-rows__text,
+.sd-people__bio {
+	text-wrap: pretty;
+}
+
+/* ---------------------------------------------------------------
+   19.6 La lastra — una cornice sola per ogni immagine
+
+   La libreria di questo studio e' per meta' fotografie vere e per
+   meta' render 3D ritagliati su fondo trasparente. Il tema li
+   trattava tutti come fotografie: `cover` dentro un riquadro.
+   Su un ritaglio quello vuol dire ingrandirlo, tagliarlo a caso e —
+   su pagina bianca — renderlo indistinguibile dal vuoto. La fascia
+   da 500px che l'audit ha trovato su /trattamenti/ non era spazio:
+   era un'immagine.
+
+   La lastra e' una cornice a proporzione fissa con un fondo. Dentro,
+   `Render::thumb()` decide dal dato: fotografia grande → riempie;
+   ritaglio o originale piccolo → si posa, mai oltre la sua misura
+   naturale. Le proporzioni stanno in theme.json, quindi le immagini
+   di una stessa griglia non possono divergere.
+   --------------------------------------------------------------- */
+
+.sd-plate {
+	align-items: center;
+	aspect-ratio: var(--wp--custom--frame--plate);
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	overflow: hidden;
+	position: relative;
+}
+
+.sd-plate img {
+	display: block;
+}
+
+.sd-plate--cover img {
+	height: 100%;
+	object-fit: cover;
+	object-position: var(--sd-focus, 50% 50%);
+	width: 100%;
+}
+
+/* Il ritaglio si posa su una lastra chiara con un filetto attorno.
+   Il fondo NON e' tinto: meta' di queste immagini ha gia' il bianco
+   dentro, e su fondo tinto diventavano adesivi bianchi incollati.
+   A risolvere il problema del «sembra vuoto» non e' il colore, e' il
+   **filetto**: delimita l'immagine, quindi non la si confonde piu'
+   con il nulla, e il bianco dell'immagine continua nel bianco della
+   lastra senza giunture. */
+.sd-plate--contain {
+	background-color: var(--wp--custom--surface--pure);
+	border: 1px solid var(--wp--custom--border--hairline);
+	padding: var(--wp--custom--space--sm);
+}
+
+.sd-plate--contain img {
+	height: auto;
+	max-height: 100%;
+	object-fit: contain;
+	width: auto;
+}
+
+/* Sulle fasce tinte e scure il filetto cambia tono, il fondo resta chiaro:
+   il bianco dentro l'immagine non si puo' cambiare. */
+.sd-section--tint .sd-plate--contain {
+	border-color: var(--wp--preset--color--main);
+}
+
+.sd-section--dark .sd-plate--contain {
+	border-color: var(--wp--custom--rule--on-dark);
+}
+
+/* Le proporzioni per ruolo. Una per griglia, mai due. */
+.sd-zig__figure,
+.sd-matrix__figure {
+	aspect-ratio: var(--wp--custom--frame--plate);
+}
+
+.sd-people__portrait,
+.sd-roster__portrait,
+.sd-doctor__portrait {
+	aspect-ratio: var(--wp--custom--frame--portrait);
+}
+
+/* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'. */
+.sd-people__portrait img,
+.sd-roster__portrait img,
+.sd-doctor__portrait img {
+	--sd-focus: 50% 18%;
+}
+
+/* La riga senza immagine non tiene una colonna di nulla: diventa piena.
+   Oggi capita a «Ortodonzia Mobile», l'unico trattamento senza fotografia. */
+.sd-zig__row--senza-immagine {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-areas: "body";
+}
+
+.sd-zig__row--senza-immagine .sd-zig__body {
+	max-width: var(--wp--custom--measure--prose);
+}
+
+/* ===============================================================
+   20. IL MENU SU MOBILE
+
+   Il blocco Navigation di core fa gia' le cose difficili: apre e
+   chiude, intrappola il fuoco, chiude con Escape, blocca lo
+   scorrimento del corpo e tiene i sottomenu chiusi col loro
+   indicatore. Quel che mancava era il disegno — e il telefono e
+   «Prenota» dentro il pannello, che qui sono **voci vere del menu**
+   (classe `sd-nav-cta`) invece che JavaScript: restano modificabili
+   dal pannello di WordPress come ogni altra voce.
+   =============================================================== */
+
+/* Le due voci di azione non compaiono nella barra orizzontale:
+   li' gli stessi comandi ci sono gia', a destra del logo. */
+.wp-block-navigation__responsive-container:not(.is-menu-open) .sd-nav-cta {
+	display: none;
+}
+
+/* ---------------------------------------------------------------
+   20.1 Il pannello
+   --------------------------------------------------------------- */
+
+.sd-header .wp-block-navigation__responsive-container.is-menu-open {
+	background-color: var(--wp--preset--color--base);
+	padding: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.sd-header .wp-block-navigation__responsive-container.is-menu-open {
+		animation: sd-menu-in 0.26s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+	}
+}
+
+@keyframes sd-menu-in {
+	from { opacity: 0; transform: translateY(-0.75rem); }
+	to   { opacity: 1; transform: none; }
+}
+
+.sd-header .wp-block-navigation__responsive-dialog {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+/* La barra in alto: tiene il pulsante di chiusura allineato al
+   margine del sito, non incollato all'angolo. */
+.sd-header .wp-block-navigation__responsive-container-close {
+	align-items: center;
+	background-color: transparent;
+	border: 1px solid var(--wp--custom--border--hairline);
+	border-radius: 999px;
+	color: var(--wp--preset--color--main);
+	display: flex;
+	height: var(--wp--custom--tap);
+	justify-content: center;
+	right: var(--sd-gutter);
+	top: 0.9rem;
+	transition: background-color 0.18s ease, color 0.18s ease;
+	width: var(--wp--custom--tap);
+}
+
+.sd-header .wp-block-navigation__responsive-container-close:hover,
+.sd-header .wp-block-navigation__responsive-container-close:focus-visible {
+	background-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-header .wp-block-navigation__responsive-container-close svg {
+	height: 20px;
+	width: 20px;
+}
+
+/* ---------------------------------------------------------------
+   20.2 L'elenco
+   --------------------------------------------------------------- */
+
+.sd-header .is-menu-open .wp-block-navigation__container {
+	gap: 0;
+	padding: 4.25rem var(--sd-gutter) var(--wp--custom--space--xl);
+	width: 100%;
+}
+
+.sd-header .is-menu-open .wp-block-navigation__container > .wp-block-navigation-item {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	width: 100%;
+}
+
+.sd-header .is-menu-open .wp-block-navigation__container > .wp-block-navigation-item:first-child {
+	border-top: 0;
+}
+
+/* Le voci di primo livello in Fraunces: nel pannello il menu e' il
+   contenuto della schermata, non un'etichetta di servizio. */
+.sd-header .is-menu-open .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-item__content,
+.sd-header .is-menu-open .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-submenu__toggle {
+	align-items: center;
+	display: flex;
+	/* La freccia va in fondo alla riga anche quando la voce non ha
+	   tendina e il contenuto e' un solo elemento. */
+	/* La freccia va in fondo alla riga, non attaccata alla parola:
+	   `margin-left:auto` sull'icona non basta, serve che il pulsante
+	   che la contiene sia esso stesso una riga flessibile. */
+	justify-content: space-between;
+	font-family: var(--wp--preset--font-family--secondary);
+	font-size: 1.5rem;
+	font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 48;
+	font-weight: 400;
+	letter-spacing: -0.012em;
+	min-height: 3.5rem;
+	padding-block: 0.6rem;
+}
+
+/* Una voce con tendina e' una riga sola: il collegamento occupa lo
+   spazio che resta, la freccia sta in fondo, il sottomenu va a capo
+   sotto entrambi. Core emette i tre come fratelli dentro il `li`.
+   
+   Si usa una **griglia**, non `flex-wrap`: con il flex il sottomenu
+   non andava a capo e finiva a x=370 su un viewport da 390 — fuori
+   dallo schermo, e in pagina si vedeva solo un riquadro grigio vuoto.
+   Con due colonne dichiarate e `grid-column: 1 / -1` il punto in cui
+   va a capo non e' piu' una conseguenza delle larghezze. */
+.sd-header .is-menu-open .wp-block-navigation__container > .wp-block-navigation-item.has-child {
+	align-items: center;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.sd-header .is-menu-open .wp-block-navigation__container > .has-child > .wp-block-navigation-item__content {
+	grid-column: 1;
+	min-width: 0;
+}
+
+.sd-header .is-menu-open .wp-block-navigation__container > .has-child > .wp-block-navigation-submenu__toggle {
+	grid-column: 2;
+	justify-content: flex-end;
+	min-width: var(--wp--custom--tap);
+	width: auto;
+}
+
+.sd-header .is-menu-open .wp-block-navigation__container > .has-child > .wp-block-navigation__submenu-container {
+	grid-column: 1 / -1;
+	width: 100%;
+}
+
+/* L'indicatore: una freccia che ruota, non un simbolo che cambia. */
+.sd-header .is-menu-open .wp-block-navigation__submenu-icon {
+	margin-left: auto;
+	transition: transform 0.22s ease;
+}
+
+.sd-header .is-menu-open [aria-expanded="true"] > .wp-block-navigation__submenu-icon {
+	transform: rotate(180deg);
+}
+
+/* Le due azioni non sono voci di menu: niente Fraunces, niente riga
+   piena. La regola sta dopo quella dei titoli e vince per ordine, ma
+   il selettore e' anche piu' specifico — cosi' non dipende dall'ordine. */
+.sd-header .is-menu-open .wp-block-navigation__container > .sd-nav-cta > .wp-block-navigation-item__content {
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	justify-content: center;
+	letter-spacing: 0.01em;
+}
+
+/* Il sottomenu: rientrato, piu' piccolo, con un filetto che lo lega
+   alla voce che lo apre. */
+.sd-header .is-menu-open .wp-block-navigation__submenu-container {
+	border: 0;
+	border-left: 1px solid var(--wp--custom--border--hairline);
+	margin-left: 0.25rem;
+	margin-bottom: var(--wp--custom--space--sm);
+	padding-left: var(--wp--custom--space--sm);
+}
+
+.sd-header .is-menu-open .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
+	font-size: 1rem;
+	min-height: var(--wp--custom--tap);
+	padding-block: 0.45rem;
+}
+
+/* ---------------------------------------------------------------
+   20.3 Le due azioni, in fondo al pannello
+   --------------------------------------------------------------- */
+
+.sd-header .is-menu-open .sd-nav-cta {
+	border: 0 !important;
+	margin-top: var(--wp--custom--space--sm);
+}
+
+.sd-header .is-menu-open .sd-nav-cta:first-of-type {
+	margin-top: var(--wp--custom--space--lg);
+}
+
+.sd-header .is-menu-open .sd-nav-cta .wp-block-navigation-item__content {
+	border-radius: 999px;
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	justify-content: center;
+	letter-spacing: 0.01em;
+	min-height: 3.25rem;
+	text-decoration: none;
+	width: 100%;
+}
+
+.sd-header .is-menu-open .sd-nav-cta--phone .wp-block-navigation-item__content {
+	background-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-header .is-menu-open .sd-nav-cta--book .wp-block-navigation-item__content {
+	border: 1px solid var(--wp--preset--color--main);
+	color: var(--wp--preset--color--main);
+}
+
+/* Con il pannello aperto la barra fissa in fondo sparisce: ripeteva
+   telefono e contatti che ora sono dentro il pannello, e ci passava
+   sopra. */
+body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta {
+	/* `!important` perche' la regola base lo usa gia' (il supporto layout dei
+	   Group emette display:flex sulla classe generata): a parita' di peso
+	   vincerebbe quella. */
+	display: none !important;
+}
+
+/* Il pulsante che apre: era 32×32, sotto la soglia del pollice. */
+.sd-header .wp-block-navigation__responsive-container-open {
+	align-items: center;
+	border: 1px solid var(--wp--custom--border--hairline);
+	border-radius: 999px;
+	display: flex;
+	height: var(--wp--custom--tap);
+	justify-content: center;
+	width: var(--wp--custom--tap);
+}
+
+.sd-header .wp-block-navigation__responsive-container-open svg {
+	height: 22px;
+	width: 22px;
 }

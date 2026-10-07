@@ -14,13 +14,41 @@
 			"defaultPalette": false,
 			"link": true,
 			"palette": [
-				{ "name": "Primary", "slug": "primary", "color": "#1262fa" },
-				{ "name": "Main", "slug": "main", "color": "#39383A" },
-				{ "name": "Secondary", "slug": "secondary", "color": "#636381" },
-				{ "name": "Main Accent", "slug": "main-accent", "color": "#d0ccde" },
-				{ "name": "Primary Accent", "slug": "primary-accent", "color": "#a51212" },
-				{ "name": "Tertiary", "slug": "tertiary", "color": "#bcc9dd" },
-				{ "name": "Base", "slug": "base", "color": "#fcfcfc" }
+				{
+					"name": "Primary",
+					"slug": "primary",
+					"color": "#1262fa"
+				},
+				{
+					"name": "Main",
+					"slug": "main",
+					"color": "#39383A"
+				},
+				{
+					"name": "Secondary",
+					"slug": "secondary",
+					"color": "#636381"
+				},
+				{
+					"name": "Main Accent",
+					"slug": "main-accent",
+					"color": "#d0ccde"
+				},
+				{
+					"name": "Primary Accent",
+					"slug": "primary-accent",
+					"color": "#a51212"
+				},
+				{
+					"name": "Tertiary",
+					"slug": "tertiary",
+					"color": "#bcc9dd"
+				},
+				{
+					"name": "Base",
+					"slug": "base",
+					"color": "#fcfcfc"
+				}
 			]
 		},
 		"typography": {
@@ -39,7 +67,9 @@
 							"fontStyle": "normal",
 							"fontWeight": "100 1000",
 							"fontDisplay": "swap",
-							"src": [ "file:./assets/fonts/DMSans-VariableFont_opsz,wght.woff2" ]
+							"src": [
+								"file:./assets/fonts/DMSans-VariableFont_opsz,wght.woff2"
+							]
 						}
 					]
 				},
@@ -53,7 +83,9 @@
 							"fontStyle": "normal",
 							"fontWeight": "100 900",
 							"fontDisplay": "swap",
-							"src": [ "file:./assets/fonts/Fraunces-VariableFont_SOFT,WONK,opsz,wght.woff2" ]
+							"src": [
+								"file:./assets/fonts/Fraunces-VariableFont_SOFT,WONK,opsz,wght.woff2"
+							]
 						}
 					]
 				},
@@ -64,14 +96,87 @@
 				}
 			],
 			"fontSizes": [
-				{ "name": "Extra Small", "slug": "x-small", "size": ".875rem", "fluid": { "min": ".8125rem", "max": ".875rem" } },
-				{ "name": "Small", "slug": "small", "size": "1rem", "fluid": { "min": ".9375rem", "max": "1rem" } },
-				{ "name": "Base", "slug": "base", "size": "1.1875rem", "fluid": { "min": "1.0625rem", "max": "1.1875rem" } },
-				{ "name": "Medium", "slug": "medium", "size": "1.375rem", "fluid": { "min": "1.1875rem", "max": "1.375rem" } },
-				{ "name": "Large", "slug": "large", "size": "2.125rem", "fluid": { "min": "1.5rem", "max": "2.125rem" } },
-				{ "name": "Extra Large", "slug": "x-large", "size": "3.125rem", "fluid": { "min": "2rem", "max": "3.125rem" } },
-				{ "name": "Extra Extra Large", "slug": "xx-large", "size": "4.5rem", "fluid": { "min": "2.75rem", "max": "4.5rem" } },
-				{ "name": "Display", "slug": "display", "size": "3.75rem", "fluid": { "min": "2.5rem", "max": "3.75rem" } }
+				{
+					"name": "Extra Small",
+					"slug": "x-small",
+					"size": ".875rem",
+					"fluid": {
+						"min": ".8125rem",
+						"max": ".875rem"
+					}
+				},
+				{
+					"name": "Small",
+					"slug": "small",
+					"size": "1rem",
+					"fluid": {
+						"min": ".9375rem",
+						"max": "1rem"
+					}
+				},
+				{
+					"name": "Base",
+					"slug": "base",
+					"size": "1.1875rem",
+					"fluid": {
+						"min": "1.0625rem",
+						"max": "1.1875rem"
+					}
+				},
+				{
+					"name": "Medium",
+					"slug": "medium",
+					"size": "1.375rem",
+					"fluid": {
+						"min": "1.1875rem",
+						"max": "1.375rem"
+					}
+				},
+				{
+					"name": "Large",
+					"slug": "large",
+					"size": "2.125rem",
+					"fluid": {
+						"min": "1.5rem",
+						"max": "2.125rem"
+					}
+				},
+				{
+					"name": "Extra Large",
+					"slug": "x-large",
+					"size": "3.125rem",
+					"fluid": {
+						"min": "2rem",
+						"max": "3.125rem"
+					}
+				},
+				{
+					"slug": "title",
+					"name": "Titolo di scheda",
+					"size": "3.75rem",
+					"fluid": {
+						"min": "2.5rem",
+						"max": "3.75rem"
+					}
+				},
+				{
+					"name": "Extra Extra Large",
+					"slug": "xx-large",
+					"size": "4.5rem",
+					"fluid": {
+						"min": "2.75rem",
+						"max": "4.5rem"
+					}
+				},
+				{
+					"name": "Display",
+					"slug": "display",
+					"size": "3.75rem",
+					"fluid": {
+						"min": "2.5rem",
+						"max": "3.75rem"
+					}
+				}
 			]
 		},
 		"custom": {
@@ -103,7 +208,84 @@
 			"state": {
 				"errorTint": "rgba(165, 18, 18, 0.08)",
 				"okTint": "rgba(18, 98, 250, 0.08)"
-			}
+			},
+			"space": {
+				"3xs": "clamp(0.25rem, 0.6vw, 0.375rem)",
+				"2xs": "clamp(0.5rem, 1.2vw, 0.75rem)",
+				"xs": "clamp(0.75rem, 1.6vw, 1rem)",
+				"sm": "clamp(1rem, 2.2vw, 1.5rem)",
+				"md": "clamp(1.25rem, 2.8vw, 2rem)",
+				"lg": "clamp(1.75rem, 3.6vw, 2.75rem)",
+				"xl": "clamp(2.25rem, 4.6vw, 3.75rem)",
+				"2xl": "clamp(3rem, 6vw, 5.5rem)",
+				"3xl": "clamp(3.5rem, 7.2vw, 7rem)"
+			},
+			"measure": {
+				"prose": "38rem",
+				"lede": "32rem",
+				"short": "26rem",
+				"hero": "clamp(26rem, 36vw, 33rem)",
+				"panel": "clamp(26rem, 54vw, 46rem)"
+			},
+			"frame": {
+				"hero": "16 / 9",
+				"wide": "3 / 2",
+				"plate": "4 / 3",
+				"portrait": "4 / 5",
+				"panel": "3 / 4"
+			},
+			"tap": "2.75rem"
+		},
+		"spacing": {
+			"defaultSpacingSizes": false,
+			"spacingSizes": [
+				{
+					"slug": "small",
+					"name": "1 · Stretta",
+					"size": "clamp(0.5rem, 1.2vw, 0.75rem)"
+				},
+				{
+					"slug": "medium",
+					"name": "2 · Normale",
+					"size": "clamp(0.875rem, 2vw, 1.25rem)"
+				},
+				{
+					"slug": "large",
+					"name": "3 · Comoda",
+					"size": "clamp(1.25rem, 2.8vw, 2rem)"
+				},
+				{
+					"slug": "x-large",
+					"name": "4 · Ampia",
+					"size": "clamp(1.75rem, 3.6vw, 2.75rem)"
+				},
+				{
+					"slug": "xx-large",
+					"name": "5 · Fra i blocchi",
+					"size": "clamp(2.25rem, 4.6vw, 3.75rem)"
+				},
+				{
+					"slug": "xxx-large",
+					"name": "6 · Fra le parti",
+					"size": "clamp(3rem, 6vw, 5.5rem)"
+				},
+				{
+					"slug": "xxxx-large",
+					"name": "7 · Fra le sezioni",
+					"size": "clamp(3.5rem, 7.2vw, 7rem)"
+				}
+			],
+			"units": [
+				"px",
+				"em",
+				"rem",
+				"vh",
+				"vw",
+				"%"
+			],
+			"blockGap": true,
+			"padding": true,
+			"margin": true
 		}
 	},
 	"styles": {
@@ -160,16 +342,26 @@
 				}
 			},
 			"link": {
-				"color": { "text": "var(--wp--preset--color--primary)" },
-				"typography": { "textDecoration": "underline" },
-				":hover": { "typography": { "textDecoration": "none" } }
+				"color": {
+					"text": "var(--wp--preset--color--primary)"
+				},
+				"typography": {
+					"textDecoration": "underline"
+				},
+				":hover": {
+					"typography": {
+						"textDecoration": "none"
+					}
+				}
 			},
 			"button": {
 				"color": {
 					"background": "var(--wp--preset--color--primary)",
 					"text": "var(--wp--preset--color--base)"
 				},
-				"border": { "radius": "4px" },
+				"border": {
+					"radius": "4px"
+				},
 				"spacing": {
 					"padding": {
 						"top": "0.85em",
@@ -208,8 +400,12 @@
 				},
 				"elements": {
 					"link": {
-						"color": { "text": "var(--wp--preset--color--main)" },
-						"typography": { "textDecoration": "none" }
+						"color": {
+							"text": "var(--wp--preset--color--main)"
+						},
+						"typography": {
+							"textDecoration": "none"
+						}
 					}
 				}
 			},
@@ -219,7 +415,9 @@
 				}
 			},
 			"core/separator": {
-				"color": { "text": "var(--wp--preset--color--main-accent)" }
+				"color": {
+					"text": "var(--wp--preset--color--main-accent)"
+				}
 			},
 			"core/post-title": {
 				"typography": {
@@ -229,12 +427,36 @@
 		}
 	},
 	"templateParts": [
-		{ "name": "header", "title": "Header", "area": "header" },
-		{ "name": "footer", "title": "Footer", "area": "footer" },
-		{ "name": "mobile-cta", "title": "CTA mobile", "area": "uncategorized" }
+		{
+			"name": "header",
+			"title": "Header",
+			"area": "header"
+		},
+		{
+			"name": "footer",
+			"title": "Footer",
+			"area": "footer"
+		},
+		{
+			"name": "mobile-cta",
+			"title": "CTA mobile",
+			"area": "uncategorized"
+		}
 	],
 	"customTemplates": [
-		{ "name": "page-lo-studio", "title": "Pagina: Lo Studio", "postTypes": [ "page" ] },
-		{ "name": "page-contatti", "title": "Pagina: Contatti", "postTypes": [ "page" ] }
+		{
+			"name": "page-lo-studio",
+			"title": "Pagina: Lo Studio",
+			"postTypes": [
+				"page"
+			]
+		},
+		{
+			"name": "page-contatti",
+			"title": "Pagina: Contatti",
+			"postTypes": [
+				"page"
+			]
+		}
 	]
 }

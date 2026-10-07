@@ -367,7 +367,7 @@ final class Blocks {
 			$link = (string) get_permalink( $doctor );
 
 			$body .= '<article class="sd-people__row">'
-				. Render::thumb( $doctor->ID, 'medium', 'sd-people__portrait' )
+				. Render::thumb( $doctor->ID, 'medium_large', 'sd-people__portrait', 160 )
 				. '<div class="sd-people__text">'
 				. '<' . $tag . ' class="sd-people__name"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></' . $tag . '>'
 				. '<p class="sd-people__bio">' . esc_html( Render::excerpt( $doctor, 40 ) ) . '</p>'
@@ -436,7 +436,7 @@ final class Blocks {
 
 			// `core/shortcode` non esegue gli shortcode e i template non passano
 			// dal filtro `the_content`: qui serve `do_shortcode()` a mano.
-			$gallery = $bafg > 0 ? do_shortcode( '[bafg id="' . $bafg . '"]' ) : Render::thumb( $case->ID, 'large' );
+			$gallery = $bafg > 0 ? do_shortcode( '[bafg id="' . $bafg . '"]' ) : Render::thumb( $case->ID, 'large', '', 608 );
 
 			$out .= '<article class="sd-cases__item">'
 				. '<div class="sd-cases__media">' . $gallery . '</div>'
@@ -550,7 +550,7 @@ final class Blocks {
 
 		$body = Render::head( $eyebrow, get_the_title( $post ), 1 )
 			. '<div class="sd-case">'
-			. ( $bafg > 0 ? do_shortcode( '[bafg id="' . $bafg . '"]' ) : Render::thumb( $post->ID, 'large' ) )
+			. ( $bafg > 0 ? do_shortcode( '[bafg id="' . $bafg . '"]' ) : Render::thumb( $post->ID, 'large', '', 768 ) )
 			. '</div>';
 
 		$meta = array();

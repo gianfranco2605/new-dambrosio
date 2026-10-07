@@ -10,6 +10,13 @@
  */
 
 $sd_c = sorriso_dambrosio_contacts();
+
+/*
+ * In homepage il modulo e' in pagina, quindi il pulsante punta all'ancora.
+ * Altrove non esiste nessun #prenota: puntava nel vuoto e non succedeva
+ * niente. Sulle altre pagine va alla pagina dei contatti.
+ */
+$sd_prenota = is_front_page() ? '#prenota' : home_url( '/contatti/#prenota' );
 ?>
 <!-- wp:group {"className":"sd-header","style":{"position":{"type":"sticky","top":"0px"},"spacing":{"padding":{"top":"0","bottom":"0","right":"0","left":"0"},"blockGap":"0"}},"backgroundColor":"base","layout":{"type":"default"}} -->
 <div class="wp-block-group sd-header has-base-background-color has-background" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:group {"className":"sd-wrap sd-header__inner","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
@@ -23,7 +30,7 @@ $sd_c = sorriso_dambrosio_contacts();
 		<?php echo sorriso_dambrosio_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		<span class="sd-header__phone-text"><?php echo esc_html( $sd_c['phone'] ); ?></span>
 	</a>
-	<a class="sd-btn sd-btn--outline sd-header__book" href="#prenota">Prenota un appuntamento</a>
+	<a class="sd-btn sd-btn--outline sd-header__book" href="<?php echo esc_url( $sd_prenota ); ?>">Prenota un appuntamento</a>
 </div>
 <!-- /wp:html --></div>
 <!-- /wp:group --></div>
