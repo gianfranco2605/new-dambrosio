@@ -30,7 +30,7 @@ Text Domain: sorriso-dambrosio
 .editor-styles-wrapper {
 	--sd-max: 1320px;
 	--sd-gutter: var(--wp--custom--space--md);
-	--sd-rhythm: var(--wp--custom--space--2xl);
+	--sd-rhythm: var(--wp--custom--space--xxl);
 	--sd-sticky-top: 7.5rem;
 
 	/* Quanto manca, da dentro il contenitore, per arrivare al bordo della
@@ -110,8 +110,10 @@ Text Domain: sorriso-dambrosio
 	max-width: var(--wp--custom--measure--column);
 }
 
+/* Non e' testo corrente ma una dichiarazione a 34px: la misura corta
+   e' voluta (DESIGN-SPEC §4.7), ma 34rem la stringeva a 30 caratteri. */
 .sd-why__lede {
-	max-width: var(--wp--custom--measure--narrow);
+	max-width: var(--wp--custom--measure--statement);
 }
 
 .sd-hero__lede {
@@ -149,7 +151,7 @@ Text Domain: sorriso-dambrosio
 
 .sd-head + .sd-head,
 .sd-prose + .sd-head {
-	margin-top: var(--wp--custom--space--2xl);
+	margin-top: var(--wp--custom--space--xxl);
 }
 
 .sd-eyebrow {
@@ -343,7 +345,7 @@ Text Domain: sorriso-dambrosio
 .sd-hero__frame {
 	display: flex;
 	flex-direction: column;
-	padding-block: var(--wp--custom--space--2xl) var(--wp--custom--space--lg);
+	padding-block: var(--wp--custom--space--xxl) var(--wp--custom--space--lg);
 }
 
 .sd-hero__copy {
@@ -748,7 +750,7 @@ Text Domain: sorriso-dambrosio
 .sd-chapter__body {
 	grid-column: body-start / wrap-end;
 	min-width: 0;
-	padding-left: var(--wp--custom--space--2xl);
+	padding-left: var(--wp--custom--space--xxl);
 }
 
 /* La fotografia riempie tutta l'altezza della colonna. Con position:sticky
@@ -775,7 +777,7 @@ Text Domain: sorriso-dambrosio
 /* I cinque paragrafi dell'accoglienza su tre colonne tipografiche, a tutta
    larghezza sotto il capitolo: un muro di prosa diventa una pagina. */
 .sd-welcome {
-	margin-top: var(--wp--custom--space--2xl);
+	margin-top: var(--wp--custom--space--xxl);
 }
 
 .sd-columns3 {
@@ -985,7 +987,7 @@ Text Domain: sorriso-dambrosio
 .sd-tech__grid {
 	align-items: stretch;
 	display: grid;
-	gap: var(--wp--custom--space--2xl);
+	gap: var(--wp--custom--space--xxl);
 	grid-template-columns: minmax(0, 0.34fr) minmax(0, 0.66fr);
 }
 
@@ -1096,7 +1098,6 @@ Text Domain: sorriso-dambrosio
 
 .sd-why__lede {
 	margin-block: 0 var(--wp--custom--space--xl);
-	max-width: 46ch;
 }
 
 .sd-why__grid {
@@ -1903,13 +1904,7 @@ img {
 	margin-right: calc(var(--sd-bleed) * -1);
 }
 
-.sd-areahead__figure img {
-	aspect-ratio: 16 / 10;
-	display: block;
-	max-width: 100%;
-	object-fit: cover;
-	width: 100%;
-}
+/* Proporzione e riempimento li governa la lastra (§19.6). */
 
 @media (max-width: 900px) {
 	.sd-areahead__grid {
@@ -1924,8 +1919,8 @@ img {
 		margin-inline: calc(var(--sd-bleed) * -1);
 	}
 
-	.sd-areahead__figure img {
-		aspect-ratio: 3 / 2;
+	.sd-areahead__figure {
+		aspect-ratio: var(--wp--custom--frame--wide);
 	}
 }
 
@@ -2017,8 +2012,8 @@ img {
 			"body";
 	}
 
-	.sd-zig__figure img {
-		aspect-ratio: 16 / 9;
+	.sd-zig__figure {
+		aspect-ratio: var(--wp--custom--frame--hero);
 	}
 }
 
@@ -2237,12 +2232,7 @@ img {
 	margin: 0;
 }
 
-.sd-entry__figure img {
-	aspect-ratio: 4 / 3;
-	display: block;
-	object-fit: cover;
-	width: 100%;
-}
+/* Proporzione e riempimento li governa la lastra (§19.6). */
 
 .sd-entry__figure {
 	margin-right: calc(var(--sd-bleed) * -1);
@@ -2296,8 +2286,8 @@ img {
 		margin-inline: calc(var(--sd-bleed) * -1);
 	}
 
-	.sd-entry__figure img {
-		aspect-ratio: 16 / 9;
+	.sd-entry__figure {
+		aspect-ratio: var(--wp--custom--frame--hero);
 	}
 }
 
@@ -2897,6 +2887,9 @@ img {
    --------------------------------------------------------------- */
 
 @media (max-width: 781px) {
+	/* `!important` non e' una scorciatoia: WordPress emette le classi dei
+	   preset (`.has-small-font-size`) **gia' con `!important`**, quindi a
+	   parita' di peso vincono sempre loro e il testo resterebbe a 15px. */
 	.wp-site-blocks .has-small-font-size,
 	.sd-rows__text,
 	.sd-matrix__text,
@@ -2906,15 +2899,22 @@ img {
 	.sd-hours-band__note,
 	.sd-hero__bar-value,
 	.sd-prenota__lede {
-		font-size: 1rem;
+		font-size: 1rem !important;
 	}
 
 	.wp-site-blocks .has-x-small-font-size,
 	.sd-crumbs__list,
-	.sd-btn,
 	.sd-contacts__label,
 	.sd-case__meta-label {
-		font-size: 0.9375rem;
+		font-size: 0.9375rem !important;
+	}
+
+	/* L'etichetta di un pulsante e' interfaccia, non testo corrente, ma a
+	   15px su un telefono si legge peggio di quanto valga la compattezza. */
+	.sd-btn,
+	.wp-block-button__link,
+	.wpcf7-submit {
+		font-size: 1rem !important;
 	}
 
 	/* L'occhiello resta piccolo: e' un'etichetta, non testo da leggere. */
@@ -2959,10 +2959,6 @@ img {
 .sd-areahead__lede,
 .sd-cta__lede,
 .sd-prenota__lede,
-.sd-why__lede {
-	max-width: var(--wp--custom--measure--lede);
-}
-
 /* Il contenuto di una pagina generica o di un articolo arriva da
    `post-content`, che non porta le classi del tema: la misura si
    impone sul contenitore. */
@@ -3102,6 +3098,14 @@ img {
 }
 
 /* Le proporzioni per ruolo. Una per griglia, mai due. */
+.sd-areahead__figure {
+	aspect-ratio: var(--wp--custom--frame--wide);
+}
+
+.sd-entry__figure {
+	aspect-ratio: var(--wp--custom--frame--wide);
+}
+
 .sd-zig__figure,
 .sd-matrix__figure {
 	aspect-ratio: var(--wp--custom--frame--plate);
@@ -3428,4 +3432,95 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 .sd-visit__map iframe._iub_cs_activate:not(._iub_cs_activate-activated) {
 	opacity: 0;
 	pointer-events: none;
+}
+
+/* ---------------------------------------------------------------
+   19.7 Su mobile i bersagli crescono senza spostare niente
+
+   Un collegamento dentro un titolo e' alto quanto la riga: 24px.
+   Allargarlo con `padding` sposterebbe tutto il ritmo verticale,
+   quindi il margine negativo lo riassorbe: l'area toccabile
+   arriva a 44px, la posizione sulla pagina non cambia di un pixel.
+
+   Vale solo per i collegamenti che sono **bersagli** — titoli,
+   recapiti, voci di elenco — non per quelli dentro la prosa, dove
+   un'area alta 44px si sovrapporrebbe alla riga successiva.
+   --------------------------------------------------------------- */
+
+@media (max-width: 781px) {
+	.sd-zig__title a,
+	.sd-rows__title a,
+	.sd-matrix__title a,
+	.sd-people__name a,
+	.sd-index__areaname a,
+	.sd-cases__caption a,
+	.sd-chips__item a,
+	.sd-footer a:not(.wp-block-social-link-anchor),
+	.sd-visit__list a,
+	.sd-prenota__contacts a,
+	.sd-tech__row > h3 a,
+	.sd-head h2 a,
+	.sd-head h3 a,
+	.sd-crumbs__item a,
+	.sd-roster__text .sd-more a,
+	.wp-block-post-terms a,
+	.sd-visit__fallback,
+	.sd-entry__head .sd-eyebrow a {
+		display: inline-block;
+		margin-block: -0.75rem;
+		padding-block: 0.75rem;
+	}
+
+	/* Le icone social dell'hero: lo stesso quadrato da 44 del footer. */
+	.sd-hero__social a {
+		align-items: center;
+		display: inline-flex;
+		height: var(--wp--custom--tap);
+		justify-content: center;
+		width: var(--wp--custom--tap);
+	}
+
+	/* Le etichette del modulo: CF7 le stampa con le proprie classi. */
+	.wpcf7 label,
+	.wpcf7-list-item-label,
+	.wpcf7-form-control-wrap,
+	.sd-form__field label {
+		font-size: 1rem !important;
+	}
+
+	/* Le domande della FAQ: `summary` e' il comando che apre. */
+	.sd-areatext summary {
+		min-height: var(--wp--custom--tap);
+		padding-block: 0.5rem;
+	}
+
+	/* Restano sotto i 16px: sono testo, non etichette. */
+	.sd-roster__text p,
+	.sd-tech__row > p:not(.sd-more),
+	.sd-hours-band__note,
+	.wpcf7-list-item-label,
+	.wpcf7-list-item,
+	.sd-crumbs__item,
+	.sd-more,
+	.sd-more a {
+		font-size: 1rem !important;
+	}
+}
+
+/* Il collegamento alla privacy lo inietta iubenda, con uno stile in linea
+   (`height: 25px`) e un foglio caricato dopo il nostro: a parita' di peso
+   vince lui e il bersaglio resta alto 22px. Si sale di specificita'
+   ancorandosi al contenitore del tema. Il plugin non si tocca. */
+.sd-footer__legal .iubenda-white,
+.sd-footer__legal .iubenda-nostyle,
+.sd-footer__legal .iubenda-black,
+.sd-footer .iubenda-white,
+.iubenda-white,
+.iubenda-nostyle,
+.iubenda-black,
+.iubenda-noiframe {
+	align-items: center !important;
+	display: inline-flex !important;
+	height: auto !important;
+	min-height: var(--wp--custom--tap) !important;
 }
