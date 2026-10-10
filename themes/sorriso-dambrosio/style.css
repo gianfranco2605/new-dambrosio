@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.3
+Version: 1.6.7
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -1352,8 +1352,79 @@ Text Domain: sorriso-dambrosio
 	margin-top: var(--wp--custom--space--md);
 }
 
-/* I cinque paragrafi dell'accoglienza su tre colonne tipografiche, a tutta
-   larghezza sotto il capitolo: un muro di prosa diventa una pagina. */
+/* ---------------------------------------------------------------
+   6.2 Il capitolo a specchio
+
+   «I Nostri Pazienti» e' lo stesso capitolo di «Lo Studio»: stessa
+   griglia, stessa soglia, stessa colonna di lettura quando resta a
+   una colonna. Rovesciato: fotografia a destra, testo a sinistra.
+   Due capitoli di fila con la stessa geometria sarebbero una
+   cantilena, e la regola 3 di DESIGN FIRST vieta il pattern ripetuto
+   per costruzione.
+
+   Tutto qui dentro vale **solo da 1024 in su**. Sotto, la griglia non
+   c'e' piu' — `display: block` — e valgono le regole della 6.1,
+   uguali per i due capitoli: scriverle fuori da questo media query
+   vorrebbe dire vincerle per specificita' e doverle poi disfare.
+   --------------------------------------------------------------- */
+@media (min-width: 1024px) {
+	.sd-chapter__grid--mirror {
+		grid-template-columns:
+			[full-start] minmax(var(--sd-gutter), 1fr)
+			[body-start] minmax(0, calc(var(--sd-max) * 0.64))
+			[media-start] minmax(0, calc(var(--sd-max) * 0.36))
+			[wrap-end] minmax(var(--sd-gutter), 1fr)
+			[full-end];
+	}
+
+	/* La riga va dichiarata. A specchio la fotografia resta prima nel
+	   DOM — a una colonna deve stare sopra il testo, come nell'altro
+	   capitolo — ma la sua colonna e' l'ultima: l'auto-posizionamento
+	   scorre in avanti, non trova piu' spazio alla sinistra di una
+	   cella gia' presa e manda il testo a capo. Erano due righe, e la
+	   fotografia restava alta zero. */
+	.sd-chapter__grid--mirror .sd-chapter__media,
+	.sd-chapter__grid--mirror .sd-chapter__body {
+		grid-row: 1;
+	}
+
+	.sd-chapter__grid--mirror .sd-chapter__media {
+		grid-column: media-start / full-end;
+	}
+
+	.sd-chapter__grid--mirror .sd-chapter__body {
+		grid-column: body-start / media-start;
+		padding-left: 0;
+		padding-right: var(--wp--custom--space--xxl);
+	}
+
+	/* Il testo si appoggia alla fotografia e l'aria che avanza cade sul
+	   margine esterno della pagina — come nel capitolo dritto, dove
+	   cade a destra. La colonna resta la misura di lettura: la stessa
+	   di tutto il resto del sito. */
+	.sd-chapter__grid--mirror .sd-chapter__body > * {
+		margin-inline-start: auto;
+		max-width: var(--wp--custom--measure--prose);
+	}
+
+	/* Qui la figura e' alta quanto il testo, non quanto la finestra:
+	   cinque paragrafi non sono un racconto e non c'e' nessuno
+	   scorrimento da accompagnare.
+
+	   `position: absolute` e' quello che il capitolo lungo aveva
+	   scartato — li' la colonna arrivava a 2135px e la fotografia
+	   veniva ingrandita tre volte. Qui la colonna sta sotto i 600 e
+	   l'originale ne ha 694: entra ridotta. La differenza e' il
+	   rapporto fra colonna e originale, non la tecnica. */
+	.sd-chapter__grid--mirror .sd-chapter__figure {
+		height: auto;
+		inset: 0;
+		position: absolute;
+	}
+}
+
+/* Lo stacco fra i due capitoli: stanno nella stessa sezione, quindi fra
+   loro non c'e' il respiro di `--sd-rhythm` ma questo. */
 .sd-welcome {
 	margin-top: var(--wp--custom--space--xxl);
 }
@@ -1402,10 +1473,11 @@ Text Domain: sorriso-dambrosio
 	margin-bottom: 0;
 }
 
-/* Sotto i 900px le due colonne non hanno piu' senso: il titolo
-   torna sopra il testo, e quel che resta e' la colonna di lettura
-   della 6.1 — stesse due righe, stessa misura. */
-@media (max-width: 899px) {
+/* Le due colonne diventano una alla stessa soglia del capitolo — 1024,
+   una per tutto il sito, non una per sezione — e il titolo torna sopra
+   il testo. Quel che resta e' la colonna di lettura della 6.1: stesse
+   due righe, stessa misura. */
+@media (max-width: 1023px) {
 	.sd-split {
 		gap: var(--wp--custom--space--sm);
 		grid-template-columns: minmax(0, 1fr);
