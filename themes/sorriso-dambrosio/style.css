@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.9
+Version: 1.7.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -3958,11 +3958,25 @@ img {
 	}
 }
 
-/* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'. */
+/* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'.
+
+   `object-position` va dichiarato qui, non solo la variabile. La lettura
+   `var(--sd-focus)` sta sulla lastra (`.sd-plate--cover img`), e di questi
+   tre solo il ritratto di `.sd-people__portrait` e' una lastra: gli altri
+   due escono da `wp_get_attachment_image()` con `object-fit: cover` e
+   nient'altro. La variabile era dichiarata e non la leggeva nessuno, cosi'
+   il ritaglio restava al centro.
+
+   Si vedeva solo sotto i 600px: sopra, la cornice e' 4/5 come gli
+   originali (390x514) e il taglio e' di pochi pixel. A 3/2 la finestra
+   mostra meta' dell'altezza, e presa dal centro quella meta' e' la
+   faccia tagliata in due. */
 .sd-people__portrait img,
 .sd-roster__portrait img,
 .sd-doctor__portrait img {
 	--sd-focus: 50% 18%;
+
+	object-position: var(--sd-focus);
 }
 
 /* La riga senza immagine non tiene una colonna di nulla: diventa piena.
