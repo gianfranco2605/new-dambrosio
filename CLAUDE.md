@@ -95,14 +95,14 @@ Il design viene **prima** del markup, e si giudica guardando la pagina resa.
 **Se cancellando il tema si perde un'informazione, quell'informazione sta nel posto
 sbagliato.**
 
-| | Dove |
-|---|---|
-| Tipi di contenuto, tassonomia, campi, relazioni | `plugins/sorriso-dambrosio-core/` |
-| Regole di riscrittura, permalink, mappa dei redirect | idem |
-| **Orari e recapiti** (`SD\Core\Studio`) | idem — **unica fonte** |
-| Blocchi dinamici (la logica che sceglie i contenuti) | idem |
-| JSON-LD | idem |
-| `theme.json`, `style.css`, `templates/`, `parts/`, `patterns/` | `themes/sorriso-dambrosio/` |
+|                                                                | Dove                              |
+| -------------------------------------------------------------- | --------------------------------- |
+| Tipi di contenuto, tassonomia, campi, relazioni                | `plugins/sorriso-dambrosio-core/` |
+| Regole di riscrittura, permalink, mappa dei redirect           | idem                              |
+| **Orari e recapiti** (`SD\Core\Studio`)                        | idem — **unica fonte**            |
+| Blocchi dinamici (la logica che sceglie i contenuti)           | idem                              |
+| JSON-LD                                                        | idem                              |
+| `theme.json`, `style.css`, `templates/`, `parts/`, `patterns/` | `themes/sorriso-dambrosio/`       |
 
 Gli helper del tema `sorriso_dambrosio_contacts()` e `sorriso_dambrosio_hours()`
 **delegano al plugin** e tengono solo una copia di scorta per il caso in cui il
@@ -111,12 +111,12 @@ header, hero, fascia orari, `/contatti/`, footer e JSON-LD.
 
 ### I tipi di contenuto
 
-| Tipo | Archivio | Singolo | Note |
-|---|---|---|---|
-| `sd_trattamento` | `/prestazioni/` | `/<area>/<slug>/` | 30 voci |
-| `sd_tecnologia` | `/tecnologie/` | `/tecnologie/<slug>/` | 8 |
-| `sd_professionista` | `/professionisti/` | `/professionisti/<slug>/` | 3 |
-| `sd_caso` | `/casi-studi/` | `/casi-studi/<slug>/` | 8, rendono `[bafg]` |
+| Tipo                | Archivio           | Singolo                   | Note                |
+| ------------------- | ------------------ | ------------------------- | ------------------- |
+| `sd_trattamento`    | `/prestazioni/`    | `/<area>/<slug>/`         | 30 voci             |
+| `sd_tecnologia`     | `/tecnologie/`     | `/tecnologie/<slug>/`     | 8                   |
+| `sd_professionista` | `/professionisti/` | `/professionisti/<slug>/` | 3                   |
+| `sd_caso`           | `/casi-studi/`     | `/casi-studi/<slug>/`     | 8, rendono `[bafg]` |
 
 Una sola tassonomia, **`sd_area`**, condivisa dai tre tipi che hanno un'area.
 Cinque termini: `implantologia`, `ortodonzia`, `estetica-dentale`,
@@ -178,12 +178,12 @@ Nove passi fluidi in `theme.json → settings.custom.space`, usati in CSS come
 `var(--wp--custom--space--md)`. I sette preset di blocco
 (`var:preset|spacing|large`…) tengono i nomi di Ollie ma i valori del sito.
 
-| token | 390px → 1440px | serve a |
-|---|---|---|
+| token             | 390px → 1440px     | serve a                       |
+| ----------------- | ------------------ | ----------------------------- |
 | `xxxs` `xxs` `xs` | 4→6 · 8→12 · 12→16 | dettagli dentro un componente |
-| `sm` `md` | 16→24 · 20→32 | fra elementi vicini |
-| `lg` `xl` | 28→44 · 36→60 | fra blocchi |
-| `xxl` `xxxl` | 48→88 · 56→112 | fra le sezioni |
+| `sm` `md`         | 16→24 · 20→32      | fra elementi vicini           |
+| `lg` `xl`         | 28→44 · 36→60      | fra blocchi                   |
+| `xxl` `xxxl`      | 48→88 · 56→112     | fra le sezioni                |
 
 > **I nomi dei token sono di sole lettere, e deve restare cosi'.**
 > WordPress trasforma le chiavi di `theme.json` in kebab-case **inserendo un
@@ -209,14 +209,14 @@ almeno `slot × 1,6` e' una fotografia e riempie la cornice (`cover`);
 altrimenti e' un ritaglio o un'immagine piccola e si posa dentro la cornice
 (`contain`), **mai oltre la sua misura naturale**.
 
-| regola | perche' |
-|---|---|
-| **Non si ingrandisce mai.** Se l'originale e' piccolo si riduce lo **spazio**, non si stira la fotografia | e la si elenca in `DA-VERIFICARE.md` §14 |
-| Una proporzione per ruolo, da `settings.custom.frame` | `hero` 16/9 · `wide` 3/2 · `plate` 4/3 · `portrait` 4/5 |
-| Il fondo della lastra resta chiaro, non tinto | meta' di queste immagini ha gia' il bianco dentro: su fondo tinto diventano adesivi |
-| A dire «qui c'e' qualcosa» e' il **filetto** | un ritaglio trasparente su bianco e' indistinguibile dal vuoto — l'audit lo leggeva come 500px di nulla |
-| I ritratti si tagliano dall'alto (`--sd-focus: 50% 18%`) | una faccia non si taglia mai a meta' |
-| Se manca l'immagine la riga diventa a colonna piena | non si lascia una colonna vuota |
+| regola                                                                                                    | perche'                                                                                                 |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Non si ingrandisce mai.** Se l'originale e' piccolo si riduce lo **spazio**, non si stira la fotografia | e la si elenca in `DA-VERIFICARE.md` §14                                                                |
+| Una proporzione per ruolo, da `settings.custom.frame`                                                     | `hero` 16/9 · `wide` 3/2 · `plate` 4/3 · `portrait` 4/5                                                 |
+| Il fondo della lastra resta chiaro, non tinto                                                             | meta' di queste immagini ha gia' il bianco dentro: su fondo tinto diventano adesivi                     |
+| A dire «qui c'e' qualcosa» e' il **filetto**                                                              | un ritaglio trasparente su bianco e' indistinguibile dal vuoto — l'audit lo leggeva come 500px di nulla |
+| I ritratti si tagliano dall'alto (`--sd-focus: 50% 18%`)                                                  | una faccia non si taglia mai a meta'                                                                    |
+| Se manca l'immagine la riga diventa a colonna piena                                                       | non si lascia una colonna vuota                                                                         |
 
 **Non usare `core/post-featured-image` nei template delle schede**: non sa
 quanto e' grande l'originale e lo stira. Si usa `<!-- wp:sd/immagine -->`.
@@ -485,16 +485,16 @@ Il menu si aggiorna a mano quando si aggiunge un contenuto: e' voluto.
 
 Tutta in **`docs/`**, versionata:
 
-| File | A che serve |
-|---|---|
-| `ARCHITECTURE.md` | il modello dei contenuti, gli URL, i template — **leggerlo prima di toccarli** |
-| `DESIGN-SPEC.md` | il sistema di layout — **leggerlo prima di toccare il design** |
-| `GUIDA-CLIENTE.md` | come ci lavora lo studio, in italiano e senza gergo |
-| `REPORT.md` | che cosa e' stato costruito, le verifiche, l'autocritica (§12 per l'ultima iterazione) |
-| `DA-VERIFICARE.md` | le decisioni ancora in mano al titolare |
-| `PROGRESS.md` | il punto di ripresa, e i comandi per rieseguire la migrazione |
-| `TRIAGE.md` | lo stato di partenza |
-| `migration/` | gli script, idempotenti, piu' le due verifiche |
+| File               | A che serve                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `ARCHITECTURE.md`  | il modello dei contenuti, gli URL, i template — **leggerlo prima di toccarli**         |
+| `DESIGN-SPEC.md`   | il sistema di layout — **leggerlo prima di toccare il design**                         |
+| `GUIDA-CLIENTE.md` | come ci lavora lo studio, in italiano e senza gergo                                    |
+| `REPORT.md`        | che cosa e' stato costruito, le verifiche, l'autocritica (§12 per l'ultima iterazione) |
+| `DA-VERIFICARE.md` | le decisioni ancora in mano al titolare                                                |
+| `PROGRESS.md`      | il punto di ripresa, e i comandi per rieseguire la migrazione                          |
+| `TRIAGE.md`        | lo stato di partenza                                                                   |
+| `migration/`       | gli script, idempotenti, piu' le due verifiche                                         |
 
 Lo script di misura per i criteri di design e' `.playwright-mcp/audit.js`.
 Materiali grezzi **non versionati** (screenshot, HTML reso, log): `../../../redesign/`.

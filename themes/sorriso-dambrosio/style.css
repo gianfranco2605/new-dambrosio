@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.3.0
+Version: 1.6.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -590,6 +590,11 @@ Text Domain: sorriso-dambrosio
    --------------------------------------------------------------- */
 
 .sd-header {
+	/* Lo stacco verticale del piano principale. Sta in una variabile
+	   perche' lo rilegge il sottomenu per sapere quanto dista il bordo
+	   inferiore dell'header dalla voce che lo apre (§5.5). */
+	--sd-header-pad: 0.6rem;
+
 	border-bottom: 1px solid var(--wp--custom--border--hairline);
 	box-shadow: 0 1px 0 var(--wp--custom--shadow--header);
 	z-index: 100;
@@ -603,23 +608,59 @@ Text Domain: sorriso-dambrosio
 .sd-header__actions {
 	align-items: center;
 	display: flex;
-	gap: var(--wp--custom--space--xxs);
+	gap: var(--wp--custom--space--xs);
 	justify-content: flex-end;
-	padding-block: 0.45rem;
+	/* 4,8px sopra e sotto: i pulsanti sfioravano il bordo e il filetto.
+	   10px staccano senza rigonfiare la barra — resta sotto l'altezza
+	   che aveva prima dell'intervento sui pulsanti. */
+	padding-block: 0.625rem;
 }
 
-.sd-header__actions .sd-btn {
-	padding-inline: 1.15em;
+/* Il piano di sopra e' secondario: il menu e' l'azione principale.
+
+   Prima i due pulsanti misuravano 14px di testo e 44px di altezza —
+   esattamente la voce di menu — con un fondo blu pieno sopra: a parita'
+   di misura vinceva il colore, e la gerarchia risultava rovesciata.
+   Ora il testo e' 13px contro i 14px del menu e la pillola e' alta 36px.
+
+   Il bersaglio resta 44x44 senza ingrassare la pillola: lo porta un
+   `::after` che sborda di 4px sopra e sotto. E' la stessa tecnica usata
+   per i collegamenti dentro i titoli (§19.1) — l'area cresce, il
+   disegno no. */
+@media (min-width: 782px) {
+	.sd-header__actions .sd-btn {
+		font-size: 0.8125rem;
+		min-height: 2.25rem;
+		padding-block: 0.5em;
+		padding-inline: 1em;
+		position: relative;
+	}
+
+	.sd-header__actions .sd-btn::after {
+		content: "";
+		inset-block: -4px;
+		inset-inline: 0;
+		position: absolute;
+	}
 }
 
 /* 5.2 Il piano principale: logo e navigazione. */
 .sd-header__inner {
-	align-items: center;
+	/* `stretch` e non `center`: cosi' la navigazione e' alta quanto la
+	   riga, e il `top: 100%` del sottomenu cade sul fondo dell'header
+	   invece che sul fondo della voce. Vedi §5.5. */
+	align-items: stretch;
 	display: flex;
 	flex-wrap: nowrap;
 	gap: var(--wp--custom--space--sm);
 	justify-content: space-between;
-	padding-block: 0.6rem;
+	padding-block: var(--sd-header-pad);
+}
+
+/* Il marchio non si stira: resta centrato sulla riga. */
+.sd-header__logo,
+.sd-header .wp-block-site-logo {
+	align-self: center;
 }
 
 .sd-header__logo {
@@ -645,15 +686,39 @@ Text Domain: sorriso-dambrosio
 
 .sd-header__nav .wp-block-navigation__container {
 	flex-wrap: nowrap;
+	/* Le voci riempiono l'altezza della riga (vedi `align-items: stretch`
+	   su `.sd-header__inner`), il collegamento dentro resta centrato. */
+	align-items: stretch;
 }
 
 .sd-header__nav .wp-block-navigation-item {
+	align-items: center;
 	white-space: nowrap;
 }
 
+/* 5.2b Lo stacco fra le voci — una variabile sola, due gradini.
+
+   Qui comanda questa regola, `.sd-header__nav.wp-block-navigation`
+   (0,2,0). L'attributo `blockGap` del blocco Navigation faceva scrivere
+   a core `.wp-container-core-navigation-is-layout-… { gap: … }`, che
+   pesa 0,1,0 e **perde**: e' il motivo per cui ritoccare il `blockGap`
+   nel pattern non spostava un pixel. Misurato prima dell'intervento, il
+   computed restava 11.2px qualunque cosa dicesse l'attributo. Ora
+   l'attributo non c'e' piu' e lo stacco vive solo qui.
+
+   La misura non era stretta per mancanza di spazio: a 1440px fra il
+   bordo destro del marchio e la prima voce restavano **357px di vuoto**.
+   28px di stacco ne consumano 101 e lasciano la riga comoda.
+
+   Il secondo gradino serve sotto i 1340px, dove la riga si stringe: a
+   1121px — l'ultimo pixel prima della tendina — le sette voci piu' le
+   frecce stanno in 797px solo con 16px di stacco. */
 .sd-header__nav.wp-block-navigation {
-	--wp--style--block-gap: 0.7rem;
-	gap: 0.7rem;
+	--sd-nav-gap: 1.75rem;
+	--sd-nav-chevron-gap: 0.3rem;
+
+	--wp--style--block-gap: var(--sd-nav-gap);
+	gap: var(--sd-nav-gap);
 }
 
 .sd-header .wp-block-navigation {
@@ -680,15 +745,19 @@ Text Domain: sorriso-dambrosio
 
    In altezza prende tutti e 44 i pixel della riga, che la riga ce li
    ha gia': non cresce niente. In larghezza no, e non e' una svista.
-   Sette frecce da 44 vorrebbero dire 250px in piu' sulla barra, e la
-   barra non li ha — a quel punto la navigazione passerebbe alla
-   tendina gia' a 1370px. Restano 24, che e' il minimo di WCAG 2.5.8
-   per un bersaglio in linea, con 6px di margine negativo per lato
-   perche' lo stacco fra le voci resti quello di prima. Il bersaglio
-   grande resta il collegamento accanto, che apre la stessa tendina
-   al passaggio del cursore e al fuoco da tastiera.
+   Sette frecce da 44 vorrebbero dire 250px in piu' sulla barra. Restano
+   24, che e' il minimo di WCAG 2.5.8 per un bersaglio in linea. Il
+   bersaglio grande resta il collegamento accanto, che apre la stessa
+   tendina al passaggio del cursore e al fuoco da tastiera.
 
-   Da 8x8 a 24x44. */
+   Da 8x8 a 24x44.
+
+   Il margine era `-6px` per lato, e da li' veniva la freccia incollata
+   all'etichetta: misurato, fra il bordo destro del testo e il bordo
+   sinistro del bottone c'erano **meno 6 pixel** — si sovrapponevano.
+   Ora lo stacco e' positivo e dichiarato (`--sd-nav-chevron-gap`), e a
+   destra il margine e' zero: quel `-6px` rubava spazio anche allo
+   stacco con la voce successiva. */
 .sd-header .wp-block-navigation__submenu-icon {
 	align-items: center;
 	display: inline-flex;
@@ -696,9 +765,18 @@ Text Domain: sorriso-dambrosio
 	justify-content: center;
 	block-size: var(--wp--custom--tap);
 	inline-size: 24px;
-	margin-inline: -6px;
+	margin-inline-end: 0;
+	margin-inline-start: var(--sd-nav-chevron-gap);
+	/* La freccia e' un'indicazione, non un'etichetta: sta sotto il testo
+	   di un gradino, senza introdurre un colore nuovo. */
+	opacity: 0.6;
 	padding: 0;
 	transition: transform var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+}
+
+.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-submenu__toggle .wp-block-navigation__submenu-icon,
+.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-submenu__toggle .wp-block-navigation__submenu-icon {
+	opacity: 1;
 }
 
 .sd-header .wp-block-navigation__submenu-icon:focus-visible {
@@ -709,20 +787,27 @@ Text Domain: sorriso-dambrosio
 
 .sd-header .wp-block-navigation__submenu-icon svg {
 	display: block;
-	height: 12px;
-	width: 12px;
+	height: 10px;
+	width: 10px;
 }
 
-/* Una sottolineatura sola, del colore del marchio. La seconda — nera —
-   arrivava da Ollie (`core/navigation` → link → :hover →
-   textDecoration: underline) ed e' spenta nel theme.json del child. */
-.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content,
-.sd-header .wp-block-navigation-item > .wp-block-navigation-submenu__toggle {
+/* Una sottolineatura sola, del colore del marchio, e **sotto
+   l'etichetta soltanto**.
+
+   La freccia e' un `<button>` fratello del collegamento, non un pezzo
+   del collegamento: finche' il `::after` stava anche sul bottone, la
+   riga usciva **spezzata in due** — un tratto pieno sotto la parola e
+   un secondo tratto, staccato, sotto la freccia. Si vedeva su desktop
+   e dentro il pannello mobile, dove la riga e' una griglia a due
+   colonne e i due tratti cadevano uno per cella.
+
+   Da qui in avanti il bottone non porta nessuna riga, in nessuno
+   stato: il reset esplicito e' tre regole piu' sotto. */
+.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content {
 	position: relative;
 }
 
-.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item > .wp-block-navigation-submenu__toggle::after {
+.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 	background-color: var(--wp--preset--color--primary);
 	bottom: -4px;
 	content: "";
@@ -733,23 +818,43 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after,
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-submenu__toggle::after {
+	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 		transition: width var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	}
 }
 
 .sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-submenu__toggle::after,
-.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-submenu__toggle::after {
+.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
-/* La pagina in cui ci si trova resta segnata anche senza passarci sopra. */
+/* La pagina in cui ci si trova resta segnata anche senza passarci sopra.
+   Anche per un ramo aperto il segno va sull'etichetta: prima stava sul
+   bottone della freccia, ed era il secondo tratto di quella riga
+   spezzata. */
 .sd-header .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-submenu__toggle::after {
+.sd-header .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
 	width: 100%;
+}
+
+/* Il reset della freccia: nessuna riga, in nessuno stato, su nessuna
+   larghezza. Ollie veste `.has-child button` all'hover e core gli mette
+   un bordo di sistema: qui il bottone porta solo l'icona. */
+.sd-header .wp-block-navigation-submenu__toggle,
+.sd-header .wp-block-navigation-submenu__toggle:hover,
+.sd-header .wp-block-navigation-submenu__toggle:focus,
+.sd-header .wp-block-navigation-submenu__toggle:focus-visible,
+.sd-header .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-submenu__toggle,
+.sd-header .wp-block-navigation-item.current-menu-item > .wp-block-navigation-submenu__toggle {
+	background-image: none;
+	border: 0;
+	box-shadow: none;
+	text-decoration: none;
+}
+
+.sd-header .wp-block-navigation-submenu__toggle::after,
+.sd-header .wp-block-navigation-submenu__toggle::before {
+	content: none;
 }
 
 /* 5.4 La soglia della tendina.
@@ -769,11 +874,68 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
+/* 5.4b Sul telefono ogni azione **una volta sola**.
+
+   Si contavano quattro comandi per tre azioni: l'icona del telefono e
+   «Prenota» nel piano di sopra, piu' il numero e «CONTATTI» nella barra
+   fissa in fondo. Telefono e contatti comparivano due volte ciascuno.
+
+   La riga di confine e' quella della tendina: dove il menu diventa un
+   pannello, il piano di sopra non serve piu' — le sue due azioni sono
+   gia' voci del menu (`sd-nav-cta`), e il pannello e' il posto giusto
+   per leggerle.
+
+   Resta quindi: marchio, icona di chiamata, panino. Dentro il
+   pannello: «Prenota un appuntamento» e «Contatti».
+
+   La barra fissa in fondo (`.sd-mobile-cta`) ripeteva numero e
+   contatti: spenta. **Con lei sparisce la scorciatoia WhatsApp**, che
+   ora si raggiunge da «Contatti» — da confermare col titolare
+   (`DA-VERIFICARE.md`). Per riaccenderla basta togliere questa regola. */
+.sd-header__phone-mobile {
+	display: none;
+}
+
+@media (max-width: 1120px) {
+	.sd-header__top {
+		display: none !important;
+	}
+
+	/* `inline-flex` e non `block`: l'icona si centra da se'. */
+	.sd-header__phone-mobile {
+		align-items: center;
+		align-self: center;
+		color: var(--wp--preset--color--main);
+		display: inline-flex;
+		justify-content: center;
+		margin-inline-start: auto;
+		min-height: var(--wp--custom--tap);
+		min-width: var(--wp--custom--tap);
+	}
+
+	.sd-header__phone-mobile .sd-icon {
+		height: 22px;
+		width: 22px;
+	}
+
+	/* La chiamata sta gia' nella barra: nel pannello resterebbe doppia.
+
+	   La classe e' ripetuta (`.sd-nav-cta--phone.sd-nav-cta`) per
+	   arrivare a 0,4,0: core veste le voci del pannello aperto con
+	   `.wp-block-navigation__responsive-container.is-menu-open:where(…)
+	   .wp-block-navigation-item { display: flex }`, che pesa 0,3,0 come
+	   la regola scritta senza ripetizione e, stampato dopo, vinceva.
+	   Misurato: il computed restava `flex`. Una classe in piu' basta,
+	   un `!important` no. */
+	.sd-header .is-menu-open .sd-nav-cta--phone.sd-nav-cta {
+		display: none;
+	}
+}
+
 @media (max-width: 1340px) {
 	.sd-header__nav.wp-block-navigation {
-		--wp--style--block-gap: 0.5rem;
-		font-size: 0.8125rem;
-		gap: 0.5rem;
+		--sd-nav-gap: 1rem;
+		--sd-nav-chevron-gap: 0.25rem;
 	}
 }
 
@@ -838,6 +1000,44 @@ Text Domain: sorriso-dambrosio
    sono dove Ollie ne ha messo uno (`border`, `min-width`, il padding delle
    voci): a pari peso non c'e' altro modo. */
 @media (min-width: 1121px) {
+	/* 5.5a La catena che porta l'altezza della riga fino alla voce.
+
+	   Il pannello si apre con `top: 100%`, e quel 100% si misura sulla
+	   voce. Il marchio e' alto 75px e la voce 44: con `align-items:
+	   center` la voce finiva 26px sopra il fondo dell'header e il
+	   pannello partiva 18px **dentro** l'header, coprendone il filetto.
+
+	   Non si compensa con un numero — dipenderebbe dall'altezza del
+	   marchio, cioe' da un file. Si fa invece arrivare l'altezza della
+	   riga fino alla voce, cosi' `top: 100%` cade da se' sul bordo
+	   interno dell'header.
+
+	   Fra il `<nav>` e il `<li>` core infila quattro contenitori, e
+	   nessuno dei quattro passa l'altezza: il `<nav>` era gia' alto 75px
+	   per via dello `stretch` su `.sd-header__inner`, ma la voce
+	   restava a 44. Da qui i cinque passaggi qui sotto — uno per
+	   contenitore. Solo da 1121px in su: nella tendina mobile la riga
+	   non esiste. */
+	.sd-header__nav.wp-block-navigation {
+		align-items: stretch;
+	}
+
+	.sd-header__nav .wp-block-navigation__responsive-container:not(.is-menu-open),
+	.sd-header__nav .wp-block-navigation__responsive-close,
+	.sd-header__nav .wp-block-navigation__responsive-dialog,
+	/* `height` e non `align-items`: il dialogo di core e' una colonna,
+	   quindi l'asse trasversale e' orizzontale e lo `stretch` non
+	   toccherebbe l'altezza. Misurato, la catena si fermava qui: 75px
+	   sopra, 44 sotto. */
+	.sd-header__nav .wp-block-navigation__responsive-container-content {
+		height: 100%;
+	}
+
+	.sd-header__nav .wp-block-navigation__responsive-container-content,
+	.sd-header__nav .wp-block-navigation__container {
+		align-items: stretch;
+	}
+
 	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container {
 		background-color: var(--wp--custom--surface--pure);
 		/* `!important` perche' Ollie scrive `border: none !important`. */
@@ -846,9 +1046,24 @@ Text Domain: sorriso-dambrosio
 		box-shadow:
 			0 1px 2px var(--wp--custom--shadow--header),
 			0 14px 34px var(--wp--custom--shadow--bar);
-		/* `!important` perche' Ollie scrive `min-width: 225px !important`. */
-		min-width: 16rem !important;
-		padding: var(--wp--custom--space--xxs);
+		/* La larghezza la decide il testo, non una misura fissa.
+
+		   Con `min-width: 16rem` e basta il pannello stava a 256px e
+		   **quattro voci su cinque andavano a capo**: «Chirurgia
+		   Computer-guidata» si spezzava sul trattino e ogni voce
+		   diventava alta 64px invece di 44.
+
+		   `max-content` chiede al pannello la larghezza che serve alla
+		   voce piu' lunga — qui «Implantologia Senza Incisione Lembo e
+		   Suture» — con un tetto perche' un pannello non diventi una
+		   colonna di testo.
+
+		   `!important` sul minimo perche' Ollie scrive
+		   `min-width: 225px !important`. */
+		min-width: var(--wp--custom--measure--thumb) !important;
+		width: max-content;
+		max-width: var(--wp--custom--measure--menu);
+		padding: var(--wp--custom--space--xxxs);
 
 		/* L'offset negativo di Ollie va azzerato, non compensato.
 		   Il lato da cui si apre e' due regole piu' sotto: serve piu'
@@ -856,18 +1071,31 @@ Text Domain: sorriso-dambrosio
 		margin-left: 0;
 		top: 100%;
 
-		/* Un dito di stacco dalla barra. Lo scavalca un `padding-top`
-		   trasparente, cosi' il cursore non esce mai dal bersaglio
-		   mentre scende dalla voce al pannello. */
-		margin-top: 0.5rem;
+		/* Il pannello si appende al bordo inferiore dell'header, non a
+		   quello della voce.
+
+		   `top: 100%` si misura sulla voce, e la voce finiva 26px sopra
+		   il fondo dell'header: il pannello partiva **18px dentro**
+		   l'header e ne copriva il filetto. Non e' stato compensato con
+		   un numero: ora la voce e' alta quanto la riga
+		   (`align-items: stretch` in §5.2), quindi `top: 100%` cade sul
+		   bordo interno dell'header e quel che resta e' esattamente il
+		   suo stacco piu' il filetto — entrambi dichiarati qui sopra.
+
+		   Lo scavalca il `::before` trasparente della regola seguente,
+		   cosi' il cursore non esce mai dal bersaglio mentre scende
+		   dalla voce al pannello. */
+		margin-top: calc(var(--sd-header-pad) + 1px + 0.5rem);
 	}
 
 	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container::before {
 		content: "";
 		inset-inline: 0;
 		position: absolute;
-		top: -0.5rem;
-		height: 0.5rem;
+		/* Copre tutto lo stacco, qualunque sia: e' la stessa espressione
+		   del `margin-top` qui sopra. */
+		top: calc((var(--sd-header-pad) + 1px + 0.5rem) * -1);
+		height: calc(var(--sd-header-pad) + 1px + 0.5rem);
 	}
 
 	/* Da che lato si apre.
@@ -897,7 +1125,13 @@ Text Domain: sorriso-dambrosio
 	   Le due voci di azione (`sd-nav-cta`: telefono e «Prenota») sono
 	   voci vere del menu, nascoste nella barra orizzontale: contano
 	   come figli, quindi si escludono qui. */
-	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .has-child:nth-last-child(-n+4):not(.sd-nav-cta) > .wp-block-navigation__submenu-container {
+	/* Si conta **dall'inizio**, non dalla fine: le voci di primo livello
+	   vere sono sette e le `sd-nav-cta` vengono dopo. Contando dalla
+	   fine (`nth-last-child`) bastava aggiungere «Contatti» alle azioni
+	   perche' la soglia scivolasse di una voce e «Trattamenti» tornasse
+	   ad aprirsi a sinistra, uscendo dalla finestra a 1280px. Dalla
+	   sesta in poi, invece, non dipende da quante azioni ci sono. */
+	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .has-child:nth-child(n+6):not(.sd-nav-cta) > .wp-block-navigation__submenu-container {
 		left: auto;
 		right: 0;
 	}
@@ -938,12 +1172,40 @@ Text Domain: sorriso-dambrosio
 
 /* Le voci del pannello: dodici sotto «Trattamenti», quindi respiro.
    `!important` sul padding perche' Ollie ne scrive uno, `!important`,
-   con lo stesso peso. */
+   con lo stesso peso.
+
+   Il pannello si e' accorciato soprattutto perche' le voci non vanno
+   piu' a capo: da 64px a 44px ciascuna. Il padding verticale e' sceso
+   di un filo, ma sotto i 44px non si va — `.wp-block-navigation-item__content`
+   ha `min-height: var(--wp--custom--tap)` da §19.1, ed e' quello che
+   governa l'altezza di una voce a riga singola.
+
+   `nowrap` e non `normal`: con `width: max-content` sul pannello, una
+   voce che potesse andare a capo rimetterebbe in gioco l'avvolgimento
+   che si e' appena tolto. Il tetto di larghezza del pannello e' il
+   solo limite. */
 .sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
-	border-radius: calc(var(--wp--custom--radius--panel) - 0.6rem);
+	border-radius: var(--wp--custom--radius--field);
 	display: block;
 	line-height: 1.45;
-	padding: 0.55rem 0.8rem !important;
+	padding: 0.45rem 0.75rem !important;
+}
+
+/* La voce del pannello va a capo **dentro** il pannello.
+
+   Con `nowrap` «Software di Progettazione per la Chirurgia Guidata»
+   misurava 388px in un riquadro da 370 e usciva dal pannello, fondo
+   dell'hover compreso: la riga continuava oltre il bordo. Il `nowrap`
+   arrivava per eredita' da `.sd-header__nav .wp-block-navigation-item`
+   (§5.2), che serve alle voci della barra, non a quelle del pannello.
+
+   `width: max-content` sul pannello chiede comunque la riga intera: il
+   pannello si allarga fino al suo tetto e solo quel che non ci sta
+   ancora va a capo. Vale aperto o chiuso il menu, quindi niente
+   `:not(.is-menu-open)`: nel pannello mobile il problema era lo stesso. */
+.sd-header .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
+	font-size: var(--wp--preset--font-size--nav);
+	overflow-wrap: break-word;
 	white-space: normal;
 }
 
@@ -952,17 +1214,42 @@ Text Domain: sorriso-dambrosio
 	content: none;
 }
 
+/* Lo stato attivo di una voce del pannello.
+
+   Era il fondo `secondary` — lo slate scuro della palette — sotto il
+   testo `primary`, il blu del sito: **1,15:1** di contrasto, cioe'
+   illeggibile — il testo spariva dentro il fondo proprio mentre ci si
+   passava sopra.
+   Nessuno dei due e' un colore sbagliato, lo era l'accoppiata: sono il
+   fondo scuro e il testo acceso messi uno sull'altro.
+
+   Ora il fondo e' il `primary` all'8% (`surface--tint`, la stessa
+   formula di `state.okTint` che era gia' nel theme.json) e il testo e'
+   `main`: **10,5:1**. Il raggio scende da 10,4px a 6px, che e' il
+   raggio dei campi — una voce di elenco non e' una pillola. */
 .sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .wp-block-navigation-item__content:hover,
 .sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .wp-block-navigation-item__content:focus-visible {
-	background-color: var(--wp--preset--color--secondary);
-	color: var(--wp--preset--color--primary);
+	background-color: var(--wp--custom--surface--tint);
+	color: var(--wp--preset--color--main);
 	text-decoration: none;
 }
 
+/* Da tastiera il fondo da solo non basta: serve un segno che si veda
+   anche per chi non distingue quel fondo chiarissimo dal bianco. */
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .wp-block-navigation-item__content:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: -2px;
+}
+
 /* La pagina in cui ci si trova, segnata nel pannello.
-   Ollie la sottolinea (`.current-menu-item > a`): qui il segno e' il fondo. */
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .current-menu-item > .wp-block-navigation-item__content {
-	background-color: var(--wp--preset--color--secondary);
+   Ollie la sottolinea (`.current-menu-item > a`): qui il segno e' il
+   fondo, un gradino piu' carico di quello del passaggio del cursore
+   (14% invece di 8%) piu' il peso del carattere. Il testo resta `main`:
+   con `primary` sarebbe 4,24:1, sotto la soglia AA. */
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .current-menu-item > .wp-block-navigation-item__content,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__submenu-container .current-menu-ancestor > .wp-block-navigation-item__content {
+	background-color: var(--wp--custom--surface--tintStrong);
+	color: var(--wp--preset--color--main);
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -2012,8 +2299,20 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (max-width: 781px) {
+	/* La barra fissa in fondo e' **ritirata**: ripeteva il numero e i
+	   contatti che ora stanno, una volta sola, nella barra della testata
+	   (l'icona di chiamata) e dentro il pannello del menu («Prenota»,
+	   «Contatti») — vedi §5.4b.
+
+	   Si spegne qui, dove veniva accesa, e non con una regola in piu'
+	   altrove: a pari peso e pari specificita' avrebbe vinto comunque
+	   questa, che sta piu' in basso nel foglio. Era gia' successo.
+
+	   Per riaccenderla: `display: flex !important`. Con lei torna anche
+	   la scorciatoia WhatsApp, oggi raggiungibile solo da «Contatti».
+	   Decisione del titolare: `DA-VERIFICARE.md`. */
 	.sd-mobile-cta {
-		display: flex !important;
+		display: none !important;
 		/* Il badge fisso di iubenda occupa l'angolo in basso a destra. */
 		padding-right: 3.75rem !important;
 	}
@@ -3751,12 +4050,16 @@ img {
 	width: 100%;
 }
 
-.sd-header .is-menu-open .sd-nav-cta--phone .wp-block-navigation-item__content {
+/* Con la chiamata tornata nella barra (§5.4b), nel pannello restano
+   due azioni: «Prenota» diventa la piena — e' la principale — e
+   «Contatti» la contornata. Una sola piena per schermata. */
+.sd-header .is-menu-open .sd-nav-cta--phone .wp-block-navigation-item__content,
+.sd-header .is-menu-open .sd-nav-cta--book .wp-block-navigation-item__content {
 	background-color: var(--wp--preset--color--primary);
 	color: var(--wp--preset--color--base);
 }
 
-.sd-header .is-menu-open .sd-nav-cta--book .wp-block-navigation-item__content {
+.sd-header .is-menu-open .sd-nav-cta--contacts .wp-block-navigation-item__content {
 	border: 1px solid var(--wp--preset--color--main);
 	color: var(--wp--preset--color--main);
 }
