@@ -42,8 +42,8 @@ $sd_media_id = 654;
 <p>Ognuno di loro, con un&#8217;esperienza consolidata e un continuo impegno nel miglioramento professionale, porta avanti la tradizione di eccellenza e cura che ha sempre contraddistinto lo studio.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph {"className":"sd-pillars","fontSize":"large"} -->
-<p class="sd-pillars has-large-font-size"><strong>Innovazione, Passione e Tradizione</strong>&nbsp;sono i pilastri che guidano il nostro lavoro quotidiano.</p>
+<!-- wp:paragraph {"className":"sd-pillars","fontSize":"medium"} -->
+<p class="sd-pillars has-medium-font-size">Innovazione, passione e tradizione sono i pilastri che guidano il nostro lavoro quotidiano.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -51,12 +51,12 @@ $sd_media_id = 654;
 <!-- /wp:group --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"sd-wrap sd-welcome","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-wrap sd-welcome">
+<!-- wp:group {"className":"sd-wrap sd-welcome sd-split","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-wrap sd-welcome sd-split">
 <?php echo sorriso_dambrosio_section_head( 'Accoglienza', 'I Nostri Pazienti' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:group {"className":"sd-columns3","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-columns3"><!-- wp:paragraph -->
+<!-- wp:group {"className":"sd-split__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-split__body"><!-- wp:paragraph -->
 <p>I nostri pazienti vengono accolti in un ambiente elegante ed amichevole, con professionalit&agrave;, competenza ed igiene.</p>
 <!-- /wp:paragraph -->
 

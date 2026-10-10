@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "sd/immagine",
+	"version": "1.0.0",
+	"title": "Immagine della scheda",
+	"description": "L'immagine in evidenza dentro la lastra: non la ingrandisce mai oltre l'originale.",
+	"category": "sorriso-dambrosio",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"textdomain": "sorriso-dambrosio-core",
+	"attributes": {
+		"classe": {
+			"type": "string",
+			"default": ""
+		},
+		"slot": {
+			"type": "string",
+			"default": "0"
+		},
+		"dimensione": {
+			"type": "string",
+			"default": "large"
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

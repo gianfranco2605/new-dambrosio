@@ -166,8 +166,8 @@ Nessun testo viene aggiunto, tolto o riscritto.
 
 ## 6. Vincoli operativi confermati
 
-- PHP del sito **7.4**: niente `match`, union types, nullsafe, named args, promozione nel costruttore,
-  `str_contains`/`str_starts_with`, enum, `readonly`. Lint con il binario 7.4 di Local, non con il PHP 8.3 del PATH.
+- PHP del sito **7.4** *(superato: dal 2026-10-06 il sito gira su **PHP 8.3.17**,
+  vedi `CLAUDE.md`. Questo triage descrive lo stato di partenza)*.
 - Mai toccare core, il tema `ollie`, i plugin, il tema `sorrisodambrosio`.
 - La vecchia home (pagina 57) resta pubblicata e invariata: la nuova è una **pagina nuova** impostata come front page.
 - Nessun hex/rgb nel child fuori da `theme.json`.

@@ -1,7 +1,7 @@
 # REPORT — Redesign homepage Studio Odontoiatrico D'Ambrosio
 
-Data: 2026-10-06 (seconda iterazione) · Ambiente: Local by Flywheel, `http://sorrisodambrosio.local`
-WordPress 7.1.2 · PHP del sito 7.4.30 · Tema attivo: `sorriso-dambrosio` 1.1.0 (child di `ollie` 1.6.3)
+Data: 2026-10-06 (**terza iterazione**) · Ambiente: Local by Flywheel, `http://sorrisodambrosio.local`
+WordPress 7.1.2 · **PHP del sito 8.3.17** · Tema attivo: `sorriso-dambrosio` 1.1.0 (child di `ollie` 1.6.3)
 
 > La prima iterazione (2026-10-05) e' stata **bocciata**: riproduceva il layout del vecchio
 > sito. Questo documento racconta che cosa era andato storto, che cosa e' cambiato e che cosa
@@ -141,7 +141,7 @@ Lo script di misura e' `wp-content/.playwright-mcp/audit.js`.
 | ✅ | Plugin before/after funzionante | non era in homepage (ne' prima ne' ora). Su `/ortodonzia/`: 4 slider montati, nessun overflow |
 | ✅ | Tutti gli `<img>` da `/uploads/` o dal child theme, tutti con `alt` | 12 su 12 (7 `alt` scritti ora: vedi `DA-VERIFICARE` §3) |
 | ✅ | `width`/`height` su ogni immagine | 12 su 12 |
-| ✅ | PHPStan livello 5 target 7.4 · `php -l` 7.4 | **No errors**; 11 file, tutti OK |
+| ✅ | PHPStan livello 5 target 7.4 · `php -l` 7.4 | **No errors**; 11 file, tutti OK *(alla terza iterazione il target e' PHP 8.3: §11.5)* |
 | ✅ | Contrasto del testo su tutte le fasce | minimo misurato **5,64:1** (testo secondario su `base`); su `tertiary` 6,96:1, su `main` 7,43:1 |
 | ✅ | `git status` pulito fuori dai percorsi consentiti | traccia solo `.gitignore`, `.claude/settings.json`, `CLAUDE.md`, `themes/sorriso-dambrosio/` |
 
@@ -254,6 +254,135 @@ stesso ritmo; la 3 ha quello della 4.
 
 ---
 
+## 11. Terza iterazione — header, hero, orari, modulo
+
+Il titolare ha approvato la direzione della seconda iterazione. Questa rifinisce la
+homepage sul riferimento `screenshots/ref/prism-hero.png`.
+
+### 11.1 Che cosa e' cambiato
+
+| | |
+|---|---|
+| **Ambiente** | Il sito gira ora su **PHP 8.3.17** (verificato servendo un file dal sito, non con `wp`: WP-CLI usa una PHP propria). `phpVersion` di PHPStan, `composer.json` e `style.css` allineati. |
+| **Header** | Logo, navigazione, poi telefono (pillola piena) e «Prenota un appuntamento» (contornata). Sticky, filetto in basso. Su mobile il telefono resta come icona. |
+| **Hero** | Velo in diagonale dalla sinistra al posto della lastra opaca; occhiello, titolo e paragrafo a sinistra; **scheda contatti bianca arrotondata** ancorata in basso; social in fondo a destra. |
+| **Orari** | Nuova fascia scura **subito dopo «Lo Studio»**: giorni a righe, mattina e pomeriggio in caselle, oggi marcato. |
+| **Prenota** | Nuova sezione `#prenota` con il modulo Contact Form 7, due colonne su desktop. |
+| **Via** | La barra contatti scura sotto l'hero e la tabella orari in fondo: i recapiti stanno nella scheda dell'hero, gli orari nella loro fascia. |
+
+### 11.2 Le soglie dell'header sono misurate, non scelte
+
+La riga intera — logo 140 + otto voci 695 + telefono 170 + «Prenota» 224 + margini —
+chiede **1328px**. Sotto, qualcosa deve cedere:
+
+- **≤1340px**: cade «Prenota» (resta nell'hero e nella fascia orari).
+- **≤1120px**: la navigazione passa alla tendina. Il blocco Navigation di core lo
+  farebbe **solo sotto i 600px**: con otto voci di primo livello si accavallava sul
+  logo gia' a 1440. Le due regole di core sotto `@media (min-width: 600px)` sono state
+  rimesse al comportamento mobile fino a 1120px.
+- **≤781px**: il telefono diventa un pulsante a sola icona.
+
+### 11.3 Il contrasto dell'hero e' misurato sui pixel, non stimato
+
+Il testo bianco sta sopra una fotografia: il contrasto dipende da **che cosa c'e' sotto
+ogni glifo**, non dal colore dichiarato. Procedura usata:
+
+1. nascondere il testo lasciando il layout invariato (`visibility: hidden`);
+2. screenshot del solo fondo (fotografia + velo compositi);
+3. campionare i pixel dentro il riquadro di ciascun blocco e calcolare il rapporto
+   con il bianco, pixel per pixel.
+
+| | medio | **peggiore** | pixel sotto 4.5:1 |
+|---|---|---|---|
+| Occhiello «Dal 1956» | 9,89:1 | **9,74:1** | 0 / 348 |
+| `h1` | 9,35:1 | **6,10:1** | 0 / 22.274 |
+| Paragrafo | 10,13:1 | **7,00:1** | 0 / 8.448 |
+
+Alla prima taratura il **23%** del riquadro dell'`h1` stava sotto 4,5:1: gli stop del
+velo sono stati spostati (28/46/62/78%) e le opacita' centrali alzate finche' nessun
+pixel e' rimasto sotto soglia.
+
+### 11.4 Il modulo era configurato a meta'
+
+Tre difetti trovati facendolo girare, non leggendolo:
+
+1. **Il modello dell'email puntava a campi inesistenti** — i segnaposto di default di
+   CF7 (`[your-name]`, `[your-email]`…) contro campi che si chiamano `nome-cognome`,
+   `telefono`, `email`, `trattamento`, `messaggio`. Le richieste sarebbero arrivate
+   **vuote**, con un `Reply-To:` non valido. Riscritto.
+2. **I messaggi erano in inglese** su un sito `it_IT`. Tradotti.
+3. **Il submit sembrava guasto**: il tag `[acceptance]` di CF7 lo tiene disabilitato
+   finche' la privacy non e' spuntata, e senza uno stato visibile si legge come un
+   pulsante rotto. Ora ha un suo aspetto d'attesa.
+
+Verifica end-to-end: invio valido → stato `sent` → **email ricevuta da Mailpit** con
+tutti i campi al posto giusto e `Reply-To` sull'email del paziente.
+
+### 11.5 Criteri di accettazione
+
+| | Criterio | Esito |
+|---|---|---|
+| ✅ | Header: telefono e «Prenota» a destra della navigazione a 1440px | entrambi visibili, allineati a destra; la riga sta su **una sola linea** (71px) |
+| ✅ | Header sticky | `position: sticky`, `top: 0`, misurato a `scrollY` 3433: `rect.top === 0` |
+| ✅ | Telefono come icona a 390px | pulsante 52×44, etichetta nascosta ai soli occhi (resta ai lettori di schermo) |
+| ✅ | Hero: immagine visibile, testo leggibile sul velo | **nessun pixel sotto 4.5:1** sotto nessuno dei tre blocchi (§11.3) |
+| ✅ | Scheda contatti: i collegamenti funzionano | `mailto:studio@sorrisodambrosio.it` · `tel:063225754` · `maps.app.goo.gl/jsVVDPiXFAFLCiE18` · «Prenota» → `#prenota` |
+| ✅ | «Prenota» porta a `#prenota` | dopo il clic il titolo della sezione e' a 245px, **sotto** l'header (71px), interamente visibile |
+| ✅ | Nessun overflow a 1440 / 768 / 390 | `scrollWidth` 1425/1440, 753/768, 375/390 |
+| ✅ | Social: solo profili reali | Facebook, Instagram, WhatsApp — tutti e tre presenti nel menu o nel footer del sito esistente. **Google non c'e'**: segnalato in `DA-VERIFICARE` §0.3 |
+| ✅ | Orari subito dopo «Lo Studio» | sezione 3 su 9; `#orari` presente |
+| ✅ | Oggi evidenziato | DOM: `.sd-hours-week__day.is-today` → «Martedi \| OGGI \| 9:00 – 13:00 \| Chiuso». Calcolato con `wp_date()`, non in JavaScript |
+| ✅ | Modulo CF7 dentro `#prenota` | `form.wpcf7-form` presente |
+| ✅ | Invio vuoto → errori vestiti | 3 campi `.wpcf7-not-valid` con bordo `primary-accent`, messaggi in `primary-accent`, riquadro di risposta su fondo `primary-accent` all'8% |
+| ✅ | Invio valido → successo + email | stato `sent`, messaggio italiano, **email in Mailpit** con tutti i campi |
+| ✅ | Nessun `<p>` o `<br>` iniettato da CF7 | **0** `<p>` e **0** `<br>` dentro `.sd-form` |
+| ✅ | Nessun colore fuori da `theme.json`; font locali | scansione del tema (escluso `vendor/`): zero; zero riferimenti a Google Fonts |
+| ✅ | PHPStan con target **PHP 8.3** | `phpVersion: 80300`, livello 5: **No errors** su 12 file. `php -l` con il binario 8.3 del sito: tutti OK |
+| ✅ | `debug.log` senza nuove voci | log azzerato, pagina visitata: **resta vuoto** |
+| ✅ | Tutti i criteri precedenti | contenuto 1320px · `h1` 72px · hero 86,7vh · icone max **24px** · regione vuota max **190px** · un solo `h1` · nessun salto di livello |
+
+### 11.6 Confronto con il riferimento, e autocritica
+
+`screenshots/compare/hero-vs-prism-1440.png` — i due hero affiancati.
+
+**Che cosa segue il riferimento, in concreto**
+
+1. **Struttura dell'header identica**: logo a sinistra, navigazione, poi due pillole —
+   telefono pieno, prenotazione contornata.
+2. **Fotografia a tutto schermo con velo dalla sinistra**, testo bianco allineato a
+   sinistra nella colonna scurita.
+3. **Occhiello come frase breve in grassetto**, non etichetta in maiuscoletto spaziato —
+   come «Precision. Comfort. Compassion.».
+4. **Titolo display leggero** (Fraunces 300) su piu' righe, non un nero pesante.
+5. **Scheda contatti bianca completamente arrotondata**, ancorata in basso, con icone di
+   linea e il pulsante pieno all'estremita' destra.
+6. **Social piccoli, bianchi, in fondo a destra**, sotto la scheda.
+
+**Dove resta sotto**
+
+1. **La fotografia non e' della stessa natura.** Prism ha **un volto solo**, grande,
+   luminoso, che occupa mezzo fotogramma. La 636 e' una stanza con quattro persone: il
+   lato destro resta piu' affollato e nessun viso ha quel peso. E' un limite di
+   materiale, non di impaginazione (`DA-VERIFICARE` §0.2).
+2. **Il velo e' piu' denso di quello del riferimento.** Per portare ogni pixel sotto
+   l'`h1` oltre 4,5:1 su una fotografia chiara e mossa serve piu' copertura di quanta ne
+   usi Prism, che ha a destra un fondo sfocato e uniforme. Il risultato: la famiglia e'
+   leggermente piu' spenta di quanto vorrei. Fra contrasto misurato e brillantezza ho
+   scelto il contrasto.
+3. **Il titolo e' il nome dello studio, non una frase.** Prism dice «Oral Surgery and
+   Implant Care in Summit, NJ»: dice al visitatore **che cosa si fa e dove**. «Studio
+   Odontoiatrico D'Ambrosio» dice solo chi. Per averne una qui servirebbe scrivere testo
+   nuovo, che il mandato vieta: le alternative possibili con il testo esistente sono in
+   `DA-VERIFICARE` §0.1.
+4. **L'header e' piu' denso.** Prism ha sei voci di menu, noi otto piu' due pulsanti: a
+   1440 la riga e' piena e «Prenota» cade gia' a 1340. Il riferimento respira di piu'.
+5. **La scheda contatti e' piu' carica.** Prism mostra solo le etichette
+   («Email», «Phone», «Location») e tiene il valore nel collegamento. La nostra mostra
+   etichetta **e** valore: piu' utile per chi vuole il numero a colpo d'occhio, ma meno
+   ariosa. Scelta deliberata, reversibile in una riga.
+
+---
+
 ## 7. Modifiche fuori dal tema
 
 Poche, tutte reversibili.
@@ -264,6 +393,10 @@ Poche, tutte reversibili.
    1085, 75). Elencati in `DA-VERIFICARE` §3.
 3. Restano dalla prima iterazione: la pagina 2059 come front page, `custom_logo = 645`,
    i meta Yoast copiati dalla pagina 57, `WP_DEBUG` attivo in `wp-config.php`.
+4. **Terza iterazione** — contenuto della pagina 2059 riscritto a nove pattern
+   (entrano `orari`, `prenota`, `vieni-a-trovarci`; escono `contact-bar` e
+   `orari-contatti`). Sul modulo CF7 **2063**: modello dell'email riscritto sui campi
+   reali e messaggi tradotti in italiano (vedi `DA-VERIFICARE` §0.4).
 
 Non sono stati toccati: il core, il tema `ollie`, il tema `sorrisodambrosio`, nessun plugin,
 nessuna pagina esistente. La pagina 57 e' **intatta e ancora pubblicata**.
@@ -323,8 +456,11 @@ wp db import ../../../backups/pre-redesign.sql
 | `redesign/screenshots/before/` | la home originale |
 | `redesign/screenshots/rejected/` | la prima iterazione, bocciata |
 | `redesign/screenshots/ref/` | Prism a 1440 e 390 |
-| `redesign/screenshots/final/` | la nuova, a 1440 / 768 / 390 |
+| `redesign/screenshots/final/` | la seconda iterazione, a 1440 / 768 / 390 |
+| `redesign/screenshots/final-it3/` | **la terza**: hero, orari e modulo a 1440 e 390 |
+| `redesign/screenshots/reference/prism-hero.png` | l'hero del riferimento |
 | `redesign/screenshots/compare/compare-1440.png` | il confronto a quattro colonne |
+| `redesign/screenshots/compare/hero-vs-prism-1440.png` | **l'hero nuovo accanto al riferimento** |
 | `wp-content/.playwright-mcp/audit.js` | lo script di misura usato per il §4 |
 | `backups/pre-redesign.sql` | dump del database prima di ogni modifica |
 
@@ -338,4 +474,315 @@ wp db import ../../../backups/pre-redesign.sql
 1a99cf7  Regole di progetto: contenuto letterale ma impaginazione libera, design first
 32bc44e  theme.json: misure realistiche e scala tipografica rifatta
 b2eef80  Homepage rifatta dalla specifica di design: otto sezioni, otto impianti
+96a2cc4  CLAUDE.md: stato dopo la seconda iterazione
+fa82050  README e documentazione di progetto dentro il repository
+-- terza iterazione --
+31186e6  Ambiente: il sito passa a PHP 8.3
+93527ab  Header, hero, orari in evidenza e modulo di prenotazione
+b6ba780  Hero: velo tarato sul contrasto misurato, e stacking su mobile
 ```
+
+---
+
+## 12. Quarta iterazione — l'architettura dei contenuti e le pagine interne
+
+Data: 2026-10-07. Specifica: `ARCHITECTURE.md`, scritta prima del codice.
+Materiali: `../../../redesign/screenshots/before-iter4/` (prima),
+`final-it4/` (dopo), `compare/it4-*.png` (affiancati).
+
+### 12.1 Il problema vero non era il design
+
+La homepage era approvata; le altre pagine erano ancora quelle di Ollie, con
+una colonna da 740px e mezza pagina vuota. Ma rifarle col sistema nuovo
+sarebbe stato curare il sintomo.
+
+> **Il menu aveva 45 voci di secondo livello. Tutte e 45 puntavano a un'ancora
+> dentro una di sette pagine monolitiche.**
+
+«Carico Immediato» non era una pagina: era `#carico-inmediato`. Non si poteva
+condividere, Google non lo indicizzava come risorsa, non aveva un titolo, una
+descrizione, un'immagine sociale. `/trattamenti/` era **lunga 13.352 pixel** a
+1440px: dodici prestazioni diversissime in un rotolo solo. E per aggiungerne
+una bisognava aprire 46 KB di blocchi, duplicare un gruppo, cambiare l'ancora
+e poi ricordarsi del menu.
+
+### 12.2 Che cosa e' stato costruito
+
+| | Prima | Dopo |
+|---|---|---|
+| Trattamenti | 30 ancore dentro 5 pagine | **30 schede**, un indirizzo ciascuna |
+| Tecnologie | 8 ancore dentro 1 pagina | **8 schede** |
+| Professionisti | 3 blocchi di testo nel tema | **3 schede**, con relazioni |
+| Casi clinici | 8 shortcode sparsi su 3 pagine | **8 schede** |
+| Aree | 5 pagine da 371 a 1.762 parole | **5 termini**, una tassonomia sola |
+| Pagina contatti | non esisteva | `/contatti/` |
+| Dove sta il contenuto | nel tema e nelle pagine | in un **plugin**, che sopravvive al tema |
+
+`plugins/sorriso-dambrosio-core/`: quattro tipi, una tassonomia condivisa,
+post meta nativo (niente ACF: non c'era, e non valeva una dipendenza
+commerciale), tredici blocchi a resa server, le regole di riscrittura, la
+mappa dei redirect, gli orari, i recapiti e il JSON-LD.
+
+Il tema guadagna dieci template e un capitolo di CSS (§18), e **perde** gli
+orari e i recapiti: erano contenuto nel posto sbagliato.
+
+### 12.3 Gli indirizzi: tutti tenuti, nessun redirect
+
+Il vincolo era «nessun 404». Il risultato e' piu' stretto: **otto indirizzi su
+otto restano identici e rispondono 200 senza nemmeno un redirect**. Le vecchie
+pagine passano in bozza e il loro indirizzo viene raccolto da un termine
+d'area o da un archivio che mostra lo stesso contenuto, arricchito.
+
+Le aree stanno alla radice (`/implantologia/`) con **una regola per termine**,
+generata dall'elenco reale. Una tassonomia con slug vuoto avrebbe risolto il
+problema ingoiando ogni URL di primo livello del sito.
+
+I quattro indirizzi rotti del vecchio menu (`/estetica/`,
+`/implantologia/implantologia/`…) ora hanno un 301 dichiarato invece di una
+correzione indovinata da WordPress.
+
+```
+bash docs/migration/verifica-url.sh
+  — Le vecchie pagine e gli articoli      15 × 200
+  — Le voci rotte del vecchio menu         4 × 200 (dopo 1 redirect)
+  — I nuovi indirizzi                     52 × 200
+  Controllati: 71 · falliti: 0
+```
+
+Le 45 vecchie ancore (`#flapes`, `#piezo`, `#carico-inmediato`…) restano come
+`id` sulle righe delle pagine d'area: un vecchio link esterno atterra ancora
+nel punto giusto. Gli **slug** pero' sono scritti bene — un refuso dentro
+un'ancora e' invisibile, dentro un URL resta per sempre.
+
+### 12.4 Il testo e' verificato, non dichiarato
+
+`docs/migration/verifica-testi.php` prende ogni vecchia sezione, la spezza in
+frasi e controlla che ognuna sia arrivata a destinazione.
+
+```
+Voci confrontate: 38 · frasi: 176 · mancanti: 0
+```
+
+Si ignorano solo le etichette dei pulsanti «Prenota un appuntamento», che sono
+diventate la fascia di chiusura identica su tutte le pagine interne.
+
+La FAQ di sei domande che chiudeva `/implantologia/` non e' ne' un trattamento
+ne' una tecnologia: sta nel meta del termine e la pagina d'area la rende.
+Senza quel passaggio si sarebbe persa.
+
+### 12.5 Gli impianti nuovi
+
+Nessuno compare in homepage: la regola 3 di DESIGN FIRST vale anche fra la
+home e le pagine interne.
+
+| Impianto | Dove | Che cos'e' |
+|---|---|---|
+| **Intestazione d'area** | `/implantologia/` e le altre 4 | fascia tinta, titolo a sinistra, fotografia che esce a destra |
+| **Zig-zag** | gli elenchi dei trattamenti | righe alternate, fotografia a sinistra poi a destra |
+| **Matrice a filetti** | `/tecnologie/` | celle divise da linee, niente riquadri e niente ombre |
+| **Scheda** | un trattamento | titolo a sinistra, fotografia che esce **a destra** |
+| **Scheda a specchio** | una tecnologia, un articolo | la fotografia esce **a sinistra** |
+| **Tre colonne** | `/professionisti/` | i tre medici a confronto, divisi da filetti verticali |
+| **Indice per aree** | `/prestazioni/` e la 404 | tutti i trattamenti in un colpo d'occhio, 2.283px invece di 13.352 |
+| **Fascia di prenotazione** | fondo di ogni pagina interna | una sola, identica ovunque |
+
+### 12.6 Quattro difetti che solo la pagina resa mostrava
+
+Nessuno dei quattro si vedeva leggendo il codice.
+
+1. **Il sanguinamento non arrivava da nessuna parte.** `calc(50% - 50vw)`
+   funziona solo se il contenitore e' l'elemento stesso: dentro una cella di
+   griglia quel 50% si misura sulla cella. Ora c'e' `--sd-bleed`, che si
+   misura sempre sul viewport.
+2. **Nello zig-zag la fotografia finiva nella colonna larga.** `order` sposta
+   la cella, non la colonna: sulle righe pari l'immagine prendeva il 62% e il
+   testo si stringeva nel 38%. Si scambiano le colonne, non gli elementi.
+3. **La prima voce di menu finiva sopra il logo.** Misurato a 1440px: voce a
+   221px, logo fino a 232. Con otto voci la riga chiedeva 1.290px contro i
+   1.256 disponibili. Il menu e' sceso a sette (vedi `DA-VERIFICARE` §0.5).
+4. **`<h2></h2>` vuoti.** `block.json` dichiara i valori di partenza, quindi
+   un attributo arriva sempre valorizzato — anche a `''` — e un `isset()`
+   secco faceva vincere quel vuoto sul ripiego scritto in PHP.
+
+E due di contorno, trovati misurando il JSON-LD:
+
+5. **`&rsquo;` e' un'entita' nominata di HTML5.** Senza `ENT_HTML5` la tabella
+   di default (HTML 4.01) non la conosce e la lascia li'. In una pagina HTML
+   non si vede; dentro un JSON-LD si'.
+6. **iubenda rimonta tutta la pagina con un parser DOM** e ogni carattere non
+   ASCII torna indietro come entita' numerica — dentro il JSON-LD, testo
+   letterale. Il plugin non si tocca: il JSON esce tutto in `\uXXXX`.
+   Verificato con `?iub_no_parse=1`, che spegne quel passaggio.
+
+### 12.7 Criteri di accettazione
+
+| Criterio | Esito |
+|---|---|
+| `ARCHITECTURE.md` esiste e corrisponde a quanto costruito | ✔ `docs/ARCHITECTURE.md` |
+| Ogni vecchio URL risponde 200, o 301 verso un 200. Zero 404 | ✔ **71 controllati, 0 falliti** |
+| Ogni frammento di testo e' presente a destinazione | ✔ **176 frasi, 0 mancanti** |
+| Ogni tipo ha singolo e archivio funzionanti | ✔ 4 tipi × 2 viste |
+| Ogni area elenca i suoi trattamenti dinamicamente | ✔ 5 aree |
+| Un trattamento di prova da WP-CLI compare nelle liste giuste | ✔ area, indice, tecnologia collegata, altri trattamenti; **non** nelle altre aree; sparisce quando si cancella |
+| Gli orari vengono da una fonte sola | ✔ `Studio::hours()` → home, footer, contatti, lo-studio, JSON-LD |
+| Navigazione con link veri a 1440 e 390px | ✔ 7 voci, 45 sottovoci con indirizzi reali |
+| Briciole corrette | ✔ e generano il `BreadcrumbList` |
+| Before/after funziona dove era usato | ✔ **25 gallerie, tutte inizializzate** |
+| CF7 funziona, Mailpit riceve | ✔ con tutti i campi e `Reply-To` del paziente |
+| JSON-LD valido, solo dati esistenti | ✔ `Dentist` + `BreadcrumbList` + `MedicalProcedure`/`Physician` |
+| Niente overflow a 1440/768/390, un `h1` per pagina | ✔ 14 pagine × 3 larghezze |
+| PHPStan livello 5, PHP 8.3, su plugin e tema | ✔ `[OK] No errors` su entrambi |
+| `debug.log` pulito | ✔ |
+| `git status` traccia solo i percorsi ammessi | ✔ `docs/`, `themes/sorriso-dambrosio/`, `plugins/sorriso-dambrosio-core/` |
+| Confronto affiancato vecchio/nuovo | ✔ 5 coppie in `screenshots/compare/it4-*.png` |
+
+### 12.8 Autocritica
+
+**Dove funziona.**
+
+`/prestazioni/` mostra trenta trattamenti in **2.283px**. La vecchia
+`/trattamenti/` ne mostrava dodici in **13.352px**. Non e' una pagina piu'
+corta: e' una pagina che fa un lavoro diverso — indicizza invece di
+raccontare, e il racconto sta nelle trenta schede.
+
+Il modello regge la prova vera: un trattamento nuovo creato da riga di comando
+compare da solo in cinque punti. Nessuno di quei cinque e' stato scritto a
+mano, quindi nessuno dei cinque puo' dimenticarsene.
+
+**Dove e' ancora sotto.**
+
+- **Le pagine d'area sono lunghe.** `/implantologia/` fa 5.964px con cinque
+  trattamenti; `/trattamenti/`, con dodici, va oltre. Lo zig-zag e' leggibile
+  ma generoso. Una variante piu' compatta sopra le otto voci sarebbe giusta.
+- **Molte schede non hanno ne' tecnologie ne' medici collegati.** Delle trenta,
+  sei hanno una tecnologia collegata e sei un medico: le altre chiudono con la fascia
+  di prenotazione e basta. Non e' un difetto del codice — e' che le relazioni
+  si potevano derivare solo dal testo esistente, e il testo non le dice. Si
+  riempiono dal pannello in un pomeriggio (`DA-VERIFICARE` §11).
+- **«Denti e postura» non si presenta**: e' l'unica area senza introduzione,
+  perche' quel testo non esiste da nessuna parte.
+- **I ritratti su `/professionisti/`** sono resi a ~310px da originali di
+  420px: su Retina il piu' piccolo resta morbido. Problema vecchio, attenuato
+  due volte, mai risolto.
+- **Le gallerie prima/dopo hanno testi alternativi inutilizzabili** e una
+  coppia scambiata. Sono dati del plugin: correggerli significa scrivere otto
+  descrizioni cliniche nuove, che e' una decisione di contenuto.
+- **Gli orari restano in un file.** Una fonte sola e' un progresso netto
+  rispetto a tre copie, ma «una fonte sola che richiede uno sviluppatore» non
+  e' lo stesso di «una fonte sola che il cliente puo' cambiare».
+
+**Quello che non ho fatto, e perche'.**
+
+Non ho aggiunto una schermata di opzioni per orari e recapiti: cambiano una
+volta ogni molti anni e sarebbe una superficie in piu' da mantenere.
+Non ho diviso la scheda «Chirurgia Piezo Elettrica», che mescola ultrasuoni e
+laser: dividerla vuol dire decidere dove tagliare un testo, e quello non e' un
+mandato che ho. Non ho corretto «Inesti» e «Cannini»: sono titoli, cioe' testo.
+Tutt'e tre stanno in `DA-VERIFICARE.md` con la domanda gia' formulata.
+
+---
+
+## 13. Quinta iterazione — la rifinitura di design
+
+Data: 2026-10-07. Misure complete in `docs/AUDIT.md`.
+Confronti affiancati in `../../../redesign/audit/compare/`.
+
+### 13.1 In cinque minuti
+
+Il sito funzionava e la direzione era giusta, ma sembrava fatto di fretta.
+Ho misurato **tutte le 68 pagine a tre larghezze** — 204 schermate — e trovato
+**1.700 segnalazioni che venivano da diciotto cause**. Corrette le cause.
+
+| | prima | dopo |
+|---|---:|---:|
+| Problemi gravi | **95** | **0** |
+| Problemi su telefono | 1.868 | 101 |
+| Immagini ingrandite oltre l'originale | 95 | **0** |
+| Righe di testo troppo lunghe | 244 | 20 |
+| La fascia vuota piu' grande | 682px | 322px |
+| `/trattamenti/` su tablet | 10.706px | **8.757px** |
+
+Quest'ultima riga e' la piu' parlante: la pagina piu' pesante del sito si e'
+accorciata di **quasi due schermate senza perdere una parola**.
+
+### 13.2 Le quattro cose che non andavano davvero
+
+**La mappa era un rettangolo bianco.** Finche' il visitatore non accetta i
+cookie, iubenda sostituisce la mappa con una pagina vuota. Nessun segnaposto,
+nessun messaggio: 736 pixel di bianco, e lo vedevano **tutti** al primo arrivo.
+Ora dietro c'e' l'indirizzo su fondo tinto, e la fascia si stringe finche' la
+mappa non arriva.
+
+**Meta' delle immagini non sono fotografie.** Sono render 3D ritagliati su
+fondo trasparente, e il tema li trattava come fotografie: riempire il riquadro,
+tagliare quel che avanza. Su una pagina bianca un ritaglio trasparente e'
+**indistinguibile dal vuoto** — la fascia da 500 pixel su `/trattamenti/` non
+era spazio, era un'immagine. Ora ogni immagine sta in una cornice con un
+filetto, e il programma decide da solo se riempirla o posarcela dentro.
+
+**Novantacinque immagini erano stirate**, alcune fino a due volte e mezza:
+un originale da 300 pixel reso a 652. Non era un problema tecnico da
+sistemare: **tredici originali su trenta non arrivano a 440 pixel**, il file
+grande non esiste. Ho quindi ridotto lo spazio invece di stirare la
+fotografia. Il risultato e' onesto e le immagini sono nitide, ma per quelle
+tredici lo spazio e' piu' piccolo di quanto il disegno vorrebbe:
+l'elenco completo, con la misura che servirebbe, e' in `DA-VERIFICARE.md` §14.
+
+**Il menu sul telefono** era l'elenco predefinito di WordPress: 48 voci buttate
+sullo schermo. Ora e' un pannello disegnato, con le sezioni che si aprono una
+per volta, il telefono e «Prenota un appuntamento» in fondo, e quattordici
+controlli automatici che verificano che funzioni.
+
+### 13.3 La causa di «sembra fatto di fretta»
+
+Il foglio di stile conteneva **83 misure di spaziatura inventate riga per
+riga**, trentacinque valori diversi: `1→1.5rem` accanto a `1→1.4rem` accanto a
+`0.75→1.25rem`. Nessuna sbagliava da sola. Insieme non facevano un ritmo.
+
+Ora la scala sta in un posto solo (`theme.json`) e nel foglio del tema non c'e'
+**nessun valore scritto a mano**: zero colori, zero misure, zero spaziature.
+E' la differenza fra un sito disegnato e un sito aggiustato.
+
+### 13.4 Che cosa ho sbagliato lungo la strada
+
+Tre cose, tutte trovate guardando la pagina e non il codice:
+
+1. **Quattro passi della scala non esistevano.** WordPress trasforma le chiavi
+   di `theme.json` in kebab-case e infila un trattino fra cifra e lettera:
+   `2xl` diventa `2-xl`. Il CSS chiedeva `2xl`, non trovava niente, e un
+   `var()` inesistente non da' errore — semplicemente non fa nulla. Nella
+   sezione Tecnologie della homepage lo stacco fra la fotografia e il testo
+   era **zero**: le righe cominciavano esattamente dove finiva l'immagine.
+2. **Il sottomenu del menu mobile finiva fuori dallo schermo** (a 370px su un
+   telefono da 390) e in pagina si vedeva solo un riquadro grigio vuoto.
+3. **La prima correzione alle cornici aveva ragione sul problema e torto sul
+   rimedio**: lasciando che ogni cornice si stringesse addosso alla sua
+   immagine il vuoto spariva, ma l'elenco diventava frastagliato. La soluzione
+   era un tetto d'altezza, non una proporzione variabile.
+
+### 13.5 E una cosa che ho sbagliato come misuratore
+
+Lo strumento con cui cercavo gli spazi vuoti diceva **zero**. Il titolare
+diceva «troppo spazio vuoto». Aveva ragione lui: contando gli elementi non si
+trova mai un buco, perche' gli elementi annidati riempiono tutto. Contando i
+**pixel** ne sono saltati fuori 764.
+
+Poi lo strumento ha mentito nell'altra direzione: per un contatore di pixel una
+fotografia chiara e' piatta come il bianco. Ora l'audit registra dove stanno le
+immagini e non conta le fasce che ci cadono dentro.
+
+**Uno strumento che misura va misurato a sua volta**, e il modo di farlo e'
+guardare la pagina.
+
+### 13.6 Quel che resta
+
+- **Le fotografie.** Trentatre voci hanno un originale troppo piccolo per lo
+  spazio che il disegno vorrebbe dargli, e le sedici gallerie prima/dopo sono
+  tutte 400×300. L'elenco e' in `DA-VERIFICARE.md` §14, con la misura che
+  servirebbe per ciascuna. Se arrivano fotografie migliori **non serve
+  toccare il codice**: la cornice si riempie da sola.
+- **Il collegamento alla privacy di iubenda** resta un bersaglio piccolo.
+  Lo scrive il plugin, e il plugin non si tocca.
+- **I tre ritratti dei medici** restano disomogenei fra loro: tre contesti
+  diversi, tre inquadrature diverse. Ora che compaiono affiancati su
+  `/professionisti/` si nota di piu' di prima.

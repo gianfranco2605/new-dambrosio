@@ -146,45 +146,70 @@ Una sola entrata, nell'hero. Nessuna transizione su card (non ci sono piu' card 
 Ogni sezione usa un **impianto diverso**. Nessuna riprende occhiello centrato + titolo
 sottolineato + griglia di card uniformi.
 
-### 4.1 Hero — fotografia piena con lastra scura in basso a sinistra
+### 4.1 Hero — fotografia piena, velo dalla sinistra, scheda contatti bianca
+
+> **Rifatto nella terza iterazione**, sul riferimento `screenshots/ref/prism-hero.png`.
+> Prima il titolo stava su una lastra opaca ancorata in basso a sinistra.
 
 ```
-┌──────────────────────────────────────────────────────┐
-│ header                                               │
-├──────────────────────────────────────────────────────┤
-│                                                      │
-│      FOTOGRAFIA 636 (2500×1685), 86vh, intera        │
-│                                                      │
-│                                                      │
-│ ┌─────────────────────────┐                          │
-│ │ Studio                  │                          │
-│ │ Odontoiatrico           │ ← lastra `main`,         │
-│ │ D'Ambrosio          72px│   esce dal bordo sinistro│
-│ │                         │                          │
-│ │ Gli specialisti…        │                          │
-│ │ Tradizione – passione…  │                          │
-│ │ CONTATTI →   CHI SIAMO →│                          │
-├─┴─────────────────────────┴──────────────────────────┤
-│ Indirizzo │ Tel │ Cel │ Email      fondo `main`      │
-└──────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ logo   Home Implantologia … Lo Studio  [tel]  [Prenota]  │  header sticky
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│  Dal 1956                      FOTOGRAFIA 636            │
+│                                                          │
+│  Studio                    ◄── il velo si dissolve       │
+│  Odontoiatrico                 prima dei volti           │
+│  D'Ambrosio          72px                                │
+│                                                          │
+│  Gli specialisti del sorriso…                            │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │ ✉ Email   ☎ Telefono   ⚲ Indirizzo   [ Prenota ]   │  │ scheda bianca
+│  └────────────────────────────────────────────────────┘  │
+│                                            f  ig  wa     │ social a destra
+└──────────────────────────────────────────────────────────┘
 ```
 
-- Immagine **636** `AGA_5209-jpg.webp`, **2500×1685**, al posto di `brother-1` (1260×838): sopporta
-  i 1440 e il Retina. E' lo studio vero, con la luce della finestra sul Tevere.
-- `min-height: 86vh` da 782px in su, `72vh` sotto. Mai una zona vuota: la fotografia riempie.
-- `object-position: 58% 42%` a 1440, `50% 38%` a 768, **l'immagine verticale 1492** sotto 782px.
-- Il testo **non sta sopra la foto con un velo**: sta su una **lastra opaca `main`** ancorata in
-  basso a sinistra, che sborda dal bordo della finestra. Contrasto pieno, fotografia intatta.
-- L'occhiello «Gli specialisti del sorriso» **non e' piu' un'etichetta sopra il titolo**: scende
-  sotto, in testa al claim, e si legge come una frase. Testo identico, posizione diversa.
-- La lastra e la barra contatti sono **la stessa forma scura**, continua: niente scheda bianca
-  che galleggia con l'ombra.
+- **Velo** in diagonale (100deg) dal bordo sinistro: `deep` 0.94 fino al 28%,
+  `mid` 0.80 al 46%, `edge` 0.35 al 62%, trasparente al 78%. Piu' una velatura
+  dal basso per staccare la scheda.
+  **Gli stop non sono a occhio**: si misurano i pixel compositi sotto ogni blocco
+  di testo (screenshot del solo fondo, campionamento con PIL) e si spostano finche'
+  **nessun pixel** scende sotto 4.5:1. Valori attuali: occhiello 9.74:1, h1 6.10:1,
+  paragrafo 7.00:1 nel caso peggiore.
+- **Occhiello** come frase breve in grassetto (`small`, 600), **non** etichetta in
+  maiuscoletto spaziato: la regola 3 di DESIGN FIRST vieta quel cliche'.
+- **Titolo** `xx-large` (72px a 1440) in Fraunces `font-weight: 300` — nel riferimento
+  il display e' leggero, non nero.
+- **Scheda contatti**: bianca, `border-radius: 999px`, ancorata in basso dentro il
+  contenitore. Tre voci (etichetta piccola + valore) con icona di linea in `primary`,
+  piu' il pulsante pieno «Prenota un appuntamento».
+  A ≤1023px diventa una griglia 2×2, a ≤599px una colonna.
+- **Social** in fondo a destra: **solo i profili che esistono gia' sul sito** —
+  Facebook, Instagram, WhatsApp. Nessun account inventato.
+- **≤781px**: la fotografia smette di fare da fondo, sta sopra per intero (42vh) e il
+  testo la segue su fondo `main`. Il velo sparisce.
 
-### 4.2 Barra contatti — rail scuro a tutta larghezza
+### 4.2 Header — logo, navigazione, telefono, prenotazione
 
-Quattro celle divise da filetti verticali, fondo `main`, etichette (`Indirizzo:`, `Tel:`, `Cel:`)
-in `main-accent` a 13px, valori in `base` a 16px. Nessun bordo arrotondato, nessuna ombra.
-Sotto 782px diventa due righe da due celle.
+```
+logo        Home  Implantologia⌄  …  Lo Studio    [☎ +39 06 322 5754]  [Prenota]
+```
+
+- Fondo `base`, filetto sottile in basso, `position: sticky`, `z-index: 100`.
+- A destra due pillole: telefono **pieno** (`primary`) e «Prenota un appuntamento»
+  **contornato**, come nel riferimento.
+- **Le soglie sono misurate, non scelte**: la riga intera (logo 140 + otto voci 695 +
+  telefono 170 + prenota 224 + margini) chiede **1328px**.
+  - ≥1341px: tutto in linea.
+  - ≤1340px: cade «Prenota» (resta raggiungibile dall'hero e dalla fascia orari).
+  - ≤1120px: la navigazione passa alla tendina. Il blocco Navigation di core lo
+    farebbe **solo sotto i 600px**: con otto voci di primo livello si accavalla sul
+    logo molto prima. Le due regole di core sotto `@media (min-width: 600px)` sono
+    rimesse al comportamento mobile fino a 1120px.
+  - ≤781px: il telefono diventa un pulsante a sola icona, l'etichetta resta ai
+    lettori di schermo.
 
 ### 4.3 Lo Studio + I Nostri Pazienti — un solo capitolo, immagine che resta ferma
 
@@ -211,6 +236,32 @@ Sotto 782px diventa due righe da due celle.
 - I cinque paragrafi di «I Nostri Pazienti» vanno su **due colonne tipografiche** (`columns: 2`):
   cosi' un muro di prosa diventa una pagina.
 - Il testo completo di «Lo Studio» vive anche su `/lo-studio/`: il titolo e' un collegamento.
+
+### 4.3b I Nostri Orari — gli orari in evidenza (`#orari`)
+
+> **Nuova nella terza iterazione.** Il titolare ha chiesto che gli orari si vedano.
+> Stanno **subito dopo «Lo Studio»**, non in fondo alla pagina.
+
+```
+fondo `main`  ──────────────────────────── Quando siamo aperti
+I Nostri Orari          │ Lunedi      [9:00 – 13:00] [14:00 – 19:00]
+                        │ ┃Martedi OGGI [9:00 – 13:00] [  Chiuso  ]
+Sabato-Domenica chiuso  │ Mercoledi   [9:00 – 13:00] [14:00 – 19:00]
+                        │ …
+[☎ +39 06 322 5754]     │ Sabato      [  Chiuso  ]   [  Chiuso  ]
+[⏱ Prenota]             │ Domenica    [  Chiuso  ]   [  Chiuso  ]
+```
+
+- Split **38/62** su fascia **scura**: e' il modo di dare peso senza aggiungere colori.
+- I giorni sono **righe divise da filetti**, non una tabella: mattina e pomeriggio
+  sono due caselle a pillola, affiancate e della stessa misura.
+- **I turni chiusi restano visibili ma spenti** (bordo tratteggiato, `main-accent`):
+  dire «chiuso» e' informazione, nasconderla no.
+- **Oggi** porta un filetto `primary` sul bordo sinistro **e** un marcatore testuale
+  «oggi»: il colore da solo non basta. Il giorno si calcola in PHP con `wp_date()`,
+  che usa il fuso del sito — non in JavaScript, e non con `date()` che userebbe quello
+  del server.
+- Due pulsanti: chiamare e prenotare.
 
 ### 4.4 I Professionisti — elenco redazionale, non tre card
 
@@ -299,25 +350,47 @@ testo 16px     │ testo         │ testo        │ testo
   verticali. **Le quattro icone spariscono.**
 - Nessun numero progressivo: i quattro motivi non sono una sequenza.
 
-### 4.8 I Nostri Orari + Vieni a Trovarci — mappa piena con pannello
+### 4.8 Prenota un appuntamento — il modulo (`#prenota`)
+
+```
+────────────────────────────────────────────────── Contatti
+Prenota un          │  Nome e cognome *   │  Telefono *
+appuntamento        │  Email *            │  Trattamento
+                    │  Messaggio                        │
+I nostri pazienti…  │  ☐ Ho letto e accetto l'informativa
+☎ ✉ ⚲ ⏱            │  [ Invia richiesta ]
+```
+
+- Split **38/62**: a sinistra titolo, lede e i recapiti completi (tutti e tre i
+  numeri); a destra il modulo Contact Form 7.
+- Il markup del modulo porta le classi del tema (`.sd-form__row--2col`,
+  `.sd-form__field`…): due colonne su desktop, una sotto i 600px.
+- **`wpcf7_autop_or_not` spento** in `functions.php`: senza, CF7 infila `<p>` e `<br>`
+  in mezzo alla griglia e la rompe.
+- Gli stati di CF7 sono vestiti con i colori del tema: campo non valido e messaggio
+  d'errore in `primary-accent`, esito riuscito in `primary`, invio in corso col
+  modulo spento. **Il submit disabilitato ha uno stato visibile**: il tag
+  `[acceptance]` di CF7 lo tiene disattivato finche' la privacy non e' spuntata, e
+  senza quello stato sembra guasto.
+- Il foglio di CF7 usa `.wpcf7 form.sent .wpcf7-response-output` (0,3,1): per vincerlo
+  senza `!important` i selettori del tema partono da `.sd-prenota form.wpcf7-form`.
+
+### 4.9 Vieni a Trovarci — mappa piena con pannello
 
 ```
 ┌──────────────────────────────────────────────────────┐
 │ ┌──────────────────┐                                 │
-│ │ I Nostri Orari   │                                 │
-│ │ Lunedi  9–13 14–19│      MAPPA a tutta larghezza   │
-│ │ …                │      520px                      │
-│ │ Sabato-Dom chiuso│                                 │
-│ │ ──────────────── │                                 │
-│ │ Vieni a Trovarci │                                 │
-│ │ Lungotevere Fl.34│                                 │
-│ └──────────────────┘   pannello `main`, sborda       │
+│ │ Vieni a Trovarci │      MAPPA a tutta larghezza    │
+│ │ ⚲ Lungotevere…   │                                 │
+│ │ ☎ +39 06 322…    │                                 │
+│ │ ⏱ I Nostri Orari │  pannello `main`, sborda        │
+│ └──────────────────┘                                 │
 └──────────────────────────────────────────────────────┘
 ```
 
-- La mappa esce da entrambi i bordi (`alignfull`), il pannello scuro con orari e indirizzo
-  ci galleggia sopra a sinistra. Sotto 900px il pannello sta sopra la mappa, a tutta larghezza.
-- Chiude il percorso: chi siamo → chi cura → cosa facciamo → come raggiungerci.
+La tabella degli orari **non e' piu' qui**: ha una fascia dedicata (§4.3b). Il
+pannello tiene indirizzo e telefono e rimanda agli orari con un collegamento.
+Sotto 900px il pannello sale sopra la mappa, a tutta larghezza.
 
 ---
 
@@ -325,16 +398,21 @@ testo 16px     │ testo         │ testo        │ testo
 
 | # | Sezione | Impianto | Fondo |
 |---|---|---|---|
-| 1 | Hero | fotografia piena + lastra opaca che sborda | fotografia |
-| 2 | Contatti | rail orizzontale a celle | `main` |
-| 3 | Lo Studio / Pazienti | split 38/62, immagine sticky che esce a sinistra, testo su 2 colonne | `base` |
+| — | Header | logo, navigazione, telefono e prenotazione; sticky | `base` |
+| 1 | Hero | fotografia piena, velo dalla sinistra, scheda contatti bianca, social | fotografia |
+| 2 | Lo Studio / Pazienti | split 36/64, immagine che esce a sinistra, testo su 3 colonne | `base` |
+| 3 | **I Nostri Orari** | fascia scura, giorni a righe, oggi marcato | `main` |
 | 4 | I Professionisti | elenco di righe 30/70 divise da filetti | `tertiary` |
 | 5 | Nostri servizi | quattro pannelli fotografici a pieno sanguinamento | fotografie |
 | 6 | Tecnologie | colonna sticky 34/66 + elenco a filetti | `base` |
 | 7 | Perche' noi | fascia scura di sola tipografia su quattro colonne | `main` |
-| 8 | Orari / Mappa | mappa a tutta larghezza con pannello sovrapposto | `base` + mappa |
+| 8 | **Prenota** | split 38/62, recapiti e modulo CF7 | `base` |
+| 9 | Vieni a Trovarci | mappa a tutta larghezza con pannello sovrapposto | `base` + mappa |
 
-Alternanza dei fondi: foto → scuro → chiaro → tinto → foto → chiaro → scuro → chiaro → footer scuro.
+Alternanza dei fondi: foto → chiaro → scuro → tinto → foto → chiaro → scuro → chiaro → mappa → footer scuro.
+
+La barra contatti scura che stava sotto l'hero non c'e' piu': i recapiti sono nella
+scheda bianca dentro l'hero.
 
 ---
 
@@ -348,4 +426,4 @@ Alternanza dei fondi: foto → scuro → chiaro → tinto → foto → chiaro �
 - [ ] Nessun overflow orizzontale a 1440 / 768 / 390px.
 - [ ] Un solo `<h1>`, nessun salto di livello.
 - [ ] Nessun valore di colore fuori da `theme.json`; palette invariata.
-- [ ] `php -l` con il binario 7.4 del sito e PHPStan livello 5 puliti.
+- [ ] `php -l` con il binario **8.3** del sito e PHPStan livello 5 (`phpVersion: 80300`) puliti.

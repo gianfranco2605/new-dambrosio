@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "sd/area-intestazione",
+	"version": "1.0.0",
+	"title": "Intestazione dell'area",
+	"description": "Titolo dell'area, testo introduttivo e immagine: li legge dal termine, non da una pagina.",
+	"category": "sorriso-dambrosio",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"textdomain": "sorriso-dambrosio-core",
+	"attributes": {
+		"fondo": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

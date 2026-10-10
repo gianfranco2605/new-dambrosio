@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "sd/indice",
+	"version": "1.0.0",
+	"title": "Indice di un tipo",
+	"description": "Tutte le voci di un tipo: a matrice di celle, oppure raggruppate per area.",
+	"category": "sorriso-dambrosio",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"textdomain": "sorriso-dambrosio-core",
+	"attributes": {
+		"tipo": {
+			"type": "string",
+			"default": "sd_trattamento"
+		},
+		"impianto": {
+			"type": "string",
+			"default": "matrice",
+			"enum": [
+				"matrice",
+				"righe",
+				"zigzag",
+				"aree"
+			]
+		},
+		"occhiello": {
+			"type": "string",
+			"default": ""
+		},
+		"titolo": {
+			"type": "string",
+			"default": ""
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
+		},
+		"fondo": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	}
+}

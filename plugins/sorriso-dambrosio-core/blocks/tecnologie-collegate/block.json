@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"category": "sorriso-dambrosio",
+	"textdomain": "sorriso-dambrosio-core",
+	"name": "sd/tecnologie-collegate",
+	"version": "1.0.0",
+	"title": "Tecnologie collegate",
+	"description": "Le tecnologie di un trattamento, o i trattamenti di una tecnologia.",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	},
+	"attributes": {
+		"occhiello": {
+			"type": "string",
+			"default": ""
+		},
+		"titolo": {
+			"type": "string",
+			"default": ""
+		},
+		"fondo": {
+			"type": "string",
+			"default": ""
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
+		}
+	}
+}

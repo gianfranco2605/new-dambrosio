@@ -56,8 +56,8 @@ $sd_doctors = array(
 <h3 class="wp-block-heading has-medium-font-size"><?php echo $sd_doctor['name']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><?php echo $sd_doctor['bio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+<!-- wp:paragraph -->
+<p><?php echo $sd_doctor['bio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 <!-- /wp:paragraph -->
 <?php if ( '' !== $sd_doctor['link'] ) : ?>
 <!-- wp:paragraph {"className":"sd-more","fontSize":"small"} -->

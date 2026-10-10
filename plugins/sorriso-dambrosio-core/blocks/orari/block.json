@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"category": "sorriso-dambrosio",
+	"textdomain": "sorriso-dambrosio-core",
+	"name": "sd/orari",
+	"version": "1.0.0",
+	"title": "Orari di apertura",
+	"description": "Gli orari dello studio. Unica fonte per home, footer e contatti.",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	},
+	"attributes": {
+		"variante": {
+			"type": "string",
+			"default": "fascia",
+			"enum": [
+				"fascia",
+				"compatta"
+			]
+		},
+		"ancora": {
+			"type": "string",
+			"default": ""
+		},
+		"livello": {
+			"type": "string",
+			"default": "2"
+		}
+	}
+}

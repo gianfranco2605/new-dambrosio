@@ -38,12 +38,16 @@ $sd_reasons = array(
 ?>
 <!-- wp:group {"className":"sd-section sd-section--dark sd-why","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"},"elements":{"link":{"color":{"text":"var:preset|color|base"}}}},"backgroundColor":"main","textColor":"base","layout":{"type":"default"}} -->
 <div class="wp-block-group sd-section sd-section--dark sd-why has-base-color has-main-background-color has-text-color has-background has-link-color" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-wrap">
+<div class="wp-block-group sd-wrap"><!-- wp:group {"className":"sd-split","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-split">
 <?php echo sorriso_dambrosio_section_head( 'Fiducia', 'Perch&eacute; noi' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:paragraph {"className":"sd-why__lede","fontSize":"large"} -->
-<p class="sd-why__lede has-large-font-size">Crediamo nella tua salute dentale e desideriamo offrirti la migliore cura possibile presso lo Studio Odontoiatrico D&#8217;Ambrosio. Il nostro impegno nei tuoi confronti &egrave; chiaro e profondo, siamo qui per prenderci cura di te al meglio.</p>
-<!-- /wp:paragraph -->
+<!-- wp:group {"className":"sd-split__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-split__body"><!-- wp:paragraph {"className":"sd-why__lede","fontSize":"medium"} -->
+<p class="sd-why__lede has-medium-font-size">Crediamo nella tua salute dentale e desideriamo offrirti la migliore cura possibile presso lo Studio Odontoiatrico D&#8217;Ambrosio. Il nostro impegno nei tuoi confronti &egrave; chiaro e profondo, siamo qui per prenderci cura di te al meglio.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
 
 <!-- wp:group {"className":"sd-why__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-why__grid">

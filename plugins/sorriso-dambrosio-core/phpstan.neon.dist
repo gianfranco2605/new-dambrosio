@@ -1,0 +1,16 @@
+parameters:
+	level: 5
+
+	# Il sito gira su PHP 8.3 in locale e in produzione.
+	phpVersion: 80300
+
+	paths:
+		- sorriso-dambrosio-core.php
+		- includes
+
+	excludePaths:
+		- vendor
+
+	# Lo shortcode [bafg] viene dal plugin Before and After Gallery, che non e'
+	# nel grafo delle dipendenze: le sue funzioni non si possono tipizzare qui.
+	treatPhpDocTypesAsCertain: false

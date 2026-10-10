@@ -4,7 +4,7 @@
 	"type": "wordpress-theme",
 	"license": "GPL-3.0-or-later",
 	"require": {
-		"php": ">=7.4"
+		"php": ">=8.3"
 	},
 	"require-dev": {
 		"szepeviktor/phpstan-wordpress": "^2.0",

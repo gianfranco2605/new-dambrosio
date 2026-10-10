@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"category": "sorriso-dambrosio",
+	"textdomain": "sorriso-dambrosio-core",
+	"name": "sd/contatti",
+	"version": "1.0.0",
+	"title": "Recapiti",
+	"description": "Indirizzo, telefoni, WhatsApp ed email. Unica fonte.",
+	"keywords": [
+		"studio",
+		"dambrosio"
+	],
+	"supports": {
+		"html": false,
+		"align": false,
+		"anchor": true,
+		"interactivity": {
+			"clientNavigation": true
+		}
+	},
+	"attributes": {
+		"variante": {
+			"type": "string",
+			"default": "elenco",
+			"enum": [
+				"elenco",
+				"linea"
+			]
+		}
+	}
+}

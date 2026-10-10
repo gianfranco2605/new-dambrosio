@@ -1,0 +1,21 @@
+{
+	"name": "sorrisodambrosio/sorriso-dambrosio-core",
+	"description": "I contenuti dello Studio Odontoiatrico D'Ambrosio: tipi, tassonomia, campi, blocchi e dati strutturati.",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"require": {
+		"php": ">=8.3"
+	},
+	"require-dev": {
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"phpstan/extension-installer": "^1.4"
+	},
+	"config": {
+		"allow-plugins": {
+			"phpstan/extension-installer": true
+		}
+	},
+	"scripts": {
+		"phpstan": "phpstan analyse --memory-limit=1G"
+	}
+}
