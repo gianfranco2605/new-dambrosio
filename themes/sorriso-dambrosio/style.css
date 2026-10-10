@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.7
+Version: 1.6.9
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -827,7 +827,14 @@ Text Domain: sorriso-dambrosio
 	position: relative;
 }
 
-.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+/* Il filetto e' il segno della **barra orizzontale**, e solo suo: da qui
+   `:not(.is-menu-open)`, come nel resto del §5.
+
+   Nel pannello ogni voce e' gia' una riga separata da un filetto grigio:
+   il tratto blu sotto il testo si leggeva come un secondo bordo. E sulle
+   due azioni, che li' sono pillole, passava sotto il pulsante — una
+   sottolineatura sotto un pulsante non esiste in nessun sistema. */
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 	background-color: var(--wp--preset--color--primary);
 	bottom: -4px;
 	content: "";
@@ -838,13 +845,13 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 		transition: width var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	}
 }
 
-.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
@@ -852,8 +859,8 @@ Text Domain: sorriso-dambrosio
    Anche per un ramo aperto il segno va sull'etichetta: prima stava sul
    bottone della freccia, ed era il secondo tratto di quella riga
    spezzata. */
-.sd-header .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
@@ -4158,6 +4165,68 @@ img {
 	padding-block: 0.45rem;
 }
 
+/* L'apertura della tendina, a cascata.
+
+   Core passa il sottomenu da `display: none` a `flex`: una transizione
+   non parte da li', un'animazione si' — si avvia alla prima resa. Lo
+   stato aperto si legge da `[aria-expanded="true"]` sul bottone della
+   freccia, che e' un fratello del sottomenu: serve `:has()`.
+
+   Due movimenti. Il sottomenu si scopre dall'alto (`clip-path`), e le
+   voci entrano una dopo l'altra, sfalsate di 24ms.
+
+   Lo srotolamento **non** si fa animando `grid-template-rows` da `0fr`
+   a `1fr`, che e' il trucco che si legge in giro: misurato qui, con il
+   contenitore ad altezza indefinita `0fr` vale zero e qualunque valore
+   sopra lo zero risolve gia' all'altezza piena. L'interpolazione fra
+   frazioni e' di fatto un interruttore: a un quarto della corsa la
+   tendina era gia' tutta aperta. `clip-path` si anima per davvero, e
+   lo fa su ogni browser.
+
+   I tempi sono corti per scelta: un menu e' uno strumento, e
+   un'animazione che fa aspettare diventa un fastidio al secondo
+   utilizzo. Le prime voci sono a posto in 200ms; oltre l'ottava il
+   ritardo non cresce piu', perche' una tendina da dieci voci non puo'
+   finire dopo mezzo secondo.
+
+   Sotto `prefers-reduced-motion` non si muove niente: le aperture a
+   scorrimento sono tra i primi inneschi di disturbo vestibolare. */
+@media (prefers-reduced-motion: no-preference) {
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container {
+		animation: sd-tendina 220ms var(--wp--custom--motion--ease) both;
+	}
+
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > .wp-block-navigation-item {
+		animation: sd-tendina-voce 200ms var(--wp--custom--motion--ease) both;
+	}
+
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(1) { animation-delay: 0ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(2) { animation-delay: 24ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(3) { animation-delay: 48ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(4) { animation-delay: 72ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(5) { animation-delay: 96ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(6) { animation-delay: 120ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(7) { animation-delay: 144ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(8) { animation-delay: 168ms; }
+}
+
+@keyframes sd-tendina {
+	from { clip-path: inset(0 0 100% 0); }
+	to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes sd-tendina-voce {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
 /* ---------------------------------------------------------------
    20.3 Le due azioni, in fondo al pannello
    --------------------------------------------------------------- */
@@ -4195,6 +4264,33 @@ img {
 .sd-header .is-menu-open .sd-nav-cta--contacts .wp-block-navigation-item__content {
 	border: 1px solid var(--wp--preset--color--main);
 	color: var(--wp--preset--color--main);
+}
+
+/* Gli stati delle due azioni, scritti.
+
+   Ollie vela la voce in hover con il 3% del **colore del testo**
+   (`core-navigation.css`, `color-mix(in srgb, currentColor, transparent
+   97%)`, peso 0,6,0). Su «Prenota» quel colore e' il bianco: il velo
+   sostituiva il fondo blu e restava testo bianco su pannello bianco —
+   il pulsante spariva sotto il dito. Il selettore qui sotto pesa 0,7,0
+   e lo batte senza `!important`.
+
+   L'arrivo e' quello dei pulsanti di tutto il sito (`.sd-btn:hover`):
+   fondo `main`, testo `base`. Un solo stile di pulsante, anche qui. */
+.sd-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container .sd-nav-cta:hover > .wp-block-navigation-item__content,
+.sd-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container .sd-nav-cta:focus-within > .wp-block-navigation-item__content {
+	background-color: var(--wp--preset--color--main);
+	border-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.sd-header .is-menu-open .sd-nav-cta .wp-block-navigation-item__content {
+		transition:
+			background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease),
+			border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease),
+			color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+	}
 }
 
 /* Con il pannello aperto la barra fissa in fondo sparisce: ripeteva
