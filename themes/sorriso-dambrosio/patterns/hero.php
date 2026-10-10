@@ -70,6 +70,7 @@ $sd_social = array(
 <!-- /wp:group -->
 
 <!-- wp:html -->
+<div class="sd-hero__tail">
 <div class="sd-hero__bar">
 	<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['email_href'] ); ?>">
 		<?php echo sorriso_dambrosio_icon( 'mail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -100,6 +101,7 @@ $sd_social = array(
 	<li><a href="<?php echo esc_url( $sd_item['url'] ); ?>" target="_blank" rel="noreferrer noopener" aria-label="<?php echo esc_attr( $sd_item['label'] ); ?>"><?php echo sorriso_dambrosio_icon( $sd_item['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a></li>
 <?php endforeach; ?>
 </ul>
+</div>
 <!-- /wp:html --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

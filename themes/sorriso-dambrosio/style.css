@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.0
+Version: 1.6.2
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -106,12 +106,6 @@ Text Domain: sorriso-dambrosio
 .wp-site-blocks h3,
 .editor-styles-wrapper h3 {
 	letter-spacing: -0.005em;
-}
-
-/* Misura di lettura: ~68 caratteri. In DM Sans lo zero e' largo 0.69em,
-   quindi "62ch" valeva 811px, cioe' 85 caratteri: le misure stanno in rem. */
-.sd-prose > p {
-	max-width: var(--wp--custom--measure--column);
 }
 
 /* Non e' testo corrente ma una dichiarazione a 34px: la misura corta
@@ -364,6 +358,33 @@ Text Domain: sorriso-dambrosio
 	max-width: var(--wp--custom--measure--wide);
 }
 
+/* La coda — scheda contatti e social — sta in fondo alla fotografia, non
+   attaccata al testo.
+
+   I due margini automatici (qui e su `.sd-hero__copy`) si dividono lo
+   spazio libero in **due parti uguali**: la prima e' esattamente l'aria
+   che il blocco centrato aveva sopra di se' prima di questa modifica,
+   quindi il testo non si sposta di un pixel a nessuna altezza di
+   finestra; la seconda e' tutta la discesa della coda.
+
+   Lo stacco fra lede e scheda e' `padding-top`, non il `margin-top` che
+   stava sulla scheda: un margine sparisce sotto `margin-top: auto`, e
+   con lui l'equilibrio delle due meta'. Misurato a 1440x900: testo fermo
+   a 288px, scheda da 616 a 692, social fino al bordo inferiore. */
+.sd-hero__frame > .sd-hero__copy,
+.sd-hero__frame > .sd-hero__tail {
+	margin-top: auto;
+}
+
+/* Scritti come figli del frame, non da soli: il supporto layout dei Group
+   emette `… > :first-child { margin-block-start: 0 }`, specificita' (0,1,1),
+   e il testo e' il primo figlio. Un `.sd-hero__copy` secco (0,1,0) perdeva,
+   l'automatico spariva e tutto lo spazio finiva alla coda: il testo saliva
+   di 76px invece di restare fermo. */
+.sd-hero__tail {
+	padding-top: var(--wp--custom--space--lg);
+}
+
 /* Nel riferimento l'occhiello e' una frase breve in grassetto, non
    un'etichetta in maiuscoletto spaziato: la regola 3 di DESIGN FIRST
    vieta proprio quel cliche'. */
@@ -395,7 +416,6 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--main);
 	display: flex;
 	gap: var(--wp--custom--space--md);
-	margin-top: var(--wp--custom--space--lg);
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
@@ -1391,14 +1411,28 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
+/* A una colonna il capitolo diventa una pagina: fotografia a tutta fascia,
+   sotto una colonna di lettura sola, centrata. */
 @media (max-width: 1023px) {
 	.sd-chapter__grid {
 		display: block;
 	}
 
+	/* La colonna vale la misura di lettura piu' i due margini laterali, e
+	   non `--sd-max`.
+
+	   Con `--sd-max` la fascia era larga 835px a 900px di finestra, ma i
+	   paragrafi portano con se' `measure--prose` (608px): restavano 252px
+	   di vuoto a destra, e il testo sembrava scappato in un angolo. Il
+	   vuoto non si chiude allargando il testo — a 835px la riga arriva a
+	   100 caratteri, contro il tetto di ~66 della sezione 19.3 — ma
+	   stringendo la colonna su quella stessa misura: cosi' il testo la
+	   riempie davvero, e quel che avanza diventa margine, uguale a destra
+	   e a sinistra. Sotto i ~700px la finestra e' gia' piu' stretta della
+	   misura e qui non cambia niente. */
 	.sd-chapter__body {
 		margin-inline: auto;
-		max-width: var(--sd-max);
+		max-width: calc(var(--wp--custom--measure--prose) + var(--sd-gutter) * 2);
 		padding-inline: var(--sd-gutter);
 	}
 
@@ -1406,7 +1440,14 @@ Text Domain: sorriso-dambrosio
 		margin-bottom: var(--wp--custom--space--lg);
 	}
 
+	/* `height` va spenta insieme a `position`: la figura e' alta quanto la
+	   finestra per accompagnare lo scorrimento della colonna accanto, ma
+	   qui colonna accanto non ce n'e' piu'. Restava alta 744px con dentro
+	   un'immagine di 498: 246px di figura vuota, piu' il distacco della
+	   colonna, erano i 279px di buco fra fotografia e testo — e crescevano
+	   con l'altezza della finestra, perche' la misura era in `vh`. */
 	.sd-chapter__figure {
+		height: auto;
 		position: static;
 	}
 
