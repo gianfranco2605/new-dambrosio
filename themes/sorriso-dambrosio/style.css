@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.2
+Version: 1.6.3
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -1403,41 +1403,61 @@ Text Domain: sorriso-dambrosio
 }
 
 /* Sotto i 900px le due colonne non hanno piu' senso: il titolo
-   torna sopra il testo. */
+   torna sopra il testo, e quel che resta e' la colonna di lettura
+   della 6.1 — stesse due righe, stessa misura. */
 @media (max-width: 899px) {
 	.sd-split {
 		gap: var(--wp--custom--space--sm);
 		grid-template-columns: minmax(0, 1fr);
+		margin-inline: auto;
+		max-width: var(--wp--custom--measure--prose);
 	}
 }
 
-/* A una colonna il capitolo diventa una pagina: fotografia a tutta fascia,
-   sotto una colonna di lettura sola, centrata. */
+/* ---------------------------------------------------------------
+   6.1 La colonna di lettura
+
+   Una sezione che perde la colonna accanto resta larga quanto la
+   pagina; il testo no, perche' sta sulla misura (19.3). Senza altro
+   quel che avanza si accumula tutto da un lato: misurato a 880px,
+   252px sul capitolo, 232 su «I Nostri Pazienti», 208 su «Perche'
+   noi» — lo stesso difetto in tre sezioni.
+
+   La colonna si centra, e il vuoto diventa margine uguale ai due
+   lati. Le due righe sono sempre queste, parola per parola:
+
+       margin-inline: auto;
+       max-width: var(--wp--custom--measure--prose);
+
+   La soglia la decide la sezione — il capitolo perde la fotografia a
+   1024, le due spaccature perdono la colonna del titolo a 900 — la
+   regola no. Sono dentro i media query e non fuori perche' la colonna
+   del capitolo e' una cella di griglia, e una cella con un margine
+   automatico si restringe al contenuto: 845px diventavano 694 a
+   1440px.
+
+   Allargare il testo invece di centrarlo non e' un'alternativa: a
+   835px la riga arriva a 100 caratteri, contro il tetto di ~66.
+   --------------------------------------------------------------- */
+
 @media (max-width: 1023px) {
 	.sd-chapter__grid {
 		display: block;
-	}
-
-	/* La colonna vale la misura di lettura piu' i due margini laterali, e
-	   non `--sd-max`.
-
-	   Con `--sd-max` la fascia era larga 835px a 900px di finestra, ma i
-	   paragrafi portano con se' `measure--prose` (608px): restavano 252px
-	   di vuoto a destra, e il testo sembrava scappato in un angolo. Il
-	   vuoto non si chiude allargando il testo — a 835px la riga arriva a
-	   100 caratteri, contro il tetto di ~66 della sezione 19.3 — ma
-	   stringendo la colonna su quella stessa misura: cosi' il testo la
-	   riempie davvero, e quel che avanza diventa margine, uguale a destra
-	   e a sinistra. Sotto i ~700px la finestra e' gia' piu' stretta della
-	   misura e qui non cambia niente. */
-	.sd-chapter__body {
-		margin-inline: auto;
-		max-width: calc(var(--wp--custom--measure--prose) + var(--sd-gutter) * 2);
 		padding-inline: var(--sd-gutter);
 	}
 
+	.sd-chapter__body {
+		margin-inline: auto;
+		max-width: var(--wp--custom--measure--prose);
+		padding-inline: 0;
+	}
+
+	/* I margini laterali stanno sulla fascia, non sulla colonna: cosi' la
+	   colonna vale la misura e basta, senza doverci sommare le costole.
+	   La fotografia se li riprende e torna a tutta larghezza. */
 	.sd-chapter__media {
 		margin-bottom: var(--wp--custom--space--lg);
+		margin-inline: calc(var(--sd-gutter) * -1);
 	}
 
 	/* `height` va spenta insieme a `position`: la figura e' alta quanto la
