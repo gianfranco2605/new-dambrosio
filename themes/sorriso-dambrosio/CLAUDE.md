@@ -34,6 +34,7 @@ rifinisce layout e responsive. Ramo git: vedere `git branch --show-current` (rep
 | File | Quando leggerlo |
 | --- | --- |
 | `docs/RESPONSIVE.md` | **sempre per primo** per un lavoro di layout: mappa CSS, breakpoint, token, header/menu, trappole, verifica |
+| `docs/TASKS.md` | **lista dei compiti di pulizia CSS**, con prompt pronti: fare il primo non spuntato |
 | `docs/DESIGN-SPEC.md` | per capire *perche'* una sezione e' fatta cosi' (§4.x per sezione) o i criteri di accettazione (§6) |
 | `../../docs/RIFERIMENTO.md` | guida completa del progetto (contenuti, plugin, deploy) — raramente serve per il CSS |
 | `../../docs/DA-VERIFICARE.md` | decisioni aperte del titolare |

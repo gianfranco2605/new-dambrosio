@@ -47,6 +47,8 @@ Non c'e' una scala unica: sono cresciuti sezione per sezione.
 | (header) 1340px | — | stacco voci del menu a due gradini (`--sd-nav-gap`) |
 | `prefers-reduced-motion` | 11 | |
 
+Piano di unificazione, compito per compito: `docs/TASKS.md` T1–T5.
+
 **Regola per il lavoro nuovo:** non aggiungere soglie nuove. Riusare `599 / 781 / 899 / 1120`.
 Se si unificano 860→899 o 600→599, verificare la sezione a entrambe le larghezze.
 Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
