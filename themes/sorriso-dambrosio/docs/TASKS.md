@@ -74,6 +74,9 @@ come il menu) o affiancate (→ **899**)? Tablet orizzontale = 1024px, quindi la
 
 ## [ ] T5 — verifica finale dei breakpoint
 
+Fuori elenco, trovati facendo T1/T2: **479px**, **700px** e **1340px** (uno ciascuno). Non sono nella
+scala: in T5 vanno portati alla misura vicina o giustificati con un commento.
+
 > Controlla che in style.css restino solo `max-width` 599 / 781 / 899 / 1120:
 > `grep -oE 'max-width: [0-9]+px\)' style.css | sort | uniq -c`.
 > Poi Playwright, solo controllo overflow (`document.documentElement.scrollWidth > innerWidth`) senza
