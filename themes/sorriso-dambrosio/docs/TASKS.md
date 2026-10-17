@@ -9,7 +9,7 @@ Scala di arrivo: **599 · 781 · 899 · 1120** (vedi `RESPONSIVE.md` §2).
 
 ---
 
-## [ ] T1 — `600px` → `599px` (sicuro)
+## [x] T1 — `600px` → `599px` (sicuro)
 
 | riga | sezione |
 | --- | --- |
@@ -22,7 +22,7 @@ Cambia solo la larghezza 600px: nessuna verifica visiva.
 > In style.css cambia le 2 media query `max-width: 600px` in `max-width: 599px` (sezioni 18.5 e 18.8).
 > Nessuna verifica visiva. Poi spunta T1 in docs/TASKS.md.
 
-## [ ] T2 — `900px` → `899px` (sicuro)
+## [x] T2 — `900px` → `899px` (sicuro)
 
 | riga | sezione | pagina per controllare |
 | --- | --- | --- |
