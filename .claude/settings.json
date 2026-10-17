@@ -33,7 +33,21 @@
       "Bash(wp db drop:*)",
       "Bash(wp db reset:*)",
       "Bash(wp db clean:*)",
-      "Bash(wp site empty:*)"
+      "Bash(wp site empty:*)",
+      "Read(**/vendor/**)",
+      "Read(**/node_modules/**)",
+      "Read(./uploads/**)",
+      "Read(./upgrade/**)",
+      "Read(./upgrade-temp-backup/**)",
+      "Read(./languages/**)",
+      "Read(./.playwright-mcp/**)",
+      "Read(./themes/ollie/**)",
+      "Read(./themes/sorrisodambrosio/**)",
+      "Read(**/*.sql)",
+      "Read(**/*.png)",
+      "Read(**/*.jpg)",
+      "Read(**/*.webp)",
+      "Read(**/*.woff2)"
     ]
   }
 }

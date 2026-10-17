@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.6.0
+Version: 1.7.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -19,7 +19,7 @@ Text Domain: sorriso-dambrosio
  *   --wp--preset--color--*   (palette, invariata rispetto al tema precedente)
  *   --wp--custom--*          (accessori: filetti, bianco puro, veli)
  *
- * Il sistema di layout e' descritto in redesign/DESIGN-SPEC.md.
+ * Il sistema di layout e' descritto in docs/DESIGN-SPEC.md (in questo tema).
  */
 
 /* ---------------------------------------------------------------
@@ -106,12 +106,6 @@ Text Domain: sorriso-dambrosio
 .wp-site-blocks h3,
 .editor-styles-wrapper h3 {
 	letter-spacing: -0.005em;
-}
-
-/* Misura di lettura: ~68 caratteri. In DM Sans lo zero e' largo 0.69em,
-   quindi "62ch" valeva 811px, cioe' 85 caratteri: le misure stanno in rem. */
-.sd-prose > p {
-	max-width: var(--wp--custom--measure--column);
 }
 
 /* Non e' testo corrente ma una dichiarazione a 34px: la misura corta
@@ -364,6 +358,33 @@ Text Domain: sorriso-dambrosio
 	max-width: var(--wp--custom--measure--wide);
 }
 
+/* La coda — scheda contatti e social — sta in fondo alla fotografia, non
+   attaccata al testo.
+
+   I due margini automatici (qui e su `.sd-hero__copy`) si dividono lo
+   spazio libero in **due parti uguali**: la prima e' esattamente l'aria
+   che il blocco centrato aveva sopra di se' prima di questa modifica,
+   quindi il testo non si sposta di un pixel a nessuna altezza di
+   finestra; la seconda e' tutta la discesa della coda.
+
+   Lo stacco fra lede e scheda e' `padding-top`, non il `margin-top` che
+   stava sulla scheda: un margine sparisce sotto `margin-top: auto`, e
+   con lui l'equilibrio delle due meta'. Misurato a 1440x900: testo fermo
+   a 288px, scheda da 616 a 692, social fino al bordo inferiore. */
+.sd-hero__frame > .sd-hero__copy,
+.sd-hero__frame > .sd-hero__tail {
+	margin-top: auto;
+}
+
+/* Scritti come figli del frame, non da soli: il supporto layout dei Group
+   emette `… > :first-child { margin-block-start: 0 }`, specificita' (0,1,1),
+   e il testo e' il primo figlio. Un `.sd-hero__copy` secco (0,1,0) perdeva,
+   l'automatico spariva e tutto lo spazio finiva alla coda: il testo saliva
+   di 76px invece di restare fermo. */
+.sd-hero__tail {
+	padding-top: var(--wp--custom--space--lg);
+}
+
 /* Nel riferimento l'occhiello e' una frase breve in grassetto, non
    un'etichetta in maiuscoletto spaziato: la regola 3 di DESIGN FIRST
    vieta proprio quel cliche'. */
@@ -395,7 +416,6 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--main);
 	display: flex;
 	gap: var(--wp--custom--space--md);
-	margin-top: var(--wp--custom--space--lg);
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
@@ -807,7 +827,14 @@ Text Domain: sorriso-dambrosio
 	position: relative;
 }
 
-.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+/* Il filetto e' il segno della **barra orizzontale**, e solo suo: da qui
+   `:not(.is-menu-open)`, come nel resto del §5.
+
+   Nel pannello ogni voce e' gia' una riga separata da un filetto grigio:
+   il tratto blu sotto il testo si leggeva come un secondo bordo. E sulle
+   due azioni, che li' sono pillole, passava sotto il pulsante — una
+   sottolineatura sotto un pulsante non esiste in nessun sistema. */
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 	background-color: var(--wp--preset--color--primary);
 	bottom: -4px;
 	content: "";
@@ -818,13 +845,13 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.sd-header .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 		transition: width var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	}
 }
 
-.sd-header .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
@@ -832,8 +859,8 @@ Text Domain: sorriso-dambrosio
    Anche per un ramo aperto il segno va sull'etichetta: prima stava sul
    bottone della freccia, ed era il secondo tratto di quella riga
    spezzata. */
-.sd-header .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
@@ -1332,8 +1359,79 @@ Text Domain: sorriso-dambrosio
 	margin-top: var(--wp--custom--space--md);
 }
 
-/* I cinque paragrafi dell'accoglienza su tre colonne tipografiche, a tutta
-   larghezza sotto il capitolo: un muro di prosa diventa una pagina. */
+/* ---------------------------------------------------------------
+   6.2 Il capitolo a specchio
+
+   «I Nostri Pazienti» e' lo stesso capitolo di «Lo Studio»: stessa
+   griglia, stessa soglia, stessa colonna di lettura quando resta a
+   una colonna. Rovesciato: fotografia a destra, testo a sinistra.
+   Due capitoli di fila con la stessa geometria sarebbero una
+   cantilena, e la regola 3 di DESIGN FIRST vieta il pattern ripetuto
+   per costruzione.
+
+   Tutto qui dentro vale **solo da 1024 in su**. Sotto, la griglia non
+   c'e' piu' — `display: block` — e valgono le regole della 6.1,
+   uguali per i due capitoli: scriverle fuori da questo media query
+   vorrebbe dire vincerle per specificita' e doverle poi disfare.
+   --------------------------------------------------------------- */
+@media (min-width: 1024px) {
+	.sd-chapter__grid--mirror {
+		grid-template-columns:
+			[full-start] minmax(var(--sd-gutter), 1fr)
+			[body-start] minmax(0, calc(var(--sd-max) * 0.64))
+			[media-start] minmax(0, calc(var(--sd-max) * 0.36))
+			[wrap-end] minmax(var(--sd-gutter), 1fr)
+			[full-end];
+	}
+
+	/* La riga va dichiarata. A specchio la fotografia resta prima nel
+	   DOM — a una colonna deve stare sopra il testo, come nell'altro
+	   capitolo — ma la sua colonna e' l'ultima: l'auto-posizionamento
+	   scorre in avanti, non trova piu' spazio alla sinistra di una
+	   cella gia' presa e manda il testo a capo. Erano due righe, e la
+	   fotografia restava alta zero. */
+	.sd-chapter__grid--mirror .sd-chapter__media,
+	.sd-chapter__grid--mirror .sd-chapter__body {
+		grid-row: 1;
+	}
+
+	.sd-chapter__grid--mirror .sd-chapter__media {
+		grid-column: media-start / full-end;
+	}
+
+	.sd-chapter__grid--mirror .sd-chapter__body {
+		grid-column: body-start / media-start;
+		padding-left: 0;
+		padding-right: var(--wp--custom--space--xxl);
+	}
+
+	/* Il testo si appoggia alla fotografia e l'aria che avanza cade sul
+	   margine esterno della pagina — come nel capitolo dritto, dove
+	   cade a destra. La colonna resta la misura di lettura: la stessa
+	   di tutto il resto del sito. */
+	.sd-chapter__grid--mirror .sd-chapter__body > * {
+		margin-inline-start: auto;
+		max-width: var(--wp--custom--measure--prose);
+	}
+
+	/* Qui la figura e' alta quanto il testo, non quanto la finestra:
+	   cinque paragrafi non sono un racconto e non c'e' nessuno
+	   scorrimento da accompagnare.
+
+	   `position: absolute` e' quello che il capitolo lungo aveva
+	   scartato — li' la colonna arrivava a 2135px e la fotografia
+	   veniva ingrandita tre volte. Qui la colonna sta sotto i 600 e
+	   l'originale ne ha 694: entra ridotta. La differenza e' il
+	   rapporto fra colonna e originale, non la tecnica. */
+	.sd-chapter__grid--mirror .sd-chapter__figure {
+		height: auto;
+		inset: 0;
+		position: absolute;
+	}
+}
+
+/* Lo stacco fra i due capitoli: stanno nella stessa sezione, quindi fra
+   loro non c'e' il respiro di `--sd-rhythm` ma questo. */
 .sd-welcome {
 	margin-top: var(--wp--custom--space--xxl);
 }
@@ -1382,31 +1480,73 @@ Text Domain: sorriso-dambrosio
 	margin-bottom: 0;
 }
 
-/* Sotto i 900px le due colonne non hanno piu' senso: il titolo
-   torna sopra il testo. */
-@media (max-width: 899px) {
+/* Le due colonne diventano una alla stessa soglia del capitolo — 1024,
+   una per tutto il sito, non una per sezione — e il titolo torna sopra
+   il testo. Quel che resta e' la colonna di lettura della 6.1: stesse
+   due righe, stessa misura. */
+@media (max-width: 1023px) {
 	.sd-split {
 		gap: var(--wp--custom--space--sm);
 		grid-template-columns: minmax(0, 1fr);
+		margin-inline: auto;
+		max-width: var(--wp--custom--measure--prose);
 	}
 }
+
+/* ---------------------------------------------------------------
+   6.1 La colonna di lettura
+
+   Una sezione che perde la colonna accanto resta larga quanto la
+   pagina; il testo no, perche' sta sulla misura (19.3). Senza altro
+   quel che avanza si accumula tutto da un lato: misurato a 880px,
+   252px sul capitolo, 232 su «I Nostri Pazienti», 208 su «Perche'
+   noi» — lo stesso difetto in tre sezioni.
+
+   La colonna si centra, e il vuoto diventa margine uguale ai due
+   lati. Le due righe sono sempre queste, parola per parola:
+
+       margin-inline: auto;
+       max-width: var(--wp--custom--measure--prose);
+
+   La soglia la decide la sezione — il capitolo perde la fotografia a
+   1024, le due spaccature perdono la colonna del titolo a 900 — la
+   regola no. Sono dentro i media query e non fuori perche' la colonna
+   del capitolo e' una cella di griglia, e una cella con un margine
+   automatico si restringe al contenuto: 845px diventavano 694 a
+   1440px.
+
+   Allargare il testo invece di centrarlo non e' un'alternativa: a
+   835px la riga arriva a 100 caratteri, contro il tetto di ~66.
+   --------------------------------------------------------------- */
 
 @media (max-width: 1023px) {
 	.sd-chapter__grid {
 		display: block;
+		padding-inline: var(--sd-gutter);
 	}
 
 	.sd-chapter__body {
 		margin-inline: auto;
-		max-width: var(--sd-max);
-		padding-inline: var(--sd-gutter);
+		max-width: var(--wp--custom--measure--prose);
+		padding-inline: 0;
 	}
 
+	/* I margini laterali stanno sulla fascia, non sulla colonna: cosi' la
+	   colonna vale la misura e basta, senza doverci sommare le costole.
+	   La fotografia se li riprende e torna a tutta larghezza. */
 	.sd-chapter__media {
 		margin-bottom: var(--wp--custom--space--lg);
+		margin-inline: calc(var(--sd-gutter) * -1);
 	}
 
+	/* `height` va spenta insieme a `position`: la figura e' alta quanto la
+	   finestra per accompagnare lo scorrimento della colonna accanto, ma
+	   qui colonna accanto non ce n'e' piu'. Restava alta 744px con dentro
+	   un'immagine di 498: 246px di figura vuota, piu' il distacco della
+	   colonna, erano i 279px di buco fra fotografia e testo — e crescevano
+	   con l'altezza della finestra, perche' la misura era in `vh`. */
 	.sd-chapter__figure {
+		height: auto;
 		position: static;
 	}
 
@@ -3818,11 +3958,25 @@ img {
 	}
 }
 
-/* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'. */
+/* I ritratti si tagliano dall'alto: una faccia non si taglia mai a meta'.
+
+   `object-position` va dichiarato qui, non solo la variabile. La lettura
+   `var(--sd-focus)` sta sulla lastra (`.sd-plate--cover img`), e di questi
+   tre solo il ritratto di `.sd-people__portrait` e' una lastra: gli altri
+   due escono da `wp_get_attachment_image()` con `object-fit: cover` e
+   nient'altro. La variabile era dichiarata e non la leggeva nessuno, cosi'
+   il ritaglio restava al centro.
+
+   Si vedeva solo sotto i 600px: sopra, la cornice e' 4/5 come gli
+   originali (390x514) e il taglio e' di pochi pixel. A 3/2 la finestra
+   mostra meta' dell'altezza, e presa dal centro quella meta' e' la
+   faccia tagliata in due. */
 .sd-people__portrait img,
 .sd-roster__portrait img,
 .sd-doctor__portrait img {
 	--sd-focus: 50% 18%;
+
+	object-position: var(--sd-focus);
 }
 
 /* La riga senza immagine non tiene una colonna di nulla: diventa piena.
@@ -4025,6 +4179,68 @@ img {
 	padding-block: 0.45rem;
 }
 
+/* L'apertura della tendina, a cascata.
+
+   Core passa il sottomenu da `display: none` a `flex`: una transizione
+   non parte da li', un'animazione si' — si avvia alla prima resa. Lo
+   stato aperto si legge da `[aria-expanded="true"]` sul bottone della
+   freccia, che e' un fratello del sottomenu: serve `:has()`.
+
+   Due movimenti. Il sottomenu si scopre dall'alto (`clip-path`), e le
+   voci entrano una dopo l'altra, sfalsate di 24ms.
+
+   Lo srotolamento **non** si fa animando `grid-template-rows` da `0fr`
+   a `1fr`, che e' il trucco che si legge in giro: misurato qui, con il
+   contenitore ad altezza indefinita `0fr` vale zero e qualunque valore
+   sopra lo zero risolve gia' all'altezza piena. L'interpolazione fra
+   frazioni e' di fatto un interruttore: a un quarto della corsa la
+   tendina era gia' tutta aperta. `clip-path` si anima per davvero, e
+   lo fa su ogni browser.
+
+   I tempi sono corti per scelta: un menu e' uno strumento, e
+   un'animazione che fa aspettare diventa un fastidio al secondo
+   utilizzo. Le prime voci sono a posto in 200ms; oltre l'ottava il
+   ritardo non cresce piu', perche' una tendina da dieci voci non puo'
+   finire dopo mezzo secondo.
+
+   Sotto `prefers-reduced-motion` non si muove niente: le aperture a
+   scorrimento sono tra i primi inneschi di disturbo vestibolare. */
+@media (prefers-reduced-motion: no-preference) {
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container {
+		animation: sd-tendina 220ms var(--wp--custom--motion--ease) both;
+	}
+
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > .wp-block-navigation-item {
+		animation: sd-tendina-voce 200ms var(--wp--custom--motion--ease) both;
+	}
+
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(1) { animation-delay: 0ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(2) { animation-delay: 24ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(3) { animation-delay: 48ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(4) { animation-delay: 72ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(5) { animation-delay: 96ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(6) { animation-delay: 120ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(7) { animation-delay: 144ms; }
+	.sd-header .is-menu-open .has-child:has([aria-expanded="true"]) > .wp-block-navigation__submenu-container > :nth-child(8) { animation-delay: 168ms; }
+}
+
+@keyframes sd-tendina {
+	from { clip-path: inset(0 0 100% 0); }
+	to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes sd-tendina-voce {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
 /* ---------------------------------------------------------------
    20.3 Le due azioni, in fondo al pannello
    --------------------------------------------------------------- */
@@ -4062,6 +4278,33 @@ img {
 .sd-header .is-menu-open .sd-nav-cta--contacts .wp-block-navigation-item__content {
 	border: 1px solid var(--wp--preset--color--main);
 	color: var(--wp--preset--color--main);
+}
+
+/* Gli stati delle due azioni, scritti.
+
+   Ollie vela la voce in hover con il 3% del **colore del testo**
+   (`core-navigation.css`, `color-mix(in srgb, currentColor, transparent
+   97%)`, peso 0,6,0). Su «Prenota» quel colore e' il bianco: il velo
+   sostituiva il fondo blu e restava testo bianco su pannello bianco —
+   il pulsante spariva sotto il dito. Il selettore qui sotto pesa 0,7,0
+   e lo batte senza `!important`.
+
+   L'arrivo e' quello dei pulsanti di tutto il sito (`.sd-btn:hover`):
+   fondo `main`, testo `base`. Un solo stile di pulsante, anche qui. */
+.sd-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container .sd-nav-cta:hover > .wp-block-navigation-item__content,
+.sd-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container .sd-nav-cta:focus-within > .wp-block-navigation-item__content {
+	background-color: var(--wp--preset--color--main);
+	border-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.sd-header .is-menu-open .sd-nav-cta .wp-block-navigation-item__content {
+		transition:
+			background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease),
+			border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease),
+			color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+	}
 }
 
 /* Con il pannello aperto la barra fissa in fondo sparisce: ripeteva

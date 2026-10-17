@@ -14,14 +14,29 @@
  * integrale e letterale: cambia il raggruppamento, non le parole.
  * L'immagine 654 (1920x2560, il bancone con il marchio e "Dal 1956") esce
  * dal bordo sinistro della finestra e resta ferma mentre scorre il testo.
+ * Il `sizes` e' scritto a mano: quello che WordPress deduce dalla misura
+ * dichiarava 768px anche sotto i 1024, dove la fotografia e' a tutta fascia.
  */
 $sd_media_id = 654;
+
+/*
+ * «I Nostri Pazienti» e' lo stesso capitolo, a specchio: la fotografia 1321
+ * (1200x694, una sala operativa con la luce della finestra) sta a destra e
+ * il testo a sinistra. E' l'ambiente di cui parla il testo — «elegante ed
+ * amichevole, con professionalita', competenza ed igiene» — e nella cornice
+ * a destra ci entra ridotta, mai ingrandita.
+ *
+ * Misura `full` e non `large`: la cornice e' 528x636 e per riempirla senza
+ * stirare servono 1100px di sorgente. Con `large` (1024x592) il browser
+ * sceglieva quella e la ingrandiva del 7%.
+ */
+$sd_accoglienza_id = 1321;
 ?>
 <!-- wp:group {"className":"sd-section sd-chapter","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__grid"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
-<?php echo sorriso_dambrosio_image( $sd_media_id, 'large', 'sd-chapter__figure' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_image( $sd_media_id, 'large', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 528px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
 <!-- /wp:group -->
 
@@ -51,12 +66,19 @@ $sd_media_id = 654;
 <!-- /wp:group --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"sd-wrap sd-welcome sd-split","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-wrap sd-welcome sd-split">
+<!-- wp:group {"className":"sd-chapter__grid sd-chapter__grid--mirror sd-welcome","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-chapter__grid sd-chapter__grid--mirror sd-welcome"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-chapter__media">
+<?php echo sorriso_dambrosio_image( $sd_accoglienza_id, 'full', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 1100px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"sd-chapter__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-chapter__body">
 <?php echo sorriso_dambrosio_section_head( 'Accoglienza', 'I Nostri Pazienti' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<!-- wp:group {"className":"sd-split__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-split__body"><!-- wp:paragraph -->
+<!-- wp:group {"className":"sd-prose","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-prose"><!-- wp:paragraph -->
 <p>I nostri pazienti vengono accolti in un ambiente elegante ed amichevole, con professionalit&agrave;, competenza ed igiene.</p>
 <!-- /wp:paragraph -->
 
@@ -75,6 +97,7 @@ $sd_media_id = 654;
 <!-- wp:paragraph -->
 <p>Lo Studio Dentistico D&#8217;Ambrosio &egrave; oggi un punto di riferimento per chi cerca professionalit&agrave;, competenza e un ambiente amichevole, dove ogni paziente &egrave; seguito con attenzione e responsabilit&agrave;.</p>
 <!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

@@ -34,7 +34,7 @@ search-replace al deploy, e `srcset`/`width`/`height`/lazy loading gratis.
 
 ## Prima di modificare il layout
 
-Leggere **`docs/DESIGN-SPEC.md`**. Contiene il sistema (misure, scala tipografica, fondi,
+Leggere **`themes/sorriso-dambrosio/docs/DESIGN-SPEC.md`**. Contiene il sistema (misure, scala tipografica, fondi,
 intestazione di sezione) e l'impianto di ciascuna sezione. La regola che lo regge:
 *nessuna sezione riusa l'impianto di un'altra*. I punti ancora deboli sono elencati
 onestamente in `docs/REPORT.md` §6.
