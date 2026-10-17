@@ -26,3 +26,6 @@ plugins/sorriso-dambrosio-core/vendor/
 # Rumore di sistema
 .DS_Store
 __pycache__/
+
+# Impostazioni locali di Claude nel tema
+themes/sorriso-dambrosio/.claude/settings.local.json

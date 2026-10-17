@@ -449,7 +449,7 @@ wp db import ../../../backups/pre-redesign.sql
 | Percorso | Contenuto |
 |---|---|
 | `docs/TRIAGE.md` | analisi dello stato di partenza (prima iterazione) |
-| `docs/DESIGN-SPEC.md` | **il sistema di layout, scritto prima del codice** |
+| `themes/sorriso-dambrosio/docs/DESIGN-SPEC.md` | **il sistema di layout, scritto prima del codice** |
 | `docs/REPORT.md` | questo documento |
 | `docs/DA-VERIFICARE.md` | punti che richiedono una decisione del titolare |
 | `redesign/homepage-text-original.txt` | i 199 frammenti di testo originali, in ordine |
