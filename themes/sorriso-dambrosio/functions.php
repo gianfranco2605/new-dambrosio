@@ -134,9 +134,10 @@ add_action( 'init', 'sorriso_dambrosio_register_pattern_category' );
  * @param string $title   Titolo della sezione.
  * @param int    $level   Livello del titolo (2 o 3).
  * @param string $href    Se valorizzato, il titolo diventa un collegamento.
+ * @param string $anchor  Se valorizzato, diventa l'id del titolo (per aria-labelledby).
  * @return string Markup a blocchi.
  */
-function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '' ) {
+function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '', $anchor = '' ) {
 	$level = (int) $level;
 	$tag   = 'h' . $level;
 
@@ -144,13 +145,19 @@ function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '
 		? '<a href="' . esc_url( $href ) . '">' . $title . '</a>'
 		: $title;
 
+	// L'ancora serve a dare un nome accessibile alla <section> che contiene
+	// l'intestazione: la sezione la cita con aria-labelledby. Senza nome, per
+	// uno screen reader una <section> vale esattamente un <div>.
+	$anchor_attr = '' !== $anchor ? '"anchor":"' . esc_attr( $anchor ) . '",' : '';
+	$anchor_id   = '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '';
+
 	return '<!-- wp:group {"className":"sd-head","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->'
 		. '<div class="wp-block-group sd-head">'
 		. '<!-- wp:paragraph {"className":"sd-eyebrow","fontSize":"x-small"} -->'
 		. '<p class="sd-eyebrow has-x-small-font-size">' . $eyebrow . '</p>'
 		. '<!-- /wp:paragraph -->'
-		. '<!-- wp:heading {"level":' . $level . '} -->'
-		. '<' . $tag . ' class="wp-block-heading">' . $inner . '</' . $tag . '>'
+		. '<!-- wp:heading {' . $anchor_attr . '"level":' . $level . '} -->'
+		. '<' . $tag . ' class="wp-block-heading"' . $anchor_id . '>' . $inner . '</' . $tag . '>'
 		. '<!-- /wp:heading -->'
 		. '</div><!-- /wp:group -->';
 }

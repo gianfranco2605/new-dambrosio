@@ -44,8 +44,8 @@ $sd_social = array(
 	array( 'icon' => 'whatsapp', 'url' => $sd_c['whatsapp'], 'label' => 'Scrivi allo studio su WhatsApp' ),
 );
 ?>
-<!-- wp:group {"className":"sd-hero","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"0","bottom":"0","right":"0","left":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-hero" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+<!-- wp:group {"tagName":"section","className":"sd-hero","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"0","bottom":"0","right":"0","left":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-hero" aria-labelledby="sd-hero-titolo" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 <!-- wp:html -->
 <picture class="sd-hero__media">
 	<source media="(max-width: 781px)" sizes="150vw" srcset="<?php echo $sd_mobile_srcset ? esc_attr( $sd_mobile_srcset ) : esc_url( $sd_mobile ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
@@ -60,8 +60,8 @@ $sd_social = array(
 <p class="sd-hero__eyebrow has-x-small-font-size">Dal 1956</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:heading {"level":1,"className":"sd-hero__title","fontSize":"xx-large"} -->
-<h1 class="wp-block-heading sd-hero__title has-xx-large-font-size">Studio Odontoiatrico D&#8217;Ambrosio</h1>
+<!-- wp:heading {"anchor":"sd-hero-titolo","level":1,"className":"sd-hero__title","fontSize":"xx-large"} -->
+<h1 id="sd-hero-titolo" class="wp-block-heading sd-hero__title has-xx-large-font-size">Studio Odontoiatrico D&#8217;Ambrosio</h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"className":"sd-hero__lede"} -->
@@ -103,5 +103,5 @@ $sd_social = array(
 </ul>
 </div>
 <!-- /wp:html --></div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group -->
