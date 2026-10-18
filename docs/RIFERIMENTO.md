@@ -496,7 +496,7 @@ Tutta in **`docs/`**, versionata:
 | `TRIAGE.md`        | lo stato di partenza                                                                   |
 | `migration/`       | gli script, idempotenti, piu' le due verifiche                                         |
 
-Lo script di misura per i criteri di design e' `.playwright-mcp/audit.js`.
+Lo script di misura per i criteri di design e' `docs/audit/audit.js`.
 Materiali grezzi **non versionati** (screenshot, HTML reso, log): `../../../redesign/`.
 
 ### Da fare

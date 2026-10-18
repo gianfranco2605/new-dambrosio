@@ -36,11 +36,11 @@ $sd_reasons = array(
 	),
 );
 ?>
-<!-- wp:group {"className":"sd-section sd-section--dark sd-why","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"},"elements":{"link":{"color":{"text":"var:preset|color|base"}}}},"backgroundColor":"main","textColor":"base","layout":{"type":"default"}} -->
-<div class="wp-block-group sd-section sd-section--dark sd-why has-base-color has-main-background-color has-text-color has-background has-link-color" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<!-- wp:group {"tagName":"section","className":"sd-section sd-section--dark sd-why","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"},"elements":{"link":{"color":{"text":"var:preset|color|base"}}}},"backgroundColor":"main","textColor":"base","layout":{"type":"default"}} -->
+<section class="wp-block-group sd-section sd-section--dark sd-why has-base-color has-main-background-color has-text-color has-background has-link-color" aria-labelledby="sd-perche-noi-titolo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-wrap"><!-- wp:group {"className":"sd-split","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-split">
-<?php echo sorriso_dambrosio_section_head( 'Fiducia', 'Perch&eacute; noi' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_section_head( 'Fiducia', 'Perch&eacute; noi', 2, '', 'sd-perche-noi-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <!-- wp:group {"className":"sd-split__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-split__body"><!-- wp:paragraph {"className":"sd-why__lede","fontSize":"medium"} -->
@@ -64,5 +64,5 @@ $sd_reasons = array(
 <?php endforeach; ?>
 </div>
 <!-- /wp:group --></div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group -->

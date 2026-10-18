@@ -1,60 +1,103 @@
-# CLAUDE.md — Sito Studio Odontoiatrico D'Ambrosio
+# CLAUDE.md — sorrisodambrosio.it
 
-`wp-content/` di `sorrisodambrosio.it` (WordPress, Local: `http://sorrisodambrosio.local`).
-**La radice del repo e' `wp-content/`.** Si lavora solo in:
+**La sessione si apre qui**, in `wp-content/`: è la radice del repo, e il lavoro sta in due
+cartelle, non in una. Questa è la guida unica — non ce ne sono altre.
 
-- `themes/sorriso-dambrosio/` — child block theme di Ollie (theme.json v3, `style.css`, `templates/`, `parts/`, `patterns/`)
-- `plugins/sorriso-dambrosio-core/` — tipi di contenuto, URL, orari/recapiti (`SD\Core\Studio`), blocchi `sd/*`, JSON-LD
+```
+themes/sorriso-dambrosio/        il disegno      (child di Ollie, theme.json v3, tema 1.8.0)
+plugins/sorriso-dambrosio-core/  i contenuti     (tipi, URL, orari, blocchi sd/*, JSON-LD — 1.0.0)
+```
 
-Tutto il resto (core, `ollie`, vecchio tema `sorrisodambrosio`, plugin di terzi, uploads, `vendor/`) **non si legge e non si tocca**.
+Tutto il resto (core, `ollie`, vecchio tema `sorrisodambrosio` tenuto per il rollback, plugin di
+terzi, uploads, `vendor/`) **non si legge e non si tocca**.
 
-## Regole di lavoro (risparmio token — obbligatorie)
+## Tema o plugin? Tre domande
 
-1. **Un compito per sessione.** Fare solo cio' che viene chiesto, poi fermarsi e riferire.
-2. **Non esplorare.** Niente ricerche sull'intero `wp-content/`. Se il file non e' indicato, `grep -rn` mirato dentro tema o plugin, escludendo `vendor/`.
-3. **Mai leggere `style.css` per intero** (140 KB). Prima `grep -n` del selettore o della sezione (`/* == 20` ecc.), poi `Read` con `offset`/`limit`.
-4. **I documenti in `docs/` si leggono solo se servono, e solo la sezione utile** (`grep -n '^#' docs/FILE.md` prima).
-5. **Playwright/screenshot solo se richiesti**, una larghezza alla volta (390 o 1440), mai pagina intera di tutto il sito. Nessun audit multi-URL senza richiesta esplicita.
-6. Niente loop autonomi o "non fermarti finche'…": a fine compito, breve riepilogo e stop.
+| La modifica riguarda… | Dove | File |
+| --- | --- | --- |
+| colore, spazio, tipografia, breakpoint, ordine degli elementi | **tema** | `style.css`, `theme.json`, `patterns/`, `templates/` |
+| struttura o classi di un blocco `sd/*` (orari, elenco trattamenti, schede) | **plugin** | `includes/class-blocks.php`, `class-render.php` |
+| un trattamento, un orario, un recapito, una pagina | **nessun file** | pannello di WordPress |
 
-## Vincoli sempre validi
+**Perché sono separati:** dal plugin dipendono 49 contenuti, 5 aree e **217 regole di URL**.
+Registrarli nel tema vorrebbe dire che cambiare tema = 404 su tutte le pagine interne.
+La regola, in una riga: *se cancellando il tema si perde un'informazione, quell'informazione
+sta nel posto sbagliato.* Nove modifiche su dieci sono nel tema; il plugin si apre per la
+domanda 2, cioè raramente.
 
-1. **Colori**: solo la palette di `theme.json`. Nessun hex/rgb/hsl fuori da `theme.json`; nel CSS `var(--wp--preset--color--…)` / `var(--wp--custom--…)`. Niente `clamp()` o `rem` scritti a mano: usare i token (`--wp--custom--space--{xxxs…xxxl}`, `settings.custom.measure`, `settings.custom.frame`).
-2. **Testo letterale**: nessuna riscrittura o contenuto inventato (pubblicita' sanitaria). Impaginazione e ordine liberi. Testi accorciati in home solo con link alla pagina completa, e annotati in `docs/DA-VERIFICARE.md`.
-3. **Immagini**: solo quelle gia' in Media Library; mai ingrandite oltre la misura naturale.
-4. **Non modificare** core, `ollie`, `sorrisodambrosio`, plugin di terzi. **Non cancellare** pagine o contenuti.
-5. **Font inclusi nel tema**, nessuna CDN / Google Fonts.
-6. **Nessun push, import di DB, search-replace o cancellazione** senza il titolare.
+## Come lavorare (pochi token — obbligatorio)
 
-## Convenzioni
+- **Un compito per sessione**, descritto con pagina + larghezza + cosa non va. Fatto quello:
+  riepilogo breve e stop. Niente loop autonomi, niente esplorazione del repo.
+- **`style.css` non si legge mai per intero** (140 KB). Mappa delle sezioni in
+  `themes/sorriso-dambrosio/docs/RESPONSIVE.md` §1: `grep -n` del selettore o del numero di
+  sezione, poi lettura con `offset`/`limit`. Lo stesso per `class-blocks.php` (739 righe).
+- Documenti: **solo la sezione utile** (`grep -n '^#' <file>` prima).
+- Playwright: una pagina, una larghezza, solo se serve vedere; per l'overflow basta
+  `browser_evaluate`. Screenshot dell'elemento, non della pagina intera.
 
-- Classi con prefisso `sd-`. Sezioni = pattern PHP in `patterns/`, richiamati con `<!-- wp:pattern {"slug":"sorriso-dambrosio/..."} /-->`.
-- Recapiti e orari **solo** da `sorriso_dambrosio_contacts()` / `sorriso_dambrosio_hours()` (delegano al plugin).
-- Immagini: `Render::thumb()` + `.sd-plate`, o `<!-- wp:sd/immagine -->`; mai `core/post-featured-image` nelle schede.
-- Pagine interne: iniziano con `wp:sd/briciole`, finiscono con `wp:sd/cta-prenota`. Un solo `h1`.
-- Pattern nuovo non compare? Alzare la **versione** in `style.css`.
-- Menu = blocco Navigation, post `wp_navigation` **ID 4** (non `wp menu`).
+## Vincoli che non si negoziano
 
-## Ambiente e verifica minima
+- **Colori**: solo la palette di `theme.json`. Nessun hex/rgb/hsl, nessun `clamp()`, nessun `rem`
+  di max-width, mai `ch`: solo token (`--wp--custom--space--{xxxs…xxxl}`, `settings.custom.measure`,
+  `settings.custom.frame`). **Nessun breakpoint nuovo**: riusare `599 / 781 / 899 / 1120`.
+- **Testo letterale** (pubblicità sanitaria): niente riscritture né contenuto inventato.
+  Ordine e impaginazione sono liberi. I testi originali: `../../../redesign/originali/`.
+- **Immagini** solo dalla Media Library, mai ingrandite oltre la misura naturale.
+- Bersagli ≥ 44px, testo ≥ 16px su mobile, un solo `h1` per pagina.
+- **Non cancellare** pagine o contenuti. Nessun push, import di DB o `search-replace` senza il titolare.
+- Nessun commit senza richiesta. Messaggi di commit **in italiano**, come i precedenti.
+
+## Dove sta cosa
+
+| | |
+| --- | --- |
+| `themes/…/style.css` | tutto il CSS (sezioni §1–§20) |
+| `themes/…/theme.json` | palette, font, token; `contentSize` 1180 / `wideSize` 1320 |
+| `themes/…/templates/` · `parts/` | front-page, page-lo-studio, page-contatti, archivi e singoli, 404 · header, footer, mobile-cta |
+| `themes/…/patterns/` | le sezioni: hero · lo-studio · orari · professionisti · servizi · tecnologie · perche-noi · prenota · vieni-a-trovarci · contatti-* |
+| `themes/…/functions.php` | `sorriso_dambrosio_section_head()`, `_image()`, `_contacts()`, `_hours()`, `_icon()` |
+| `plugins/…/class-content-types.php` · `class-fields.php` · `class-relations.php` | i 4 tipi, la tassonomia `sd_area`, i campi, le relazioni |
+| `plugins/…/class-permalinks.php` | URL, regole per termine, redirect |
+| `plugins/…/class-studio.php` | **orari e recapiti: unica fonte** (gli helper del tema delegano qui) |
+| `plugins/…/class-blocks.php` · `class-render.php` | i 13 blocchi `sd/*` e il loro HTML |
+| `plugins/…/class-schema.php` | JSON-LD |
+
+## Trappole che si ripresentano
+
+- **Pattern modificato → alzare `Version:` in `style.css`**, altrimenti WordPress serve la cache.
+- Una sezione della home è una `<section>` (`"tagName":"section"` sul Group) **con nome**:
+  `aria-labelledby` + `id` sull'h2 (5° parametro di `section_head()` e di `Render::head()`).
+  Senza nome, una `<section>` vale un `<div>`. I wrapper interni restano `div`.
+- Il `div.entry-content` dentro `<main>` è di core (blocco `post-content`): non si toglie, Ollie ci appoggia i fogli degli elenchi.
+- `.is-style-hidden-destok` / `.is-style-hidden-mobile` le usa il menu: non rimuoverle.
+- Il blocco iubenda in `patterns/footer.php` non si tocca, né il commento che lo spiega.
+- Il layout `constrained` di core stringe i figli a `contentSize`: `alignwide` o `layout:{"type":"default"}`.
+- Gli stili inline dagli attributi del blocco battono il CSS del tema.
+- Menu = blocco Navigation, post `wp_navigation` **ID 4** (`wp menu` non serve a nulla).
+- Local serve da cache: dopo una modifica, `/?cb=1`.
+
+## Verifica minima
 
 ```bash
 PHP83="$HOME/Library/Application Support/Local/lightning-services/php-8.3.17+1/bin/darwin-arm64/bin/php"
-"$PHP83" -n -l <file.php>                                   # lint del file toccato
-: > debug.log && curl -s -o /dev/null -w '%{http_code}\n' http://sorrisodambrosio.local/ && cat debug.log
+"$PHP83" -n -l <file.php>                 # solo il file toccato
+( cd themes/sorriso-dambrosio && composer run phpstan )        # se hai toccato il tema
+( cd plugins/sorriso-dambrosio-core && composer run phpstan )  # se hai toccato il plugin
+: > debug.log && curl -s -o /dev/null -w '%{http_code}\n' 'http://sorrisodambrosio.local/?cb=1' && cat debug.log
 ```
 
-`wp` stampa un errore di `xdebug.so`: filtrare con `2>&1 | grep -v 'xdebug.so'`. Cache: `/?cb=1` o `wp cache flush`.
-La verifica completa (phpstan, grep colori, migrazione, criteri Playwright) e' in `docs/RIFERIMENTO.md` → "Verifiche": eseguirla solo prima di un commit/deploy o se richiesta.
+## Documenti (leggere solo la sezione che serve)
 
-## Dove trovare il resto (leggere solo la sezione che serve)
-
-| File | Contenuto |
+| File | Quando |
 | --- | --- |
-| `docs/RIFERIMENTO.md` | guida completa: sistema di design, componenti, **trappole gia' incontrate**, stato pagine/ID, deploy |
-| `docs/ARCHITECTURE.md` | tipi di contenuto, URL, template — prima di toccarli |
-| `themes/sorriso-dambrosio/docs/RESPONSIVE.md` | mappa di `style.css`, breakpoint, token, header/menu — per ogni lavoro di layout |
-| `themes/sorriso-dambrosio/docs/DESIGN-SPEC.md` | sistema di layout — prima di cambiare il design |
-| `docs/DA-VERIFICARE.md` | decisioni aperte del titolare (= cio' che resta da fare) |
-| `docs/PROGRESS.md` | punto di ripresa |
+| `themes/…/docs/RESPONSIVE.md` | **primo** per un lavoro di layout: mappa CSS, breakpoint, token |
+| `themes/…/docs/TASKS.md` | i compiti aperti di pulizia CSS, con i prompt pronti |
+| `themes/…/docs/DESIGN-SPEC.md` | perché una sezione è fatta così (§4.x), criteri di accettazione (§6) |
+| `docs/RIFERIMENTO.md` | **guida completa** del progetto: contenuti, URL, deploy, trappole storiche |
+| `docs/ARCHITECTURE.md` | il modello dei contenuti — prima di toccare tipi, URL o template |
+| `docs/DA-VERIFICARE.md` | decisioni ancora in mano al titolare |
+| `docs/audit/` | gli script di misura (`audit.js` per i criteri di design) |
 
-Ramo di lavoro: `redesign/altre-pagine` (commit solo locali). Remote: `github.com/gianfranco2605/new-dambrosio`.
+Ramo di lavoro: `git branch --show-current`. Remote: `github.com/gianfranco2605/new-dambrosio`
+(nessuna CI: il push non pubblica niente).

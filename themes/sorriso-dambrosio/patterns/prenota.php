@@ -22,11 +22,11 @@ $sd_c = sorriso_dambrosio_contacts();
 
 $sd_form = do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" html_class="sd-form-wrapper"]' );
 ?>
-<!-- wp:group {"className":"sd-section sd-prenota","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-section sd-prenota" id="prenota" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap sd-prenota__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<!-- wp:group {"tagName":"section","className":"sd-section sd-prenota","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-section sd-prenota" aria-labelledby="sd-prenota-titolo" id="prenota" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap sd-prenota__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-wrap sd-prenota__grid"><!-- wp:group {"className":"sd-prenota__aside","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-prenota__aside">
-<?php echo sorriso_dambrosio_section_head( 'Contatti', 'Prenota un appuntamento' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_section_head( 'Contatti', 'Prenota un appuntamento', 2, '', 'sd-prenota-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 
 <!-- wp:html -->
@@ -60,5 +60,5 @@ $sd_form = do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" h
 <?php echo $sd_form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
 <!-- /wp:html --></div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group -->

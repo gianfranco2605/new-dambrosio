@@ -657,7 +657,7 @@ final class Blocks {
 		$href = '' !== $href ? $href : home_url( '/contatti/#prenota' );
 
 		$aside = '<div class="sd-hours-band__aside">'
-			. Render::head( 'Quando siamo aperti', 'I Nostri Orari', self::livello( $attrs ) )
+			. Render::head( 'Quando siamo aperti', 'I Nostri Orari', self::livello( $attrs ), '', 'sd-orari-titolo' )
 			. '<p class="sd-hours-band__note has-main-accent-color has-text-color has-small-font-size">Sabato-Domenica chiuso</p>'
 			. '<div class="sd-hours-band__actions">'
 			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( $c['phone_href'] ) . '">'
@@ -667,7 +667,8 @@ final class Blocks {
 			. '</div></div>';
 
 		return '<section class="wp-block-group sd-section sd-section--dark sd-hours-band has-base-color'
-			. ' has-main-background-color has-text-color has-background has-link-color" id="orari">'
+			. ' has-main-background-color has-text-color has-background has-link-color" id="orari"'
+			. ' aria-labelledby="sd-orari-titolo">'
 			. '<div class="sd-wrap sd-hours-band__grid">' . $aside . $table . '</div></section>';
 	}
 

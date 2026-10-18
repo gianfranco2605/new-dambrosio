@@ -33,8 +33,8 @@ $sd_media_id = 654;
 $sd_accoglienza_id = 1321;
 ?>
 <!-- wp:group {"className":"sd-section sd-chapter","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-chapter__grid"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"tagName":"section","className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-chapter__grid" aria-labelledby="sd-lo-studio-titolo"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
 <?php echo sorriso_dambrosio_image( $sd_media_id, 'large', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 528px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
@@ -42,7 +42,7 @@ $sd_accoglienza_id = 1321;
 
 <!-- wp:group {"className":"sd-chapter__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__body">
-<?php echo sorriso_dambrosio_section_head( 'Dal 1956', 'Lo Studio', 2, home_url( '/lo-studio/' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_section_head( 'Dal 1956', 'Lo Studio', 2, home_url( '/lo-studio/' ) , 'sd-lo-studio-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <!-- wp:group {"className":"sd-prose","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-prose"><!-- wp:paragraph -->
@@ -63,11 +63,11 @@ $sd_accoglienza_id = 1321;
 <!-- /wp:group -->
 
 </div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group -->
 
-<!-- wp:group {"className":"sd-chapter__grid sd-chapter__grid--mirror sd-welcome","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-chapter__grid sd-chapter__grid--mirror sd-welcome"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<!-- wp:group {"tagName":"section","className":"sd-chapter__grid sd-chapter__grid--mirror sd-welcome","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-chapter__grid sd-chapter__grid--mirror sd-welcome" aria-labelledby="sd-pazienti-titolo"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
 <?php echo sorriso_dambrosio_image( $sd_accoglienza_id, 'full', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 1100px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
@@ -75,7 +75,7 @@ $sd_accoglienza_id = 1321;
 
 <!-- wp:group {"className":"sd-chapter__body","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__body">
-<?php echo sorriso_dambrosio_section_head( 'Accoglienza', 'I Nostri Pazienti' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_section_head( 'Accoglienza', 'I Nostri Pazienti' , 2, '', 'sd-pazienti-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <!-- wp:group {"className":"sd-prose","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-prose"><!-- wp:paragraph -->
@@ -98,6 +98,6 @@ $sd_accoglienza_id = 1321;
 <p>Lo Studio Dentistico D&#8217;Ambrosio &egrave; oggi un punto di riferimento per chi cerca professionalit&agrave;, competenza e un ambiente amichevole, dove ogni paziente &egrave; seguito con attenzione e responsabilit&agrave;.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group --></div>
 <!-- /wp:group -->

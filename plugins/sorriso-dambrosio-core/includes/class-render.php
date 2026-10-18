@@ -51,13 +51,18 @@ final class Render {
 	 * E' la stessa figura di `sorriso_dambrosio_section_head()` nel tema, ma in
 	 * HTML puro invece che in markup a blocchi.
 	 */
-	public static function head( string $eyebrow, string $title, int $level = 2, string $href = '' ): string {
+	public static function head( string $eyebrow, string $title, int $level = 2, string $href = '', string $anchor = '' ): string {
 		$tag   = 'h' . max( 1, min( 4, $level ) );
 		$inner = '' !== $href ? '<a href="' . esc_url( $href ) . '">' . esc_html( $title ) . '</a>' : esc_html( $title );
 
+		// L'ancora da' un nome accessibile alla <section> che contiene
+		// l'intestazione: la sezione la cita con aria-labelledby. Senza nome,
+		// per uno screen reader una <section> vale esattamente un <div>.
+		$id = '' !== $anchor ? ' id="' . esc_attr( $anchor ) . '"' : '';
+
 		return '<div class="sd-head">'
 			. ( '' !== $eyebrow ? '<p class="sd-eyebrow has-x-small-font-size">' . esc_html( $eyebrow ) . '</p>' : '' )
-			. '<' . $tag . ' class="wp-block-heading">' . $inner . '</' . $tag . '>'
+			. '<' . $tag . ' class="wp-block-heading"' . $id . '>' . $inner . '</' . $tag . '>'
 			. '</div>';
 	}
 

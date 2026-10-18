@@ -47,6 +47,8 @@ Non c'e' una scala unica: sono cresciuti sezione per sezione.
 | (header) 1340px | — | stacco voci del menu a due gradini (`--sd-nav-gap`) |
 | `prefers-reduced-motion` | 11 | |
 
+Piano di unificazione, compito per compito: `docs/TASKS.md` T1–T5.
+
 **Regola per il lavoro nuovo:** non aggiungere soglie nuove. Riusare `599 / 781 / 899 / 1120`.
 Se si unificano 860→899 o 600→599, verificare la sezione a entrambe le larghezze.
 Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
@@ -112,6 +114,15 @@ Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
 - Pagina vecchia dopo una modifica → `/?cb=1` o `wp cache flush`.
 - Il markup dei blocchi `sd/*` (classi, struttura) sta nel plugin: `../../plugins/sorriso-dambrosio-core/blocks/`
   e `includes/class-render.php`. Leggerlo **solo** se la classe da stilare non si trova nel tema.
+
+- **Una sezione della home e' una `<section>`**, resa dal Group esterno con `"tagName":"section"`, e prende il
+  nome dal proprio titolo: `aria-labelledby` sulla sezione, `id` sull'h2 (quinto parametro di
+  `sorriso_dambrosio_section_head()`, che diventa l'`anchor` del blocco heading). **Senza nome una `<section>`
+  vale un `<div>`** per uno screen reader. I wrapper interni (`.sd-wrap`, `.sd-head`, griglie, card) restano `div`.
+  `aria-labelledby` non e' un attributo del Group di core: sta nel markup del pattern, che e' reso lato server
+  (richiamato per slug, mai modificato nell'editor), quindi non genera blocchi non validi.
+- Una fascia che contiene **due** capitoli con `h2` pari (es. `patterns/lo-studio.php`) resta un `div`: le
+  `<section>` sono i due capitoli, non la fascia.
 
 ## 7. Verificare una modifica di layout (economico)
 

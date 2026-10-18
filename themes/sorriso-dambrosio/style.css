@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.7.0
+Version: 1.8.0
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -2690,7 +2690,7 @@ img {
 
 /* Proporzione e riempimento li governa la lastra (§19.6). */
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
 	.sd-areahead__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -2937,7 +2937,7 @@ img {
 	margin: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
 	.sd-matrix {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -2958,7 +2958,7 @@ img {
 	}
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599px) {
 	.sd-matrix {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3068,7 +3068,7 @@ img {
 	margin-top: 2em;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
 	.sd-entry__grid,
 	.sd-entry--mirror .sd-entry__grid {
 		grid-template-columns: minmax(0, 1fr);
@@ -3196,7 +3196,7 @@ img {
 /* Sotto i 600px il ritratto non sta piu' accanto alla biografia: a 390px
    restavano 190px di colonna e il testo andava a capo ogni tre parole.
    Il ritratto sale sopra e il testo prende tutta la riga. */
-@media (max-width: 600px) {
+@media (max-width: 599px) {
 	.sd-people__row,
 	.sd-people--schede .sd-people__row {
 		grid-template-columns: minmax(0, 1fr);
@@ -3299,7 +3299,7 @@ img {
 	margin-bottom: 0.2rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
 	.sd-cases {
 		grid-template-columns: minmax(0, 25rem);
 	}
@@ -4594,7 +4594,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	max-height: 20rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 899px) {
 	/* Su una colonna larga quanto lo schermo anche una fotografia
 	   vera copre 768×512: se e' chiara — mezza libreria lo e' —
 	   quella fascia si legge come vuota. Qui il tetto torna su

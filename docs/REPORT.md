@@ -111,7 +111,7 @@ Nessuna sezione riusa l'impianto di un'altra, e **nessuna riusa quello del vecch
 ## 4. Criteri di accettazione
 
 Verificati sul **sito in esecuzione** con Playwright, non leggendo i sorgenti.
-Lo script di misura e' `wp-content/.playwright-mcp/audit.js`.
+Lo script di misura e' `wp-content/docs/audit/audit.js`.
 
 ### 4.1 Design
 
@@ -461,7 +461,7 @@ wp db import ../../../backups/pre-redesign.sql
 | `redesign/screenshots/reference/prism-hero.png` | l'hero del riferimento |
 | `redesign/screenshots/compare/compare-1440.png` | il confronto a quattro colonne |
 | `redesign/screenshots/compare/hero-vs-prism-1440.png` | **l'hero nuovo accanto al riferimento** |
-| `wp-content/.playwright-mcp/audit.js` | lo script di misura usato per il §4 |
+| `wp-content/docs/audit/audit.js` | lo script di misura usato per il §4 |
 | `backups/pre-redesign.sql` | dump del database prima di ogni modifica |
 
 ### Commit

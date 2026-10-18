@@ -39,10 +39,10 @@ $sd_doctors = array(
 	),
 );
 ?>
-<!-- wp:group {"className":"sd-section sd-section--tint","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-section sd-section--tint" id="chi-siamo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<!-- wp:group {"tagName":"section","className":"sd-section sd-section--tint","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-section sd-section--tint" aria-labelledby="sd-professionisti-titolo" id="chi-siamo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-wrap">
-<?php echo sorriso_dambrosio_section_head( 'Dottori', 'I Professionisti' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_section_head( 'Dottori', 'I Professionisti', 2, '', 'sd-professionisti-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <!-- wp:group {"className":"sd-roster","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-roster">
@@ -70,5 +70,5 @@ $sd_doctors = array(
 <?php endforeach; ?>
 </div>
 <!-- /wp:group --></div>
-<!-- /wp:group --></div>
+<!-- /wp:group --></section>
 <!-- /wp:group -->
