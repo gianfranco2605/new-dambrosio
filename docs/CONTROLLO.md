@@ -31,14 +31,15 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 
 ## Coda
 
-54 rilievi dei tre agenti → **28 righe `fix`**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
+54 rilievi dei tre agenti → **28 righe `fix`**, più F-R-25 trovata dal correttore durante F-R-1 (29). Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
 F-R-17 = F-P-11 (accenti dei giorni), F-R-14 + F-R-16 (taglio e proporzioni del capitolo in home).
 F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede il revisore.
 
 | id | gravità | tipo | titolo | stato |
 | --- | --- | --- | --- | --- |
-| F-P-1 | high | fix | JSON-LD: `JSON_UNESCAPED_SLASHES` lascia passare `</script>` | da fare |
+| F-P-1 | high | fix | JSON-LD: `JSON_UNESCAPED_SLASHES` lascia passare `</script>` | fatta `8fc8529` |
 | F-R-1 | high | fix | il ritratto del medico scivola di 156px e copre l'h1 (≤ 899) | da fare |
+| F-R-25 | medium | fix | sopra 899 il ritratto non si appiccica mai: `.sd-plate` batte `sticky` | da fare |
 | F-T-1 | high | fix | `--wp--custom--surface--tintStrong` non esiste: voce corrente senza fondo | da fare |
 | F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | da fare |
 | F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | da fare |
@@ -68,7 +69,9 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 
 ## Correzioni fatte
 
-(nessuna ancora)
+1. **F-P-1** `8fc8529` — JSON-LD: aggiunto `JSON_HEX_TAG`. Con un titolo ostile il blob passava da
+   troncato a 1.972 byte con `<script>alert(1)</script>` eseguibile a 2.776 byte interi che
+   `json.loads` legge; sulle pagine vere non cambia di un byte (sha1 invariati su 6 URL).
 
 ## Da decidere (titolare)
 
