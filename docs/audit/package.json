@@ -1,0 +1,9 @@
+{
+  "name": "sorriso-audit",
+  "private": true,
+  "type": "module",
+  "description": "Misura dei criteri di design: node audit.mjs <urls.txt> <cartella> <larghezze> [no-shots]",
+  "devDependencies": {
+    "playwright": "1.64.0"
+  }
+}

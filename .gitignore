@@ -20,6 +20,7 @@ plugins/*
 !plugins/sorriso-dambrosio-core/
 
 # Dipendenze di sviluppo (solo PHPStan): non vanno in deploy.
+docs/audit/node_modules/
 themes/sorriso-dambrosio/vendor/
 plugins/sorriso-dambrosio-core/vendor/
 
@@ -27,5 +28,3 @@ plugins/sorriso-dambrosio-core/vendor/
 .DS_Store
 __pycache__/
 
-# Impostazioni locali di Claude nel tema
-themes/sorriso-dambrosio/.claude/settings.local.json

@@ -97,7 +97,8 @@ PHP83="$HOME/Library/Application Support/Local/lightning-services/php-8.3.17+1/b
 | `docs/RIFERIMENTO.md` | **guida completa** del progetto: contenuti, URL, deploy, trappole storiche |
 | `docs/ARCHITECTURE.md` | il modello dei contenuti — prima di toccare tipi, URL o template |
 | `docs/DA-VERIFICARE.md` | decisioni ancora in mano al titolare |
-| `docs/audit/` | gli script di misura (`audit.js` per i criteri di design) |
+| `docs/audit/` | gli script di misura (`audit.mjs` + `analyze.py`, URL in `urls.txt`) |
+| `docs/LOOP-CONTROLLO.md` | il giro autonomo di controllo completo (come lanciarlo e il prompt) |
 
 Ramo di lavoro: `git branch --show-current`. Remote: `github.com/gianfranco2605/new-dambrosio`
 (nessuna CI: il push non pubblica niente).
