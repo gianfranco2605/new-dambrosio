@@ -2551,14 +2551,12 @@ Text Domain: sorriso-dambrosio
    17. Accessibilita' e igiene
    --------------------------------------------------------------- */
 
-/* L'header e' sticky: senza questo, saltando a un'ancora il titolo della
-   sezione finisce sotto l'header. */
-:target,
-#prenota,
-#orari,
-#chi-siamo {
-	scroll-margin-top: 5.5rem;
-}
+/* Le ancore stanno in una regola sola, `[id]:not(body)` in §18.1, che usa
+   `--sd-sticky-top`. Qui c'era un doppione a 5.5rem (88px): essendo fatto di
+   id vinceva per specificita' (1,0,0 contro 0,1,1) e su #prenota, #orari e
+   #chi-siamo il bordo alto della sezione restava nascosto sotto l'header
+   (64px a 1440, 54 a 1121). Non rimetterlo: `:target` e' sempre un elemento
+   con id, quindi la regola di §18.1 lo copre. */
 
 @media (prefers-reduced-motion: no-preference) {
 	html {
