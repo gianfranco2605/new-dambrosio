@@ -51,13 +51,21 @@ final class Schema {
 		 * Scrivendo `\u2019` il JSON resta tutto ASCII, il parser di iubenda
 		 * non ha niente da convertire, e chi legge il JSON lo rimette a posto
 		 * da se'. Verificato con `?iub_no_parse=1`, che spegne quel passaggio.
+		 *
+		 * `JSON_HEX_TAG` invece serve: qui dentro finisce testo redazionale
+		 * (titolo, estratto, nome del termine, briciole) e `JSON_UNESCAPED_SLASHES`
+		 * spegne l'unica difesa che c'era, cioe' l'escape di default `<\/script>`.
+		 * Senza il flag un titolo che contiene `</script>` chiude il tag e quel che
+		 * segue torna HTML. `JSON_HEX_TAG` scrive `<` e `>` come `\u003C` e
+		 * `\u003E`: due caratteri su 2.700, ancora ASCII (quindi la ragione di
+		 * iubenda regge), nessun lettore di dati strutturati se ne accorge.
 		 */
 		$json = wp_json_encode(
 			array(
 				'@context' => 'https://schema.org',
 				'@graph'   => $graph,
 			),
-			JSON_UNESCAPED_SLASHES
+			JSON_UNESCAPED_SLASHES | JSON_HEX_TAG
 		);
 
 		if ( false === $json ) {
