@@ -3274,7 +3274,7 @@ img {
 
 .sd-cases__media .bafg-container,
 .sd-cases__media .bafg-twentytwenty-container {
-	margin: 0 !important;
+	margin: 0;
 	max-width: 100% !important;
 }
 
@@ -4278,6 +4278,9 @@ img {
    20.3 Le due azioni, in fondo al pannello
    --------------------------------------------------------------- */
 
+/* `!important` contro il filetto fra le voci del pannello (20.2,
+   `…__container > .wp-block-navigation-item`, 0,4,0): senza, sopra le
+   due azioni ricompare una riga da 1px. Misurato (T6). */
 .sd-header .is-menu-open .sd-nav-cta {
 	border: 0 !important;
 	margin-top: var(--wp--custom--space--sm);
@@ -4495,7 +4498,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	.wpcf7-list-item-label,
 	.wpcf7-form-control-wrap,
 	.sd-form__field label {
-		font-size: 1rem !important;
+		font-size: 1rem;
 	}
 
 	/* Le domande della FAQ: `summary` e' il comando che apre. */
