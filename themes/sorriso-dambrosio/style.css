@@ -2807,7 +2807,7 @@ img {
 	max-width: var(--wp--custom--measure--prose);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-zig__row,
 	.sd-zig__row--end {
 		grid-template-columns: minmax(0, 1fr);
@@ -2885,7 +2885,7 @@ img {
 	color: var(--wp--preset--color--main);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-rows__row {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3199,7 +3199,7 @@ img {
 
 /* Stessa proporzione per tutti e tre: la governa la lastra (§19.6). */
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-people__row {
 		grid-template-columns: 7rem minmax(0, 1fr);
 	}
@@ -3365,7 +3365,7 @@ img {
 	max-width: var(--wp--custom--measure--column);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-doctor__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3495,7 +3495,7 @@ img {
 	color: var(--wp--preset--color--main);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-cta__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3566,7 +3566,7 @@ img {
 	border: 0;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-contactpage__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}

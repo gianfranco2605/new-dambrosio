@@ -37,7 +37,7 @@ Cambia solo la larghezza 900px esatta.
 > In style.css cambia le 5 media query `max-width: 900px` in `max-width: 899px` (sezioni 18.2, 18.5, 18.6,
 > 18.9, 20.5). Nessuna verifica visiva. Poi spunta T2 in docs/TASKS.md.
 
-## [ ] T3 — `860px` → `899px` (da verificare)
+## [x] T3 — `860px` → `899px` (da verificare)
 
 | riga | sezione | pagina per controllare |
 | --- | --- | --- |
@@ -55,6 +55,9 @@ E' quasi sempre un miglioramento (a 870px due colonne sono strette), ma va guard
 > (sezioni 18.3, 18.4, 18.8, 18.10, 18.12, 18.13). Poi verifica con Playwright a **880px** solo
 > /implantologia/ e /contatti/: nessun overflow orizzontale, niente colonne sotto i 300px.
 > Riferisci in breve e spunta T3 in docs/TASKS.md.
+
+**Fatto.** A 880px `/implantologia/` e `/contatti/`: nessun overflow, nessuna colonna sotto i 300px;
+zig-zag, fascia prenota e griglia contatti sono a una colonna (830px).
 
 ## [x] T4 — `1023px` → `1120px` (impilate)
 
