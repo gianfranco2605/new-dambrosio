@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.6
+Version: 1.8.7
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -116,10 +116,6 @@ Text Domain: sorriso-dambrosio
 .sd-why__lede {
 	line-height: 1.5;
 	margin: 0;
-}
-
-.sd-hero__lede {
-	max-width: var(--wp--custom--measure--short);
 }
 
 /* Il collegamento che chiude un blocco di testo: niente sottolineatura
@@ -2108,10 +2104,6 @@ Text Domain: sorriso-dambrosio
 	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
 }
 
-.sd-prenota__lede {
-	max-width: var(--wp--custom--measure--lede);
-}
-
 .sd-prenota__contacts {
 	list-style: none;
 	margin: var(--wp--custom--space--md) 0 0;
@@ -2702,10 +2694,11 @@ img {
 	margin: 0;
 }
 
+/* La misura la da' §19.3, che e' piu' in basso nel foglio e a pari
+   specificita' vinceva: qui non si ripete. */
 .sd-areahead__lede {
 	line-height: 1.5;
 	margin: 0;
-	max-width: var(--wp--custom--measure--lede);
 }
 
 /* La fotografia esce verso destra fino al bordo della finestra: e'
@@ -3522,9 +3515,9 @@ img {
 	margin-bottom: var(--wp--custom--space--sm);
 }
 
+/* La misura la da' §19.3: qui solo i margini. */
 .sd-cta__lede {
 	margin: 0;
-	max-width: var(--wp--custom--measure--lede);
 }
 
 .sd-cta__actions {
@@ -3652,10 +3645,10 @@ img {
    18.15 Il capitolo «Lo Studio» come pagina intera
    --------------------------------------------------------------- */
 
+/* La misura la da' §19.3: qui solo interlinea e margini. */
 .sd-chapter__lede {
 	line-height: 1.35;
 	margin: 0 0 var(--wp--custom--space--lg);
-	max-width: var(--wp--custom--measure--lede);
 }
 
 .sd-head--minor {
@@ -3846,6 +3839,11 @@ img {
 	max-width: var(--wp--custom--measure--narrow);
 }
 
+/* Il lede di queste quattro sezioni e' testo corrente: prende la stessa
+   misura della prosa, 38rem. Le stesse quattro classi portavano accanto
+   alla loro sezione un `lede` (32rem) che non ha mai reso nulla - pari
+   specificita', ma questo blocco sta piu' in basso - e che e' stato
+   rimosso: la misura di un elemento sta in un posto solo. */
 .sd-chapter__lede,
 .sd-areahead__lede,
 .sd-cta__lede,
