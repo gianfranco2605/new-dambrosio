@@ -31,7 +31,7 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 
 ## Coda
 
-54 rilievi dei tre agenti → **28 righe `fix`**, più F-R-25 (dal correttore, durante F-R-1) e F-P-16 (dal verificatore, durante F-P-4): **30**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
+54 rilievi dei tre agenti → **28 righe `fix`**, più tre righe trovate correggendo: F-R-25 (durante F-R-1), F-P-16 (durante F-P-4), F-R-26 e F-R-27 (durante F-R-12): **32**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
 F-R-17 = F-P-11 (accenti dei giorni), F-R-14 + F-R-16 (taglio e proporzioni del capitolo in home).
 F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede il revisore.
 
@@ -44,7 +44,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | fatta `966d8f7` |
 | F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | fatta `0de3ed0` |
 | F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | fatta `2268268` |
-| F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | da fare |
+| F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | fatta `c344d60` (2 tentativi) |
 | F-R-5 | medium | fix | quattro archivi di area senza `<title>` | da fare |
 | F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | da fare |
 | F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | da fare |
@@ -55,6 +55,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-11 | medium | fix | `/casi-studi/`: 412px vuoti a destra da 1121 in su | da fare |
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | da fare |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita ×1.01 e due proporzioni in griglia (+ F-R-16) | da fare |
+| F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
+| F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ DESIGN-SPEC §3.1) | da fare |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | da fare |
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | da fare |
@@ -90,6 +92,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
    chiede la capability alla tassonomia, e il riquadro su «Aree → Modifica area» con nonce e
    `edit_term`. Prova decisiva: un subscriber con un nonce **proprio e valido** ottiene 0 scritture.
    Checksum del termmeta identico prima e dopo (40 righe, 5 aree).
+7. **F-R-12** `c344d60` — due tentativi. `layout:{"type":"default"}` su cinque template invece di un
+   quarto `!important`, più l'azzeramento del rientro sui soli figli diretti: il contenuto stesso
+   comincia con un Group che riporta `has-global-padding`, e ce l'hanno 20 schede su 20. Primo `<p>`
+   contro h1: endodonzia 34 → 20 a 390 e 112 → 92 a 1440; la 404 da 416 a 92 con la colonna ancora a
+   608px. Audit su 13 URL a quattro larghezze: high 5 → 5 identici, medium 91 → 90.
 
 ## Da decidere (titolare)
 
@@ -114,6 +121,13 @@ Sei domande. Nessuna di queste è stata toccata.
    testo nuovo. `DA-VERIFICARE.md` §15.4.
 6. **`/70-anni-attivita/` è pubblicata e vuota** (F-R-21): titolo, chiamata all'azione, piede.
    Riempirla, rimetterla in bozza o reindirizzarla a `/lo-studio/`. `DA-VERIFICARE.md` §13.5.
+
+7. **`/studio-dentistico/` va rimpaginata nell'editor** (F-R-27). I 20px che scostano il testo da
+   quel titolo sono la gronda di quattro pannelli `alignwide` fatti nell'editor, non una regola del
+   foglio: toglierla in CSS ingrandisce una foto 300×200 a 304×203, cioè rompe un vincolo per
+   sistemarne un altro. Nello stesso giro cinque ritratti di quella pagina, già oltre la misura
+   naturale prima di questo giro, crescono di un filo (781: 706 contro 420 naturali; 1440: 376 → 389):
+   stessa voce di audit, stessa gravità, si chiude con la rimpaginazione.
 
 Resta aperto anche l'elenco delle **fotografie da rifare** (F-R-15): 142 immagini stanno sotto la
 soglia retina perché gli originali in Media Library non sono più grandi. Ingrandirle è proprio quel
