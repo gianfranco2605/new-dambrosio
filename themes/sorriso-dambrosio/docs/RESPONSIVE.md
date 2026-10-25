@@ -32,24 +32,20 @@ I numeri di riga sono indicativi: cambiano a ogni modifica.
 
 Nota: 19.7, 20.5 e 20.6 stanno **in fondo** al file (dopo 20.4), non vicino alle loro sezioni.
 
-## 2. Breakpoint in uso (debito noto)
+## 2. Breakpoint in uso
 
-Non c'e' una scala unica: sono cresciuti sezione per sezione.
+Una scala sola, unificata con `docs/TASKS.md` T1–T5 (tema 1.8.3).
 
 | media query | volte | significato |
 | --- | --- | --- |
-| `max-width: 599px` / `600px` | 9 + 2 | telefono (soglia di core per la Navigation) |
-| `max-width: 781px` | 5 | soglia colonne di core (`wp-block-columns` impilano a 781) |
-| `max-width: 860px` | 6 | |
-| `max-width: 899px` / `900px` | 7 + 5 | tablet |
-| `max-width: 1120px` / `min-width: 1121px` | 5 + 3 | **menu a tendina fino a 1120px** (core lo farebbe solo sotto 600); da T4 anche hero, capitolo e spaccature |
-| (header) 1340px | — | stacco voci del menu a due gradini (`--sd-nav-gap`) |
-| `prefers-reduced-motion` | 11 | |
-
-Piano di unificazione, compito per compito: `docs/TASKS.md` T1–T5.
+| `max-width: 599px` / `min-width: 600px` | 11 + 2 | telefono (soglia di core per la Navigation) |
+| `max-width: 781px` / `min-width: 782px` | 6 + 1 | soglia colonne di core (`wp-block-columns` impilano a 781) |
+| `max-width: 899px` | 18 | tablet |
+| `max-width: 1120px` / `min-width: 1121px` | 6 + 3 | **menu a tendina fino a 1120px** (core lo farebbe solo sotto 600); anche hero, capitolo e spaccature |
+| `max-width: 1340px` | 1 | **eccezione giustificata**: non e' layout, e' la misura della riga dell'header (stacco voci `--sd-nav-gap` 28→16px). Commento in §5 di `style.css` |
+| `prefers-reduced-motion` | 13 | |
 
 **Regola per il lavoro nuovo:** non aggiungere soglie nuove. Riusare `599 / 781 / 899 / 1120`.
-Se si unificano 860→899 o 600→599, verificare la sezione a entrambe le larghezze.
 Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
 
 ## 3. Sistema di design (token da usare — mai valori a mano)

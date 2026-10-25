@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.2
+Version: 1.8.3
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -971,6 +971,11 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
+/* 1340 non e' nella scala (599/781/899/1120) e non deve esserlo: non e'
+   un cambio di layout, e' la misura della riga dell'header. Con lo stacco
+   pieno (28px) le sette voci chiedono 72px in piu': senza questa regola a
+   1240 il menu coprirebbe il logo di 10px, con la regola ne restano 62.
+   A 1341 lo stacco torna 28 e lo spazio dal logo e' 64px (T5). */
 @media (max-width: 1340px) {
 	.sd-header__nav.wp-block-navigation {
 		--sd-nav-gap: 1rem;
@@ -1001,21 +1006,15 @@ Text Domain: sorriso-dambrosio
 	}
 
 	/* Il logo resta il piu' grande che la riga regge accanto al panino:
-	   misurato, 170px lascia 24px di stacco a 390px. Era 132px. */
+	   misurato (T5), 170px lascia 84px di stacco a 390px e 20 a 320.
+	   Era 132px. Sotto i 480 scendeva a 148: con una sola icona
+	   telefono nella riga (giro 2 dell'header) non serve piu'. */
 	.sd-header .wp-block-site-logo img {
 		width: 170px;
 	}
 
 	.sd-header__inner {
 		gap: 0.5rem;
-	}
-}
-
-/* Sotto i 480px la riga delle azioni e quella del logo si stringono
-   ancora: il marchio scende a quello che ci sta davvero. */
-@media (max-width: 479px) {
-	.sd-header .wp-block-site-logo img {
-		width: 148px;
 	}
 }
 
@@ -3447,7 +3446,10 @@ img {
 	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
 }
 
-@media (max-width: 700px) {
+/* A 781, la soglia di core per le colonne: era 700, fuori scala. A 781
+   le due colonne sono 200 e 515px, quindi impilarle prima non perde
+   niente; 599 le avrebbe tenute fino a 600, con 151 e 389px (T5). */
+@media (max-width: 781px) {
 	.sd-index__area {
 		grid-template-columns: minmax(0, 1fr);
 	}

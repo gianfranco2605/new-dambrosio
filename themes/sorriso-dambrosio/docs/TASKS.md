@@ -85,7 +85,7 @@ no — entra solo da ~1230 (vedi T8). L'arrotondamento e' comunque a 1120 e non 
 quello che riduce il danno: la fascia con i puntini passa da 1024-1230 a 1121-1230, mentre 899
 l'avrebbe allargata fino a 900.
 
-## [ ] T5 — verifica finale dei breakpoint
+## [x] T5 — verifica finale dei breakpoint
 
 Fuori elenco, trovati facendo T1/T2: **479px**, **700px** e **1340px** (uno ciascuno). Non sono nella
 scala: in T5 vanno portati alla misura vicina o giustificati con un commento.
@@ -95,6 +95,17 @@ scala: in T5 vanno portati alla misura vicina o giustificati con un commento.
 > Poi Playwright, solo controllo overflow (`document.documentElement.scrollWidth > innerWidth`) senza
 > screenshot, su / /implantologia/ /contatti/ /professionisti/ a 390, 768, 1024, 1280.
 > Alza `Version:` in style.css, aggiorna la tabella §2 di docs/RESPONSIVE.md, spunta T5.
+
+**Fatto (tema 1.8.3).** Restano `max-width` 599 / 781 / 899 / 1120, piu' 1340 giustificato.
+
+| soglia | decisione | perche' (misurato) |
+| --- | --- | --- |
+| 479 | **tolta** | logo 148px sotto i 480. A 170px ci sta ovunque: 84px di stacco a 390, 20 a 320 |
+| 700 | **→ 781** | indice aree (`/prestazioni/` e la pagina 404): a 781 le colonne sono 200/515, impilare non perde niente; 599 le avrebbe lasciate a 151/389 |
+| 1340 | **resta, con commento** | misura della riga dell'header, non layout: senza, a 1240 il menu copre il logo di 10px |
+
+Overflow: nessuno su / /implantologia/ /contatti/ /professionisti/ a 390, 768, 1024, 1280.
+Il controllo dell'overflow non vede le sovrapposizioni: guardando si e' trovato T9.
 
 ## [ ] T6 — i 39 `!important`
 
@@ -150,6 +161,29 @@ ogni voce parte dalla misura del suo testo. Nessun contenuto, soglia o media que
 | **voci `flex: 1 1 auto`** | **ok** | **ok** | **ok** | **ok** |
 
 A 1121 restano ~15px di margine all'indirizzo e ~16 all'email.
+
+## [ ] T9 — il menu copre il logo fra 1121 e ~1180px
+
+Trovato facendo T5, piu' vecchio di T5. Sopra i 1120 il menu e' in linea, e la prima voce
+(«Lo Studio») parte prima che finisca il logo (220px, la sua misura naturale): copre la scritta
+«Studio Odontoiatrico». Nessun overflow orizzontale, quindi `scrollWidth` non lo vede.
+
+| larghezza | spazio logo → menu oggi | con logo a 140px |
+| --- | --- | --- |
+| 1121 | **−56px** (sovrapposti) | 24px |
+| 1150 | **−28px** | 52px |
+| 1180 | 2px | 82px |
+| 1240 | 62px | 142px |
+| 1341 | 64px (stacco 28) | 144px |
+
+Una via misurata: logo a 140px dentro la `max-width: 1340px` che c'e' gia' (nessuna soglia nuova).
+Cambia la misura del marchio su desktop fra 1121 e 1340: decisione del titolare. Altre vie da
+valutare: stringere `--sd-nav-gap` sotto 16px, o portare la tendina oltre 1120 (ma 1120 e' la
+soglia della scala, e la condividono hero e capitoli).
+
+> Guarda l'header di `/` a **1121px**: «Lo Studio» copre la scritta del logo. Non toccare le
+> soglie. Proponi la via che costa meno e dimmi lo spazio logo → menu a 1121, 1180, 1240, 1341 e
+> 1440 — poi scelgo io. Niente modifiche prima.
 
 ---
 
