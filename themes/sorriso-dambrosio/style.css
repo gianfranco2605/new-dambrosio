@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.0
+Version: 1.8.4
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -419,11 +419,14 @@ Text Domain: sorriso-dambrosio
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
+/* Ogni voce parte dalla misura del proprio testo (`auto`, non `0`):
+   con tre parti uguali il telefono avanzava spazio e indirizzo ed
+   email finivano coi puntini fino a ~1230px (T8). */
 .sd-hero__bar-item {
 	align-items: center;
 	color: inherit;
 	display: flex;
-	flex: 1 1 0;
+	flex: 1 1 auto;
 	gap: 0.75rem;
 	min-width: 0;
 	padding-block: 0.5rem;
@@ -542,9 +545,18 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Sotto i 1024px la scheda non ci sta piu' su una riga sola: diventa
-   una griglia 2x2 e poi una colonna. */
-@media (max-width: 1023px) {
+/* Sotto i 1121px la scheda non ci sta su una riga sola, e diventa una
+   griglia 2x2.
+
+   Qui c'era 1023, con scritto che da 1024 in su la riga ci stava.
+   Misurato (T4): non era vero — con tre voci della stessa larghezza
+   indirizzo ed email si troncavano fino a ~1230. Da quando ogni voce
+   parte dalla misura del suo testo (T8, `flex: 1 1 auto` sopra) la
+   riga entra gia' a 1121: l'indirizzo ha ~15px di margine, l'email ~16.
+
+   1120 e' quella del menu, cosi' un tablet orizzontale prende la stessa
+   forma in tutte e due le cose. Piu' sotto, la 2x2 diventa una colonna. */
+@media (max-width: 1120px) {
 	.sd-hero__bar {
 		border-radius: 1.75rem;
 		display: grid;
@@ -732,7 +744,8 @@ Text Domain: sorriso-dambrosio
 
    Il secondo gradino serve sotto i 1340px, dove la riga si stringe: a
    1121px — l'ultimo pixel prima della tendina — le sette voci piu' le
-   frecce stanno in 797px solo con 16px di stacco. */
+   frecce stanno accanto al marchio solo con 8px di stacco e il logo a
+   190 (T9: la regola `max-width: 1340px` in fondo alla 5.4b). */
 .sd-header__nav.wp-block-navigation {
 	--sd-nav-gap: 1.75rem;
 	--sd-nav-chevron-gap: 0.3rem;
@@ -959,10 +972,25 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
+/* 1340 non e' nella scala (599/781/899/1120) e non deve esserlo: non e'
+   un cambio di layout, e' la misura della riga dell'header. Con lo stacco
+   pieno (28px) le sette voci chiedono 72px in piu': senza questa regola a
+   1240 il menu coprirebbe il logo di 10px (T5).
+
+   Anche con 16px non bastava: il menu e' allineato a destra e, quando la
+   riga non gli basta, sborda a sinistra sopra il marchio — a 1121 copriva
+   «Studio Odontoiatrico» di 56px (T9). Qui si stringono le due cose:
+   lo stacco a 8px e il logo a 190, il minimo a cui le sue tre righe si
+   leggono (vedi 5.2: 140 era illeggibile). Spazio logo → menu: 22px a
+   1121, 80 a 1180, 140 a 1240. A 1341 tornano 28px e 220: 64px. */
 @media (max-width: 1340px) {
 	.sd-header__nav.wp-block-navigation {
-		--sd-nav-gap: 1rem;
+		--sd-nav-gap: 0.5rem;
 		--sd-nav-chevron-gap: 0.25rem;
+	}
+
+	.sd-header .wp-block-site-logo img {
+		width: 190px;
 	}
 }
 
@@ -989,21 +1017,15 @@ Text Domain: sorriso-dambrosio
 	}
 
 	/* Il logo resta il piu' grande che la riga regge accanto al panino:
-	   misurato, 170px lascia 24px di stacco a 390px. Era 132px. */
+	   misurato (T5), 170px lascia 84px di stacco a 390px e 20 a 320.
+	   Era 132px. Sotto i 480 scendeva a 148: con una sola icona
+	   telefono nella riga (giro 2 dell'header) non serve piu'. */
 	.sd-header .wp-block-site-logo img {
 		width: 170px;
 	}
 
 	.sd-header__inner {
 		gap: 0.5rem;
-	}
-}
-
-/* Sotto i 480px la riga delle azioni e quella del logo si stringono
-   ancora: il marchio scende a quello che ci sta davvero. */
-@media (max-width: 479px) {
-	.sd-header .wp-block-site-logo img {
-		width: 148px;
 	}
 }
 
@@ -1369,12 +1391,12 @@ Text Domain: sorriso-dambrosio
    cantilena, e la regola 3 di DESIGN FIRST vieta il pattern ripetuto
    per costruzione.
 
-   Tutto qui dentro vale **solo da 1024 in su**. Sotto, la griglia non
+   Tutto qui dentro vale **solo da 1121 in su**. Sotto, la griglia non
    c'e' piu' — `display: block` — e valgono le regole della 6.1,
    uguali per i due capitoli: scriverle fuori da questo media query
    vorrebbe dire vincerle per specificita' e doverle poi disfare.
    --------------------------------------------------------------- */
-@media (min-width: 1024px) {
+@media (min-width: 1121px) {
 	.sd-chapter__grid--mirror {
 		grid-template-columns:
 			[full-start] minmax(var(--sd-gutter), 1fr)
@@ -1480,11 +1502,11 @@ Text Domain: sorriso-dambrosio
 	margin-bottom: 0;
 }
 
-/* Le due colonne diventano una alla stessa soglia del capitolo — 1024,
+/* Le due colonne diventano una alla stessa soglia del capitolo — 1120,
    una per tutto il sito, non una per sezione — e il titolo torna sopra
    il testo. Quel che resta e' la colonna di lettura della 6.1: stesse
    due righe, stessa misura. */
-@media (max-width: 1023px) {
+@media (max-width: 1120px) {
 	.sd-split {
 		gap: var(--wp--custom--space--sm);
 		grid-template-columns: minmax(0, 1fr);
@@ -1508,9 +1530,17 @@ Text Domain: sorriso-dambrosio
        margin-inline: auto;
        max-width: var(--wp--custom--measure--prose);
 
-   La soglia la decide la sezione — il capitolo perde la fotografia a
-   1024, le due spaccature perdono la colonna del titolo a 900 — la
-   regola no. Sono dentro i media query e non fuori perche' la colonna
+   La soglia e' 1120 per tutte e tre, quella del menu. Era 1024, e
+   l'ha spostata un conto: la griglia del capitolo chiede 475px alla
+   fotografia e 845 al testo (36/64 di `--sd-max`), e sotto i ~1004px
+   non bastano a nessuna delle due, cosi' `minmax()` divide a meta' e
+   il 36/64 non esiste piu'. Il testo che resta: 371px a 900, 395 a
+   960, 430 a 1024 — cioe' 39, 42 e 45 caratteri, contro i 64 della
+   misura, che la colonna raggiunge solo a ~1220px. Due colonne che
+   non sono piu' il disegno e una riga sotto il minimo di leggibilita':
+   fino a 1120 si sta impilati.
+
+   Le due righe sono dentro i media query e non fuori perche' la colonna
    del capitolo e' una cella di griglia, e una cella con un margine
    automatico si restringe al contenuto: 845px diventavano 694 a
    1440px.
@@ -1519,7 +1549,7 @@ Text Domain: sorriso-dambrosio
    835px la riga arriva a 100 caratteri, contro il tetto di ~66.
    --------------------------------------------------------------- */
 
-@media (max-width: 1023px) {
+@media (max-width: 1120px) {
 	.sd-chapter__grid {
 		display: block;
 		padding-inline: var(--sd-gutter);
@@ -2787,7 +2817,7 @@ img {
 	max-width: var(--wp--custom--measure--prose);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-zig__row,
 	.sd-zig__row--end {
 		grid-template-columns: minmax(0, 1fr);
@@ -2865,7 +2895,7 @@ img {
 	color: var(--wp--preset--color--main);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-rows__row {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3179,7 +3209,7 @@ img {
 
 /* Stessa proporzione per tutti e tre: la governa la lastra (§19.6). */
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-people__row {
 		grid-template-columns: 7rem minmax(0, 1fr);
 	}
@@ -3244,7 +3274,7 @@ img {
 
 .sd-cases__media .bafg-container,
 .sd-cases__media .bafg-twentytwenty-container {
-	margin: 0 !important;
+	margin: 0;
 	max-width: 100% !important;
 }
 
@@ -3345,7 +3375,7 @@ img {
 	max-width: var(--wp--custom--measure--column);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-doctor__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3427,7 +3457,10 @@ img {
 	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
 }
 
-@media (max-width: 700px) {
+/* A 781, la soglia di core per le colonne: era 700, fuori scala. A 781
+   le due colonne sono 200 e 515px, quindi impilarle prima non perde
+   niente; 599 le avrebbe tenute fino a 600, con 151 e 389px (T5). */
+@media (max-width: 781px) {
 	.sd-index__area {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3475,7 +3508,7 @@ img {
 	color: var(--wp--preset--color--main);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-cta__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -3546,7 +3579,7 @@ img {
 	border: 0;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 899px) {
 	.sd-contactpage__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -4245,6 +4278,9 @@ img {
    20.3 Le due azioni, in fondo al pannello
    --------------------------------------------------------------- */
 
+/* `!important` contro il filetto fra le voci del pannello (20.2,
+   `…__container > .wp-block-navigation-item`, 0,4,0): senza, sopra le
+   due azioni ricompare una riga da 1px. Misurato (T6). */
 .sd-header .is-menu-open .sd-nav-cta {
 	border: 0 !important;
 	margin-top: var(--wp--custom--space--sm);
@@ -4462,7 +4498,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	.wpcf7-list-item-label,
 	.wpcf7-form-control-wrap,
 	.sd-form__field label {
-		font-size: 1rem !important;
+		font-size: 1rem;
 	}
 
 	/* Le domande della FAQ: `summary` e' il comando che apre. */
