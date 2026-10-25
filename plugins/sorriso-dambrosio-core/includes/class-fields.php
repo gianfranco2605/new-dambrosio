@@ -31,7 +31,16 @@ final class Fields {
 	public const BAFG          = '_sd_bafg';
 	public const ANCORA        = '_sd_ancora_legacy';
 
-	private const NONCE = 'sd_core_fields';
+	// I campi dell'area stanno sul **termine**, non su una pagina: vedi
+	// `Blocks::area_intestazione()` e `Blocks::area_contenuto()`.
+	public const COVER               = '_sd_cover';
+	public const ORDINE              = '_sd_ordine';
+	public const CONTENUTO           = '_sd_contenuto';
+	public const CONTENUTO_TITOLO    = '_sd_contenuto_titolo';
+	public const CONTENUTO_OCCHIELLO = '_sd_contenuto_occhiello';
+
+	private const NONCE      = 'sd_core_fields';
+	private const NONCE_AREA = 'sd_core_area';
 
 	public static function hooks(): void {
 		add_action( 'init', array( self::class, 'register' ), 7 );
@@ -39,10 +48,19 @@ final class Fields {
 		if ( is_admin() ) {
 			add_action( 'add_meta_boxes', array( self::class, 'add_meta_boxes' ) );
 			add_action( 'save_post', array( self::class, 'save' ), 10, 2 );
+
+			// La schermata del termine non ha `add_meta_box`: i campi si
+			// appendono alla tabella del modulo di modifica. Il modulo di
+			// creazione non li mostra (un'area si crea e poi si compila),
+			// ma `created_` resta agganciato: senza nonce non salva nulla.
+			add_action( Content_Types::AREA . '_edit_form_fields', array( self::class, 'area_fields' ) );
+			add_action( 'edited_' . Content_Types::AREA, array( self::class, 'save_area' ) );
+			add_action( 'created_' . Content_Types::AREA, array( self::class, 'save_area' ) );
 		}
 	}
 
 	public static function register(): void {
+		self::register_area_meta();
 		self::register_ids( Content_Types::TRATTAMENTO, self::TECNOLOGIE );
 		self::register_ids( Content_Types::PROFESSIONISTA, self::TRATTAMENTI );
 
@@ -329,5 +347,197 @@ final class Fields {
 		foreach ( $ids as $id ) {
 			add_post_meta( $post_id, $key, $id );
 		}
+	}
+
+	/* ---------------------------------------------------------------------
+	 * L'area: cinque campi sul termine.
+	 * ------------------------------------------------------------------ */
+
+	/**
+	 * I cinque campi dell'area.
+	 *
+	 * Esistevano solo perche' li aveva scritti lo script di migrazione: nessun
+	 * `type`, nessuna sanificazione, nessun permesso, e per cambiare la
+	 * copertina di un'area bisognava aprire il database. Registrarli qui da'
+	 * all'area la stessa dignita' di un articolo.
+	 *
+	 * `_sd_ordine` e' l'unico senza `default`: `Blocks::aree_ordinate()` manda
+	 * in coda l'area che **non ha** il numero, e un default di 0 la farebbe
+	 * invece scavalcare le cinque scelte del titolare.
+	 */
+	private static function register_area_meta(): void {
+		register_term_meta(
+			Content_Types::AREA,
+			self::COVER,
+			array(
+				'type'              => 'integer',
+				'single'            => true,
+				'default'           => 0,
+				'show_in_rest'      => true,
+				'description'       => 'L\'immagine di copertina dell\'area, dalla Libreria media.',
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => array( self::class, 'can_edit_area' ),
+			)
+		);
+
+		register_term_meta(
+			Content_Types::AREA,
+			self::ORDINE,
+			array(
+				'type'              => 'integer',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'description'       => 'La posizione dell\'area negli elenchi, da 1 a 5. Vuoto: in coda.',
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => array( self::class, 'can_edit_area' ),
+			)
+		);
+
+		register_term_meta(
+			Content_Types::AREA,
+			self::CONTENUTO,
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'description'       => 'Il testo libero dell\'area, in blocchi: oggi la FAQ di Implantologia.',
+				'sanitize_callback' => 'wp_kses_post',
+				'auth_callback'     => array( self::class, 'can_edit_area' ),
+			)
+		);
+
+		foreach ( array( self::CONTENUTO_TITOLO, self::CONTENUTO_OCCHIELLO ) as $key ) {
+			register_term_meta(
+				Content_Types::AREA,
+				$key,
+				array(
+					'type'              => 'string',
+					'single'            => true,
+					'default'           => '',
+					'show_in_rest'      => true,
+					'description'       => 'L\'intestazione del testo libero dell\'area.',
+					'sanitize_callback' => 'sanitize_text_field',
+					'auth_callback'     => array( self::class, 'can_edit_area' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Chi puo' modificare i campi di un'area.
+	 *
+	 * Non `edit_posts`: le aree hanno capability proprie
+	 * (`Content_Types::register_area()`, oggi `edit_terms => edit_pages`) e il
+	 * permesso si chiede alla tassonomia, non si indovina.
+	 */
+	public static function can_edit_area(): bool {
+		$taxonomy = get_taxonomy( Content_Types::AREA );
+		$cap      = ( $taxonomy instanceof \WP_Taxonomy ) ? (string) $taxonomy->cap->edit_terms : 'edit_pages';
+
+		return current_user_can( $cap );
+	}
+
+	/**
+	 * I campi dell'area in «Aree → Modifica area».
+	 *
+	 * Righe `<tr class="form-field">` appese alla tabella del modulo: e' il
+	 * solo modo che una schermata di termine offre.
+	 *
+	 * @param \WP_Term $term L'area in modifica.
+	 */
+	public static function area_fields( \WP_Term $term ): void {
+		$cover     = (int) get_term_meta( $term->term_id, self::COVER, true );
+		$ordine    = get_term_meta( $term->term_id, self::ORDINE, true );
+		$titolo    = (string) get_term_meta( $term->term_id, self::CONTENUTO_TITOLO, true );
+		$occhiello = (string) get_term_meta( $term->term_id, self::CONTENUTO_OCCHIELLO, true );
+		$contenuto = (string) get_term_meta( $term->term_id, self::CONTENUTO, true );
+
+		// Il nonce sta dentro una cella: un `input` figlio diretto di `table`
+		// il browser lo sposta fuori dalla tabella.
+		echo '<tr class="form-field"><th colspan="2"><h2 style="margin:1em 0 0">La pagina dell\'area</h2>';
+		wp_nonce_field( self::NONCE_AREA, self::NONCE_AREA );
+		echo '</th></tr>';
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="sd-cover">Immagine di copertina</label></th>';
+		echo '<td><input type="number" name="' . esc_attr( self::COVER ) . '" id="sd-cover" value="' . esc_attr( (string) $cover ) . '" min="0" step="1" class="small-text">';
+		echo '<p class="description">L\'ID dell\'immagine nella Libreria media (si legge nell\'indirizzo della scheda del file). 0: nessuna copertina.</p>';
+
+		if ( $cover > 0 ) {
+			echo wp_get_attachment_image( $cover, 'thumbnail', false, array( 'style' => 'margin-top:.5em;height:auto' ) );
+		}
+
+		echo '</td></tr>';
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="sd-ordine">Posizione negli elenchi</label></th>';
+		echo '<td><input type="number" name="' . esc_attr( self::ORDINE ) . '" id="sd-ordine" value="' . esc_attr( is_scalar( $ordine ) ? (string) $ordine : '' ) . '" min="1" step="1" class="small-text">';
+		echo '<p class="description">Da 1 a 5, l\'ordine in cui le aree compaiono. Lasciando vuoto, l\'area va in coda.</p>';
+		echo '</td></tr>';
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="sd-contenuto-occhiello">Sopratitolo del testo libero</label></th>';
+		echo '<td><input type="text" name="' . esc_attr( self::CONTENUTO_OCCHIELLO ) . '" id="sd-contenuto-occhiello" value="' . esc_attr( $occhiello ) . '" class="regular-text">';
+		echo '</td></tr>';
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="sd-contenuto-titolo">Titolo del testo libero</label></th>';
+		echo '<td><input type="text" name="' . esc_attr( self::CONTENUTO_TITOLO ) . '" id="sd-contenuto-titolo" value="' . esc_attr( $titolo ) . '" class="regular-text">';
+		echo '<p class="description">Senza titolo, il testo libero non viene mostrato.</p>';
+		echo '</td></tr>';
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="sd-contenuto">Testo libero</label></th>';
+		echo '<td><textarea name="' . esc_attr( self::CONTENUTO ) . '" id="sd-contenuto" rows="12" class="large-text code">' . esc_textarea( $contenuto ) . '</textarea>';
+		echo '<p class="description">Il testo che appartiene all\'area e non a un singolo trattamento (oggi la FAQ di Implantologia). E\' marcatura a blocchi: conviene scriverla nell\'editor di una bozza e incollarla qui.</p>';
+		echo '</td></tr>';
+	}
+
+	/**
+	 * Salva i campi dell'area.
+	 *
+	 * Stessa forma di `save()`: nonce, capability, poi i valori. La
+	 * sanificazione e' ripetuta qui perche' `sanitize_callback` protegge
+	 * `update_term_meta()` ma non le scritture di questo modulo.
+	 *
+	 * @param int $term_id ID dell'area.
+	 */
+	public static function save_area( int $term_id ): void {
+		$nonce = isset( $_POST[ self::NONCE_AREA ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ self::NONCE_AREA ] ) ) : '';
+
+		if ( '' === $nonce || ! wp_verify_nonce( $nonce, self::NONCE_AREA ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_term', $term_id ) ) {
+			return;
+		}
+
+		/*
+		 * Zero si cancella, non si salva: `Blocks::aree_ordinate()` manda in
+		 * coda l'area **priva** di `_sd_ordine`, mentre uno 0 la porterebbe in
+		 * testa, davanti ai cinque numeri scelti dal titolare.
+		 */
+		foreach ( array( self::COVER, self::ORDINE ) as $key ) {
+			$value = isset( $_POST[ $key ] ) ? absint( wp_unslash( (string) $_POST[ $key ] ) ) : 0;
+
+			if ( 0 === $value ) {
+				delete_term_meta( $term_id, $key );
+				continue;
+			}
+
+			update_term_meta( $term_id, $key, $value );
+		}
+
+		foreach ( array( self::CONTENUTO_TITOLO, self::CONTENUTO_OCCHIELLO ) as $key ) {
+			$value = isset( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ $key ] ) ) : '';
+			update_term_meta( $term_id, $key, $value );
+		}
+
+		// Marcatura a blocchi: `wp_kses_post()` lascia passare i commenti
+		// `<!-- wp:… -->` e con la FAQ di Implantologia non cambia un byte.
+		$contenuto = isset( $_POST[ self::CONTENUTO ] ) ? wp_kses_post( wp_unslash( (string) $_POST[ self::CONTENUTO ] ) ) : '';
+		update_term_meta( $term_id, self::CONTENUTO, $contenuto );
 	}
 }
