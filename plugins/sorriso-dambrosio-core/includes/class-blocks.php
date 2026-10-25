@@ -488,12 +488,15 @@ final class Blocks {
 			$body = '' !== $title ? Render::head( $eyebrow, $title, $level ) : '';
 			$tag  = Render::tag( $level + 1 );
 
+			// `meta_key` in `get_terms()` non ordina: filtra. WP_Term_Query lo
+			// traduce in una `meta_query` di esistenza, quindi un'area creata dal
+			// pannello — che non ha `_sd_ordine` — spariva dall'indice senza
+			// errore. Si chiedono i termini per nome e si riordinano in PHP.
 			$terms = get_terms(
 				array(
 					'taxonomy'   => Content_Types::AREA,
 					'hide_empty' => true,
-					'meta_key'   => '_sd_ordine', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query
-					'orderby'    => 'meta_value_num',
+					'orderby'    => 'name',
 					'order'      => 'ASC',
 				)
 			);
@@ -501,6 +504,8 @@ final class Blocks {
 			if ( ! is_array( $terms ) ) {
 				return '';
 			}
+
+			$terms = self::aree_ordinate( $terms );
 
 			foreach ( $terms as $term ) {
 				if ( ! $term instanceof \WP_Term ) {
@@ -547,6 +552,36 @@ final class Blocks {
 			};
 
 		return Render::section( $body, self::attr( $attrs, 'fondo' ) );
+	}
+
+	/**
+	 * Le aree nell'ordine deciso dal titolare (`_sd_ordine`, da 1 a 5).
+	 *
+	 * Un'area senza quel numero — qualunque area nuova creata dal pannello —
+	 * va **in coda**: i cinque numeri sono una scelta redazionale e un'area
+	 * appena aggiunta non puo' scavalcarli. A pari valore l'ordine resta
+	 * quello della query (per nome): `usort()` e' stabile da PHP 8.0.
+	 *
+	 * @param array<int, mixed> $terms I termini restituiti da `get_terms()`.
+	 * @return array<int, mixed> Gli stessi termini, riordinati.
+	 */
+	private static function aree_ordinate( array $terms ): array {
+		$rank = static function ( $term ): int {
+			if ( ! $term instanceof \WP_Term ) {
+				return PHP_INT_MAX;
+			}
+
+			$order = get_term_meta( $term->term_id, '_sd_ordine', true );
+
+			return ( is_scalar( $order ) && '' !== $order ) ? (int) $order : PHP_INT_MAX;
+		};
+
+		usort(
+			$terms,
+			static fn( $a, $b ): int => $rank( $a ) <=> $rank( $b )
+		);
+
+		return $terms;
 	}
 
 	/**
