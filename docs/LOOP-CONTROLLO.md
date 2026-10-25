@@ -46,7 +46,7 @@ problema torna al correttore insieme al motivo, al massimo 3 volte; poi si annul
 
 Permessi: `.claude/settings.json` lascia fare tutto senza conferme, compresi commit e push del ramo
 di controllo. Chiedono conferma merge, reset, rebase e le scritture nel database; il push su `main` e
-quello forzato sono bloccati. Skill: `.claude/skills/` (9 skill WordPress), gli agenti le usano.
+quello forzato sono bloccati. Skill: le 14 skill WordPress del tuo utente (`~/.claude/skills`), gli agenti le usano.
 
 **Priorità: un lavoro fatto bene, non il risparmio**, ma senza sprechi. Il giro è lungo.
 
