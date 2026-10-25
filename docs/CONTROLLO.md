@@ -31,7 +31,7 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 
 ## Coda
 
-54 rilievi dei tre agenti → **28 righe `fix`**, più tre righe trovate correggendo: F-R-25 (durante F-R-1), F-P-16 (durante F-P-4), F-R-26 e F-R-27 (durante F-R-12): **32**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
+54 rilievi dei tre agenti → **28 righe `fix`**, più tre righe trovate correggendo: F-R-25 (durante F-R-1), F-P-16 (durante F-P-4), F-R-26 e F-R-27 (durante F-R-12), F-T-17 (durante F-T-2): **33**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
 F-R-17 = F-P-11 (accenti dei giorni), F-R-14 + F-R-16 (taglio e proporzioni del capitolo in home).
 F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede il revisore.
 
@@ -46,7 +46,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | fatta `2268268` |
 | F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | fatta `c344d60` (2 tentativi) |
 | F-R-5 | medium | titolare | ~~quattro~~ **cinque** archivi di area senza `<title>`: dato Yoast | in Da decidere |
-| F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | da fare |
+| F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | fatta `4c63766` |
+| F-T-17 | medium | fix | `--sd-sticky-top` (156px) supera di 71-78px l'header vero sotto i 1121 | da fare |
 | F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | da fare |
 | F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | da fare |
 | F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | da fare |
@@ -97,6 +98,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
    comincia con un Group che riporta `has-global-padding`, e ce l'hanno 20 schede su 20. Primo `<p>`
    contro h1: endodonzia 34 → 20 a 390 e 112 → 92 a 1440; la 404 da 416 a 92 con la colonna ancora a
    608px. Audit su 13 URL a quattro larghezze: high 5 → 5 identici, medium 91 → 90.
+8. **F-T-2** `4c63766` — via il doppione di §17: tre selettori di id battevano per specificità la
+   regola col token, e il bordo della sezione restava 54-64px **sotto** l'header. Ora 4-14px sotto di
+   esso. In più `/lo-studio/` aveva un `id="orari"` che atterrava a 88 mentre il vicino
+   `#prenota-cta` atterrava a 156: ora vanno d'accordo.
 
 ## Da decidere (titolare)
 
@@ -201,6 +206,12 @@ e `/contatti/` a 1440.
   discendenza). Nessuna classe emessa dal plugin manca al tema: era il controllo richiesto.
 - **F-P-15** — il controllo della firma delle aree gira a ogni richiesta con un'opzione non
   autoloaded: una query in più per un evento che capita una volta all'anno.
+- **L'altezza vera dell'header appiccicato, misurata** (dal verificatore di F-T-2, in attesa di
+  F-T-17): **78px a 390 e 781**, 85px a 1120, 142px a 1121 e 1180, 152px a 1440. Il commento di §1
+  dice 155/142/134 e sbaglia su mobile. `--sd-sticky-top: 9.75rem` (156px) supera l'header vero di
+  71-78px sotto i 1121, e non regge solo le ancore: lo leggono anche il `min-height` dell'hero
+  (riga 298), la foto del capitolo (1366-1369) e tre colonne appiccicate (1779, 3387). Per questo
+  F-T-17 non è una sostituzione di numero.
 - **`do_blocks()` non è deterministico dentro la stessa richiesta** (misurato dal verificatore di
   F-P-4: 5.837 contro 5.840 byte fra due chiamate, è il contatore del lazy-loading). I confronti di
   resa prima/dopo vanno fatti su **richieste separate**, non su due chiamate in memoria.
