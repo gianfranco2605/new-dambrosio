@@ -3380,9 +3380,15 @@ img {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	/* `top: auto` serve quanto `position: static`: `.sd-plate` (§19, più in
+	   basso nel foglio e a pari specificità) ridichiara `position: relative`
+	   e vince, così la figure restava posizionata portandosi dietro il
+	   `top: var(--sd-sticky-top)` di qui sopra — 9.75rem, 156px — e scivolava
+	   sopra l'h1 (intersezione misurata 350x120px a 390px). */
 	.sd-doctor__portrait {
 		max-width: var(--wp--custom--measure--thumb);
 		position: static;
+		top: auto;
 	}
 }
 
