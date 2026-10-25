@@ -18,8 +18,8 @@ decisioni del titolare lo mette in un elenco, senza toccarlo.
    Se la sessione si interrompe, lo stesso messaggio riparte da dove era arrivato (lo stato sta in
    `docs/CONTROLLO.md`). In alternativa, a passi: `/loop Read docs/LOOP-CONTROLLO.md and do the next unchecked step.`
 
-Permessi: `.claude/settings.json` lascia fare tutto il lavoro senza conferme. Chiedono conferma solo
-push, merge, reset e le scritture nel database. Skill del progetto: `.claude/skills/` (9 skill WordPress).
+Permessi: `.claude/settings.json` lascia fare tutto il lavoro senza conferme, compresi commit e push del ramo di controllo. Chiedono conferma solo
+merge, reset, rebase e le scritture nel database; il push su `main` e quello forzato sono bloccati. Skill del progetto: `.claude/skills/` (9 skill WordPress).
 
 **Priorita': un lavoro fatto bene, non il risparmio.** Questo giro sospende le regole «pochi token»
 di `CLAUDE.md` (legge i file per intero, guarda le pagine, conferma a vista), ma senza sprechi.
@@ -50,7 +50,12 @@ step. All detail goes into files.
 - Never change: literal texts, images, colors outside `theme.json`, the breakpoint scale
   (599 / 781 / 899 / 1120, plus the justified 1340), content in the database, other plugins/themes.
 - One fix = one commit, Italian message in the style of `git log`, ending with the attribution line
-  used by previous commits. No push, no merge, no rebase.
+  used by previous commits. After every commit push the branch (`git push -u origin <branch>` the
+  first time, then `git push`), so the work is safe on GitHub. Never push `main`, never force-push,
+  no merge, no rebase.
+- The owner is away and will not answer. Never stop to ask or wait for input. Anything that needs a
+  decision goes under `## Da decidere (titolare)` and you move on. Do not run commands that need
+  approval (push to main, merge, reset, rebase, any WP-CLI write): they would block the pass.
 - Max 3 attempts per finding. If still failing: `git restore` the files, log it under
   `## Da decidere (titolare)` or `## Note` with what you measured, move on.
 - Read every theme and plugin file in full during Phase 1 (skip `vendor/`). `style.css` is too big for
@@ -141,4 +146,4 @@ step. All detail goes into files.
 - [ ] 4.3 Final checks: PHP lint, PHPStan both, the three CSS greps, `debug.log` empty, `verifica-url.sh` clean.
 - [ ] 4.4 Write at the top of `docs/CONTROLLO.md` a summary in Italian, max 15 lines: what was fixed
       (with commit hashes), what is left for the owner, before/after counts. Commit.
-- [ ] 4.5 Stop. Do not push. Reply in chat with the summary only.
+- [ ] 4.5 Push the branch, then stop. Do not merge into `main`. Reply in chat with the summary only.

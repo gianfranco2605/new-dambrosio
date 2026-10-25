@@ -60,10 +60,13 @@
       "Bash(bash docs/migration/verifica-url.sh:*)",
       "mcp__playwright",
       "Read(~/Desktop/Screenshot*)",
-      "Read(~/Desktop/skills/**)"
+      "Read(~/Desktop/skills/**)",
+      "Bash(git push:*)",
+      "Bash(cd:*)",
+      "Bash(pwd)",
+      "Bash(rm ../../../redesign/controllo/:*)"
     ],
     "ask": [
-      "Bash(git push:*)",
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
       "Bash(git merge:*)",
@@ -109,7 +112,11 @@
       "Read(./themes/ollie/**)",
       "Read(./themes/sorrisodambrosio/**)",
       "Read(**/*.sql)",
-      "Read(**/*.woff2)"
+      "Read(**/*.woff2)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD\\:main:*)",
+      "Bash(git push --delete:*)",
+      "Bash(git push origin --delete:*)"
     ]
   }
 }
