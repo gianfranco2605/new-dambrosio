@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.5
+Version: 1.8.6
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -3078,12 +3078,44 @@ img {
 }
 
 /* Le pagine interne usano `post-content`, che emette i blocchi
-   senza le classi del tema: la colonna di lettura si impone qui. */
+   senza le classi del tema: la colonna di lettura si impone qui.
+
+   I template lo chiamano con `layout:{"type":"default"}`, non
+   `constrained`: il layout vincolato di core rimetteva il rientro di
+   radice (`has-global-padding`) dentro un `.sd-wrap` che lo ha gia'
+   dato, e centrava con `margin-inline: auto !important` ogni figlio
+   con una max-width — cioe' questa colonna. Il corpo partiva 14px
+   (390) o 20px (1440) a destra del titolo, e sul 404 a 1440 il
+   paragrafo prendeva 304px di margine sinistro. A flusso la misura la
+   mette solo il tema e il testo parte dove parte l'h1. */
 .sd-entry__body > *,
 .sd-doc__body > *,
 .sd-areatext > * {
 	margin-block: 0 1.1em;
 	max-width: var(--wp--custom--measure--column);
+}
+
+/* Il layout a flusso pero' toglie il rientro doppio solo al primo
+   livello: quasi sempre il testo scritto nell'editor comincia con un
+   Group suo, e quel Group porta `has-global-padding`, cioe' rimette il
+   rientro di radice un piano piu' in basso (20 pagine su 20 fra
+   /trattamenti/* e /tecnologie/*: endodonzia a 1440 teneva l'h1 a x=92
+   e il paragrafo a x=112). Si azzera solo sui figli diretti del corpo,
+   mai sui discendenti: piu' in basso quel padding e' un incasso
+   voluto — le quattro schede dei servizi di /studio-dentistico/ hanno
+   12px (1440) e 8px (390) dentro il loro bordo, e li conservano.
+
+   Fuori restano anche `alignwide` e `alignfull`: li' il padding e' la
+   gronda del pannello, e togliendolo il contenuto si allarga di 40px.
+   Misurato su /studio-dentistico/: le quattro schede passavano da
+   296.5 a 306.5px e la fotografia implantologia-1 (300x200 naturali)
+   veniva resa 305x203, cioe' ingrandita oltre la sua misura — che non
+   si fa; e la riga di testo saliva da 88 a 91 caratteri, allontanandosi
+   dal limite di 75 (cfr. la voce aperta sulle `.wp-block-column`). */
+.sd-entry__body > .has-global-padding:not(.alignwide):not(.alignfull),
+.sd-doc__body > .has-global-padding:not(.alignwide):not(.alignfull),
+.sd-areatext > .has-global-padding:not(.alignwide):not(.alignfull) {
+	padding-inline: 0;
 }
 
 .sd-entry__body > :last-child,
@@ -3835,6 +3867,18 @@ img {
 .sd-entry__body > .wp-block-image,
 .sd-entry__body > figure {
 	max-width: 100%;
+}
+
+/* I blocchi che il titolare ha messo `alignwide` o `alignfull` chiedono
+   piu' della colonna di lettura, e con il layout a flusso la misura la
+   mette solo il tema: l'eccezione tocca a noi. Senza, su
+   /studio-dentistico/ a 1440 i quattro gruppi larghi passavano da 1256
+   a 608px. */
+.sd-doc__body > .alignwide,
+.sd-doc__body > .alignfull,
+.sd-entry__body > .alignwide,
+.sd-entry__body > .alignfull {
+	max-width: none;
 }
 
 /* ---------------------------------------------------------------
