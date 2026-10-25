@@ -31,7 +31,7 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 
 ## Coda
 
-54 rilievi dei tre agenti → **28 righe `fix`**, più F-R-25 trovata dal correttore durante F-R-1 (29). Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
+54 rilievi dei tre agenti → **28 righe `fix`**, più F-R-25 (dal correttore, durante F-R-1) e F-P-16 (dal verificatore, durante F-P-4): **30**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
 F-R-17 = F-P-11 (accenti dei giorni), F-R-14 + F-R-16 (taglio e proporzioni del capitolo in home).
 F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede il revisore.
 
@@ -43,7 +43,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-1 | high | fix | `--wp--custom--surface--tintStrong` non esiste: voce corrente senza fondo | fatta `739b17b` |
 | F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | fatta `966d8f7` |
 | F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | fatta `0de3ed0` |
-| F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | da fare |
+| F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | fatta `2268268` |
 | F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | da fare |
 | F-R-5 | medium | fix | quattro archivi di area senza `<title>` | da fare |
 | F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | da fare |
@@ -60,9 +60,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | da fare |
 | F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in due pattern | da fare |
 | F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | da fare |
-| F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto | da fare |
+| F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | da fare |
 | F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | da fare |
 | F-P-13 | low | fix | `"anchor": true` sui 14 blocchi, ancora mai resa | da fare |
+| F-P-16 | low | fix | il nonce del riquadro area non è legato all'ID del termine | da fare |
 | F-R-18 | low | fix | la riga del giorno corrente rientra di 12px | da fare |
 | F-R-19 | low | fix | gli estratti delle schede si tagliano a metà parola | da fare |
 | F-R-22 | low | fix | il `<title>` della 404 è in inglese | da fare |
@@ -85,6 +86,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
    invece di ordinare. Il `<main>` di `/prestazioni/` ha lo stesso sha1 prima e dopo; un'area senza
    `_sd_ordine` passa da esclusa dalla query a presente e ultima. Provato in memoria, senza
    scritture in banca dati.
+6. **F-P-4** `2268268` — cinque `register_term_meta()` col loro sanitize, un `auth_callback` che
+   chiede la capability alla tassonomia, e il riquadro su «Aree → Modifica area» con nonce e
+   `edit_term`. Prova decisiva: un subscriber con un nonce **proprio e valido** ottiene 0 scritture.
+   Checksum del termmeta identico prima e dopo (40 righe, 5 aree).
 
 ## Da decidere (titolare)
 
@@ -165,6 +170,13 @@ e `/contatti/` a 1440.
   discendenza). Nessuna classe emessa dal plugin manca al tema: era il controllo richiesto.
 - **F-P-15** — il controllo della firma delle aree gira a ogni richiesta con un'opzione non
   autoloaded: una query in più per un evento che capita una volta all'anno.
+- **`do_blocks()` non è deterministico dentro la stessa richiesta** (misurato dal verificatore di
+  F-P-4: 5.837 contro 5.840 byte fra due chiamate, è il contatore del lazy-loading). I confronti di
+  resa prima/dopo vanno fatti su **richieste separate**, non su due chiamate in memoria.
+- **kses e i delimitatori di blocco**: `wp_kses_post()` *non* rompe i commenti `<!-- wp:… -->`. Il
+  core aggancia `wp_pre_kses_block_attributes` su `pre_kses` e codifica i doppi trattini come
+  `\u002d\u002d`, con `parse_blocks()` e `do_blocks()` identici. La conclusione di F-P-4 (niente
+  kses in lettura) resta giusta, ma per un'altra ragione: la scrittura è già coperta.
 - **F-R-8** e **F-R-23** — due difetti dello strumento, non del sito: i link in linea dentro i
   paragrafi contano come bersagli piccoli (30 delle 105 segnalazioni mobile), e lo scorrimento rapido
   di `audit.mjs` fotografa immagini `lazy` non ancora decodificate. Da sistemare in `docs/audit/` per
