@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.1
+Version: 1.8.2
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -419,11 +419,14 @@ Text Domain: sorriso-dambrosio
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
+/* Ogni voce parte dalla misura del proprio testo (`auto`, non `0`):
+   con tre parti uguali il telefono avanzava spazio e indirizzo ed
+   email finivano coi puntini fino a ~1230px (T8). */
 .sd-hero__bar-item {
 	align-items: center;
 	color: inherit;
 	display: flex;
-	flex: 1 1 0;
+	flex: 1 1 auto;
 	gap: 0.75rem;
 	min-width: 0;
 	padding-block: 0.5rem;
@@ -542,20 +545,17 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Su una riga sola la scheda non ci sta, e diventa una griglia 2x2.
+/* Sotto i 1121px la scheda non ci sta su una riga sola, e diventa una
+   griglia 2x2.
 
    Qui c'era 1023, con scritto che da 1024 in su la riga ci stava.
-   Misurato (T4): non e' vero. La riga sola entra solo da ~1230 — a
-   1180 l'indirizzo chiede 227px e ne ha 213, a 1121 si troncano
-   indirizzo e email. Fra 1121 e 1230 la scheda mostra ancora i
-   puntini: e' un difetto suo, piu' vecchio di questa soglia, e sta
-   in T8 perche' per chiuderlo serve accorciare un contenuto o un
-   passo — non una soglia, che a ~1230 sarebbe fuori scala.
+   Misurato (T4): non era vero — con tre voci della stessa larghezza
+   indirizzo ed email si troncavano fino a ~1230. Da quando ogni voce
+   parte dalla misura del suo testo (T8, `flex: 1 1 auto` sopra) la
+   riga entra gia' a 1121: l'indirizzo ha ~15px di margine, l'email ~16.
 
-   1120 e' quella del menu, e fra i due arrotondamenti ammessi dalla
-   scala (599/781/899/1120) e' quello che migliora: porta la fascia
-   dei puntini da 1024-1230 a 1121-1230, mentre 899 l'avrebbe
-   allargata fino a 900. Piu' sotto, la 2x2 diventa una colonna. */
+   1120 e' quella del menu, cosi' un tablet orizzontale prende la stessa
+   forma in tutte e due le cose. Piu' sotto, la 2x2 diventa una colonna. */
 @media (max-width: 1120px) {
 	.sd-hero__bar {
 		border-radius: 1.75rem;

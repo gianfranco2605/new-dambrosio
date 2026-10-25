@@ -113,7 +113,7 @@ rende piu' facile trovarli. Rischio: lo spostamento cambia l'ordine della cascat
 > quella nuova ha gli stessi selettori. Se c'e' conflitto, lasciali e dimmelo. Aggiorna la mappa §1 di
 > docs/RESPONSIVE.md e spunta T7.
 
-## [ ] T8 — la scheda dell'hero tronca fra 1121 e ~1230px
+## [x] T8 — la scheda dell'hero tronca fra 1121 e ~1230px
 
 Trovato facendo T4, e piu' vecchio di T4: su una riga sola la scheda contatti non ci sta fino a
 ~1230px, quindi `text-overflow: ellipsis` mangia la fine dell'indirizzo (e sotto i ~1150 anche
@@ -134,6 +134,19 @@ scheda da `space--md` a `space--sm` nella sola fascia 1121-1230; lasciare che la
 > Guarda la scheda dell'hero di `/` a **1180px**: l'indirizzo finisce con i puntini. Non toccare
 > le soglie. Proponi quale delle quattro vie costa meno e dimmi cosa cambia a 1121, 1180, 1240 e
 > 1440 — poi scelgo io. Niente modifiche prima.
+
+**Fatto (tema 1.8.2) con una quinta via.** Non mancava spazio: le tre voci avevano la stessa
+larghezza (`flex: 1 1 0`), e il telefono ne avanzava. Con `flex: 1 1 auto` su `.sd-hero__bar-item`
+ogni voce parte dalla misura del suo testo. Nessun contenuto, soglia o media query cambiati.
+
+| via | 1121 | 1180 | 1240 | 1440 |
+| --- | --- | --- | --- | --- |
+| togliere «Roma» | email troncata | ok | ok | ok |
+| `gap` a `space--sm` | indirizzo troncato | indirizzo troncato | ok | ok |
+| CTA che si stringe | nessun effetto | nessun effetto | ok | ok |
+| **voci `flex: 1 1 auto`** | **ok** | **ok** | **ok** | **ok** |
+
+A 1121 restano ~15px di margine all'indirizzo e ~16 all'email.
 
 ---
 
