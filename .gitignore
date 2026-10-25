@@ -9,6 +9,7 @@
 !.claude/
 .claude/*
 !.claude/settings.json
+!.claude/agents/
 
 !themes/
 themes/*

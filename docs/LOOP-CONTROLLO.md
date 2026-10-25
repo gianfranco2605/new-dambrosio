@@ -1,149 +1,145 @@
-# LOOP-CONTROLLO — controllo completo di tema, plugin e responsive
+# LOOP-CONTROLLO — controllo completo di tema, plugin e responsive, con una squadra di agenti
 
 Un giro autonomo che controlla **tutti** i file di `themes/sorriso-dambrosio/` e
 `plugins/sorriso-dambrosio-core/`, poi **tutte** le pagine a **tutti** i breakpoint, corregge
-quello che può da solo e fa un commit per ogni correzione. Quello che tocca testi, immagini o
+quello che può e fa un commit per ogni correzione verificata. Quello che tocca testi, immagini o
 decisioni del titolare lo mette in un elenco, senza toccarlo.
+
+## La squadra
+
+La sessione principale fa da **capo**: legge questo file, assegna il lavoro, tiene lo stato e fa
+commit e push. Non scrive codice. Gli altri cinque sono in `.claude/agents/`:
+
+| agente | fa | scrive codice? |
+| --- | --- | --- |
+| `revisore-tema` | controlla ogni file del tema | no |
+| `revisore-plugin` | controlla ogni file del plugin, sicurezza compresa | no |
+| `misuratore` | misura 69 pagine a 16 larghezze, guarda gli screenshot, prova la tastiera | no |
+| `correttore` | corregge **un** problema alla volta | sì, solo lui |
+| `verificatore` | ricontrolla la correzione senza fidarsi: rimisura, regole, prima/dopo | no |
+
+**Come si dividono il lavoro.** I tre che leggono partono insieme, in parallelo. Le correzioni
+vanno una alla volta: c'è un solo agente che scrive, così due non toccano mai lo stesso file.
+
+**Come si passano le informazioni.** Con file dal formato fisso, in `redesign/controllo/`
+(fuori dal repo): `findings/` (i problemi, un blocco `F-<area>-<n>` ciascuno), `fix/` (cosa ha
+cambiato il correttore), `verifica/` (le prove del verificatore). Il capo riassume tutto in
+`docs/CONTROLLO.md`, che è anche il punto da cui si riparte.
+
+**Come si verifica.** Il capo committa solo se il verificatore dice `PASSA`. Con `NON PASSA` il
+problema torna al correttore insieme al motivo, al massimo 3 volte; poi si annulla e va in
+«Da decidere».
 
 ## Come si lancia
 
-1. App **Local** → sito → **Open site shell** (serve per WP-CLI: fuori da lì non vede il database).
-2. `cd app/public/wp-content` poi `claude`.
+1. App **Local** → sito → **Open site shell**.
+2. `cd app/public/wp-content` poi `claude`. Dentro Claude Code, `/model`: il modello più capace e
+   l'effort alto (l'impostazione generale di questo Mac è Sonnet con effort basso).
 3. Incollare:
 
    ```
-   Read docs/LOOP-CONTROLLO.md and execute the prompt in it, phase by phase, until the end.
+   Read docs/LOOP-CONTROLLO.md and act as the capo: run the team, phase by phase, until the end.
    ```
 
-   Se la sessione si interrompe, lo stesso messaggio riparte da dove era arrivato (lo stato sta in
-   `docs/CONTROLLO.md`). In alternativa, a passi: `/loop Read docs/LOOP-CONTROLLO.md and do the next unchecked step.`
+   Se la sessione si interrompe, lo stesso messaggio riparte dal primo passo non spuntato di
+   `docs/CONTROLLO.md`.
 
-Permessi: `.claude/settings.json` lascia fare tutto il lavoro senza conferme, compresi commit e push del ramo di controllo. Chiedono conferma solo
-merge, reset, rebase e le scritture nel database; il push su `main` e quello forzato sono bloccati. Skill del progetto: `.claude/skills/` (9 skill WordPress).
+Permessi: `.claude/settings.json` lascia fare tutto senza conferme, compresi commit e push del ramo
+di controllo. Chiedono conferma merge, reset, rebase e le scritture nel database; il push su `main` e
+quello forzato sono bloccati. Skill: `.claude/skills/` (9 skill WordPress), gli agenti le usano.
 
-**Priorita': un lavoro fatto bene, non il risparmio.** Questo giro sospende le regole «pochi token»
-di `CLAUDE.md` (legge i file per intero, guarda le pagine, conferma a vista), ma senza sprechi.
-Modello consigliato: il piu' capace disponibile (Opus). Il giro completo dura a lungo.
+**Priorità: un lavoro fatto bene, non il risparmio**, ma senza sprechi. Il giro è lungo.
 
 ---
 
 ## Prompt (in inglese, per Claude Code)
 
-You are running an autonomous quality pass on this repo. Quality is the priority, not token savings:
-be thorough, read what you need, look at the rendered pages, verify every fix — just do not waste.
-For this pass the "Come lavorare (pochi token)" section of CLAUDE.md is suspended; every other
-CLAUDE.md rule applies in full. Work phase by phase. Keep chat output short: one line per finished
-step. All detail goes into files.
+You are the **capo** of a five-agent team running an autonomous quality pass on this repo. You
+coordinate; the agents in `.claude/agents/` do the work. Quality is the priority, not token savings —
+just do not waste. For this pass the "Come lavorare (pochi token)" section of CLAUDE.md is
+suspended; every other CLAUDE.md rule applies in full. Chat output: one line per finished step.
+
+### How you run the team
+
+- You never edit theme or plugin code yourself. You edit only `docs/CONTROLLO.md`,
+  `themes/sorriso-dambrosio/docs/TASKS.md`, `themes/sorriso-dambrosio/docs/RESPONSIVE.md`, and you
+  are the only one who runs `git commit` and `git push`.
+- Call agents with the Agent tool, in the foreground, and wait for their answer. Never hand the whole
+  pass to a single agent, never run the team in the background.
+- Parallel only for read-only agents (`revisore-tema`, `revisore-plugin`, `misuratore`): one message,
+  several Agent calls. `correttore` always runs alone, and `verificatore` runs after it, never at the same time.
+- Give each agent only what it needs: the finding block, file paths, the run name. Do not paste big files.
+- If an agent fails or returns something unusable, call it once more with a clearer brief; if it fails
+  again, log it under `## Note` and move on.
 
 ### State and resume
 
-- State file: `docs/CONTROLLO.md`. Create it in Phase 0 with the checklist below and the sections
-  `## Correzioni fatte`, `## Da decidere (titolare)`, `## Note`. Tick each step as you finish it.
-- On start, if `docs/CONTROLLO.md` exists, read only its checklist and resume at the first unchecked step.
-- Raw outputs (metrics JSON, screenshots, logs) go to `../../../redesign/controllo/` — never in the repo.
+- State: `docs/CONTROLLO.md` — checklist, `## Coda` (the queue), `## Correzioni fatte`,
+  `## Da decidere (titolare)`, `## Note`. Tick each step as you finish it.
+- On start: if `docs/CONTROLLO.md` exists, read it and resume at the first unchecked step (and, in the
+  queue, at the first row not `fatta`/`fallita`). Check `git branch --show-current` is the
+  `controllo/<date>` branch and `git status` is clean; if a fix was left uncommitted by an interrupted
+  run, send it to `verificatore` before anything else.
+- Raw outputs live in `../../../redesign/controllo/` — never in the repo.
 
 ### Hard limits of this pass
 
-- Allowed to change: files in `themes/sorriso-dambrosio/` and `plugins/sorriso-dambrosio-core/`,
-  `docs/`, `docs/audit/` scripts. Nothing else on disk, nothing in the database.
-- WP-CLI read-only (`wp post list`, `wp option get`, `wp eval` is not needed and not allowed).
-- Never change: literal texts, images, colors outside `theme.json`, the breakpoint scale
-  (599 / 781 / 899 / 1120, plus the justified 1340), content in the database, other plugins/themes.
-- One fix = one commit, Italian message in the style of `git log`, ending with the attribution line
-  used by previous commits. After every commit push the branch (`git push -u origin <branch>` the
-  first time, then `git push`), so the work is safe on GitHub. Never push `main`, never force-push,
-  no merge, no rebase.
-- The owner is away and will not answer. Never stop to ask or wait for input. Anything that needs a
-  decision goes under `## Da decidere (titolare)` and you move on. Do not run commands that need
-  approval (push to main, merge, reset, rebase, any WP-CLI write): they would block the pass.
-- Max 3 attempts per finding. If still failing: `git restore` the files, log it under
-  `## Da decidere (titolare)` or `## Note` with what you measured, move on.
-- Read every theme and plugin file in full during Phase 1 (skip `vendor/`). `style.css` is too big for
-  one read: go through it section by section with offset/limit (map in `docs/RESPONSIVE.md` §1), all of it.
-- Before fixing a section, read why it is built that way (`DESIGN-SPEC.md` §4.x, the comments in
-  `style.css`): many odd-looking rules are measured decisions. Do not undo a documented decision.
-- Measurements run through `node docs/audit/audit.mjs` (headless, cheap). Use screenshots to judge
-  what metrics cannot: the screenshots of Phase 2.4, and one before/after element screenshot for
-  every visual fix. Avoid `browser_snapshot` (huge output, adds nothing here).
+- Code changes only in `themes/sorriso-dambrosio/` and `plugins/sorriso-dambrosio-core/` (by
+  `correttore`); docs and `docs/audit/` scripts as needed. Nothing else on disk, nothing in the database.
+- WP-CLI read-only. Never change literal texts, images, colors outside `theme.json`, the breakpoint
+  scale (599 / 781 / 899 / 1120, plus the justified 1340), database content, other plugins/themes.
+- One verified fix = one commit, Italian message in the style of `git log` (start from the one the
+  fixer proposes), ending with the attribution line of previous commits. After every commit
+  `git push` the branch. Never push `main`, never force-push, no merge, no rebase.
+- The owner is away and will not answer. Never stop to ask. Decisions go under
+  `## Da decidere (titolare)`. Do not run commands that need approval: they would block the pass.
 
 ### Checklist
 
 #### Phase 0 — Setup
-- [ ] 0.1 `git switch main && git switch -c controllo/<YYYY-MM-DD>`; working tree must be clean.
-- [ ] 0.2 `cd docs/audit && npm install` if `node_modules` is missing (Playwright is pinned there).
-- [ ] 0.3 Refresh `docs/audit/urls.txt` from the Yoast sitemaps (`/sitemap_index.xml`, skip
-      `author-`), keep `/pagina-che-non-esiste-404/` as last line. Every URL must answer 200 except that one.
-- [ ] 0.4 Extend `docs/audit/audit.mjs` METRICS with three checks it lacks, then commit:
-      **overlap** — inside `header` and every `main` grid/flex container, visible siblings whose
-      boxes intersect by more than 2px (this is how T9 hid: no overflow, logo covered);
-      **truncation** — elements with `text-overflow: ellipsis` where `scrollWidth > clientWidth`;
-      **console** — collect `console.error` and page errors per URL.
-      Extend `docs/audit/analyze.py` so these three appear with severity (overlap/console = high).
-- [ ] 0.5 Baseline: run the full measurement (Phase 2 command) and save the issue summary counts
-      under `## Note` as "Prima".
+- [ ] 0.1 Branch `controllo/<YYYY-MM-DD>` from a clean `main`.
+- [ ] 0.2 `docs/audit/node_modules` present (`npm install` there if not).
+- [ ] 0.3 `docs/audit/urls.txt` from the Yoast sitemaps, `/pagina-che-non-esiste-404/` last; all 200 but that one.
+- [ ] 0.4 `audit.mjs` / `analyze.py` measure overlap, truncation and console errors.
 
-#### Phase 1 — Static checks (all files)
-- [ ] 1.1 PHP: `php -n -l` on every PHP file of theme and plugin (skip `vendor/`).
-- [ ] 1.2 PHPStan level 5 in both: `composer install` if `vendor/` is missing, then `composer run phpstan`.
-- [ ] 1.3 Theme CSS: the three `grep -c` of `RESPONSIVE.md` §3 = 0; `max-width`/`min-width` values
-      only from the scale; every remaining `!important` has a comment saying who forces it.
-- [ ] 1.4 Dead CSS: list `.sd-*` classes defined in `style.css` with zero hits in theme
-      `patterns/ templates/ parts/ functions.php assets/` and plugin `includes/ blocks/`. Before
-      removing one, grep for its prefix built dynamically (`'sd-…' .`, `sprintf`). Remove only true zero-hit
-      rules; list the doubtful ones under `## Note`.
-- [ ] 1.5 `theme.json`: valid JSON, `version` 3, every color/size used in `style.css` exists as a preset/token.
-- [ ] 1.6 Patterns, templates, parts: file header complete (Title, Slug, Categories where needed);
-      every dynamic output escaped (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`); text domain
-      `sorriso-dambrosio`; one `h1` per template, no skipped heading levels; each home `<section>` named
-      (`aria-labelledby` + `id`, see CLAUDE.md). If a pattern changes, bump `Version:` in `style.css`.
-- [ ] 1.7 `functions.php` and `assets/js/`: enqueues versioned, no PHP notices, `menu.js` still handles Escape.
-- [ ] 1.8 Plugin security: `defined( 'ABSPATH' ) || exit;` in every PHP file; sanitize on save,
-      escape on output; nonce + capability on every meta/form save; `$wpdb` only with `prepare()`;
-      `block.json` valid (`apiVersion` 3) and every render escapes.
-- [ ] 1.9 URLs: `bash docs/migration/verifica-url.sh http://sorrisodambrosio.local` — every line 200
-      (directly or after one 301).
-- [ ] 1.10 After the fixes of this phase: `truncate -s 0 debug.log`, load every URL of `urls.txt`
-      with `curl`, `debug.log` must stay empty.
+#### Phase 1 — Survey (three read-only agents in parallel)
+- [ ] 1.1 In ONE message call `revisore-tema`, `revisore-plugin` and `misuratore` (run `full`). Wait for all three.
+- [ ] 1.2 Read the three findings files. Build `## Coda` in `docs/CONTROLLO.md`: one row per finding —
+      `id · gravità · tipo · titolo · stato` (stato starts `da fare`). Order: security, overlap, overflow,
+      console, other `high`, then `medium`, then `low`. Merge duplicates found by two agents into one row.
+      `tipo: titolare` rows go to `## Da decidere (titolare)`; `tipo: nota` to `## Note`.
+      Put the misuratore totals under `## Note` as **Prima**. Commit and push the state.
 
-#### Phase 2 — Responsive at every breakpoint
-- [ ] 2.1 Run, from `wp-content/`:
-      `node docs/audit/audit.mjs docs/audit/urls.txt ../../../redesign/controllo/run <widths> no-shots`
-      with widths `320,390,599,600,781,782,899,900,1024,1120,1121,1180,1280,1340,1341,1440`
-      (both sides of every threshold), then `python3 docs/audit/analyze.py ../../../redesign/controllo/metrics-run.json`.
-      Read only the summary and the per-type examples, never the raw JSON in full.
-- [ ] 2.2 Group findings by root cause (same selector / same section), not by URL. Order: overlap,
-      horizontal overflow, console errors, truncation, more than one `h1`, upscaled images, tap target
-      < 44px, text < 16px on mobile, empty band > 200px, line length.
-- [ ] 2.3 Fix each root cause in the theme (plugin only for block markup), one commit each. After
-      each fix, re-run `audit.mjs` on the affected URLs at the affected widths only, and confirm with one
-      MCP element screenshot when the fix is visual.
-- [ ] 2.4 Visual review — what metrics miss (alignment, rhythm, crowding, odd wraps, orphan words,
-      images badly cropped, a section that looks broken). Pick one URL per template (home, a page, an
-      area, a treatment, a technology, a professional, a case, `/casi-studi/`, `/contatti/`, `/lo-studio/`,
-      the 404) and run `audit.mjs` with screenshots at `390,781,1024,1121,1440` into
-      `../../../redesign/controllo/shots/`. Look at every screenshot. Compare against `DESIGN-SPEC.md`
-      (§4, §6). Log each problem with page + width + section, fix what is layout, log the rest.
-- [ ] 2.5 Keyboard pass on home and one inner page at 390 and 1440 (MCP): Tab through header, menu,
-      submenu, panel, form; focus always visible, Escape closes the panel, nothing trapped.
-- [ ] 2.6 Known exceptions, do not "fix": iubenda privacy link height (plugin-injected, `DA-VERIFICARE` §15.1);
-      `.sd-case__meta-label` / `x-small` labels at 15px on mobile (deliberate, see `style.css` 19.2) —
-      list them under `## Note` only.
+#### Phase 2 — Fix loop (one finding at a time)
+- [ ] 2.1 For each `fix` row of the queue, in order:
+      1. `correttore` with the finding block → it answers `pronto` or `serve il titolare`.
+         `serve il titolare` → row `titolare`, move it to Da decidere, next row.
+      2. `verificatore` with the finding block and the fixer's report path → `PASSA` or `NON PASSA`.
+      3. `PASSA` → check `git diff --stat` matches the fixer's report, commit, push, row `fatta` +
+         commit hash, one line in `## Correzioni fatte`.
+         `NON PASSA` → back to `correttore` with the verifier's reason. After 3 failed attempts:
+         `git restore` the touched files, row `fallita`, log the verifier's evidence in Da decidere.
+      4. Update `docs/CONTROLLO.md` (commit it with the fix, or on its own when nothing was committed).
+- [ ] 2.2 Every 5 committed fixes, and at the end of the queue: all URLs of `urls.txt` answer as
+      expected (`curl`), `debug.log` empty after `truncate -s 0 debug.log`. A regression becomes a new
+      `high` row at the top of the queue.
 
-#### Phase 3 — Open tasks in `themes/sorriso-dambrosio/docs/TASKS.md`
-- [ ] 3.1 T6 remainder: line `max-width: 100% !important` on `.sd-cases__media` has no effect (BEAF
-      `max-width: unset !important` wins). Either strengthen the selector so it applies and verify on
-      `/casi-studi/` at 390 and 1440, or remove it if nothing changes. Then split the mixed selector groups
-      in 19.2 (preset classes keep `!important`, theme classes lose it) — computed font-size must be
-      identical before/after on the affected pages at 390.
-- [ ] 3.2 T7: move 19.7 / 20.5 / 20.6 next to their sections only if no rule in between shares a
-      selector; otherwise leave them and say why. Update `RESPONSIVE.md` §1.
-- [ ] 3.3 Tick T6/T7 in `TASKS.md` with a short "Fatto" paragraph, as for T3–T9.
+#### Phase 3 — Open tasks of `themes/sorriso-dambrosio/docs/TASKS.md` (same loop)
+- [ ] 3.1 Write them as findings and run them through 2.1:
+      **F-X-1** (T6 rest): `max-width: 100% !important` on `.sd-cases__media` has no effect (BEAF's
+      `max-width: unset !important` wins) — make it apply and verify on `/casi-studi/` at 390 and 1440, or
+      remove it if nothing changes; then split the mixed selector groups in 19.2 (preset classes keep
+      `!important`, theme classes lose it), computed font-size identical before/after at 390.
+      **F-X-2** (T7): move 19.7 / 20.5 / 20.6 next to their sections only if no rule in between shares a
+      selector; otherwise leave them and say why.
+- [ ] 3.2 Tick T6/T7 in `TASKS.md` with a short "Fatto" paragraph like T3–T9; update `RESPONSIVE.md` §1.
 
 #### Phase 4 — Close
-- [ ] 4.1 Re-run the full Phase 2 measurement and the 2.4 screenshots; look at them again.
-      Write "Dopo" counts next to "Prima" in `## Note`.
+- [ ] 4.1 `misuratore` run `final`. Put its totals under `## Note` as **Dopo**, next to **Prima**.
+      New `high` findings → one more pass of 2.1 for those only.
 - [ ] 4.2 Update the line numbers of the map in `RESPONSIVE.md` §1 and the theme version there.
-- [ ] 4.3 Final checks: PHP lint, PHPStan both, the three CSS greps, `debug.log` empty, `verifica-url.sh` clean.
-- [ ] 4.4 Write at the top of `docs/CONTROLLO.md` a summary in Italian, max 15 lines: what was fixed
-      (with commit hashes), what is left for the owner, before/after counts. Commit.
-- [ ] 4.5 Push the branch, then stop. Do not merge into `main`. Reply in chat with the summary only.
+- [ ] 4.3 Final checks yourself: `php -n -l` on all theme/plugin PHP, `composer run phpstan` in both,
+      the three CSS greps of `RESPONSIVE.md` §3, `debug.log` empty, `bash docs/migration/verifica-url.sh`.
+- [ ] 4.4 At the top of `docs/CONTROLLO.md`, a summary in Italian, max 15 lines: fixed (with hashes),
+      failed, left for the owner, Prima → Dopo. Commit, push.
+- [ ] 4.5 Stop. Do not merge into `main`. Reply in chat with the summary only.
