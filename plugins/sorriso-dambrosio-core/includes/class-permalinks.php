@@ -174,7 +174,7 @@ final class Permalinks {
 	}
 
 	/**
-	 * I redirect dei vecchi indirizzi rotti.
+	 * I redirect dei vecchi indirizzi rotti, e l'unico indirizzo d'un trattamento.
 	 */
 	public static function legacy_redirects(): void {
 		if ( is_admin() ) {
@@ -188,11 +188,52 @@ final class Permalinks {
 
 		$map = self::redirects();
 
-		if ( ! isset( $map[ $path ] ) ) {
+		if ( isset( $map[ $path ] ) ) {
+			wp_safe_redirect( home_url( $map[ $path ] ), 301 );
+			exit;
+		}
+
+		self::canonical_trattamento( $path, $request );
+	}
+
+	/**
+	 * Un trattamento ha un indirizzo solo: quello sotto la sua area.
+	 *
+	 * La regola d'entrata `^area/([^/]+)/?$` si scrive per ciascuna delle cinque
+	 * aree piu' `prestazioni`, e il secondo segmento e' un jolly che non verifica
+	 * l'area: 30 trattamenti per 6 prefissi facevano 180 indirizzi che rispondono
+	 * 200 per 30 pagine, identiche fra loro. `redirect_canonical` non interviene,
+	 * perche' la richiesta corrisponde a una regola vera, e il `rel=canonical`
+	 * resta un suggerimento, non una regola. Il 301 si decide qui, confrontando
+	 * i **percorsi** e non gli URL interi, cosi' la query (`?s=`, `?cb=1`) passa
+	 * intatta e la richiesta canonica non salta da nessuna parte: un hop solo.
+	 *
+	 * Riscrivere le 217 regole costerebbe molto di piu' e rischierebbe un 404 di
+	 * massa; le regole restano come sono, e qui si tiene un indirizzo per pagina.
+	 * Un trattamento senza area ha per permalink `/prestazioni/<slug>/`: quel
+	 * ripiego continua a rispondere 200 direttamente.
+	 *
+	 * @param string $path    Percorso richiesto, normalizzato.
+	 * @param string $request REQUEST_URI, da cui si riprende la query.
+	 */
+	private static function canonical_trattamento( string $path, string $request ): void {
+		if ( ! is_singular( Content_Types::TRATTAMENTO ) ) {
 			return;
 		}
 
-		wp_safe_redirect( home_url( $map[ $path ] ), 301 );
+		$permalink = get_permalink();
+		$canonical = is_string( $permalink ) ? (string) wp_parse_url( $permalink, PHP_URL_PATH ) : '';
+		$canonical = user_trailingslashit( '/' . trim( $canonical, '/' ) );
+
+		// Permalink non riscritti (`?sd_trattamento=slug`): il percorso e' la
+		// radice, e un 301 li' sarebbe un giro chiuso sulla home.
+		if ( user_trailingslashit( '/' ) === $canonical || $canonical === $path ) {
+			return;
+		}
+
+		$query = (string) wp_parse_url( $request, PHP_URL_QUERY );
+
+		wp_safe_redirect( home_url( $canonical ) . ( '' === $query ? '' : '?' . $query ), 301 );
 		exit;
 	}
 }
