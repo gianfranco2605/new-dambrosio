@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.3
+Version: 1.8.4
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -744,7 +744,8 @@ Text Domain: sorriso-dambrosio
 
    Il secondo gradino serve sotto i 1340px, dove la riga si stringe: a
    1121px — l'ultimo pixel prima della tendina — le sette voci piu' le
-   frecce stanno in 797px solo con 16px di stacco. */
+   frecce stanno accanto al marchio solo con 8px di stacco e il logo a
+   190 (T9: la regola `max-width: 1340px` in fondo alla 5.4b). */
 .sd-header__nav.wp-block-navigation {
 	--sd-nav-gap: 1.75rem;
 	--sd-nav-chevron-gap: 0.3rem;
@@ -974,12 +975,22 @@ Text Domain: sorriso-dambrosio
 /* 1340 non e' nella scala (599/781/899/1120) e non deve esserlo: non e'
    un cambio di layout, e' la misura della riga dell'header. Con lo stacco
    pieno (28px) le sette voci chiedono 72px in piu': senza questa regola a
-   1240 il menu coprirebbe il logo di 10px, con la regola ne restano 62.
-   A 1341 lo stacco torna 28 e lo spazio dal logo e' 64px (T5). */
+   1240 il menu coprirebbe il logo di 10px (T5).
+
+   Anche con 16px non bastava: il menu e' allineato a destra e, quando la
+   riga non gli basta, sborda a sinistra sopra il marchio — a 1121 copriva
+   «Studio Odontoiatrico» di 56px (T9). Qui si stringono le due cose:
+   lo stacco a 8px e il logo a 190, il minimo a cui le sue tre righe si
+   leggono (vedi 5.2: 140 era illeggibile). Spazio logo → menu: 22px a
+   1121, 80 a 1180, 140 a 1240. A 1341 tornano 28px e 220: 64px. */
 @media (max-width: 1340px) {
 	.sd-header__nav.wp-block-navigation {
-		--sd-nav-gap: 1rem;
+		--sd-nav-gap: 0.5rem;
 		--sd-nav-chevron-gap: 0.25rem;
+	}
+
+	.sd-header .wp-block-site-logo img {
+		width: 190px;
 	}
 }
 

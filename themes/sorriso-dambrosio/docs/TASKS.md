@@ -162,7 +162,7 @@ ogni voce parte dalla misura del suo testo. Nessun contenuto, soglia o media que
 
 A 1121 restano ~15px di margine all'indirizzo e ~16 all'email.
 
-## [ ] T9 — il menu copre il logo fra 1121 e ~1180px
+## [x] T9 — il menu copre il logo fra 1121 e ~1180px
 
 Trovato facendo T5, piu' vecchio di T5. Sopra i 1120 il menu e' in linea, e la prima voce
 («Lo Studio») parte prima che finisca il logo (220px, la sua misura naturale): copre la scritta
@@ -184,6 +184,23 @@ soglia della scala, e la condividono hero e capitoli).
 > Guarda l'header di `/` a **1121px**: «Lo Studio» copre la scritta del logo. Non toccare le
 > soglie. Proponi la via che costa meno e dimmi lo spazio logo → menu a 1121, 1180, 1240, 1341 e
 > 1440 — poi scelgo io. Niente modifiche prima.
+
+**Fatto (tema 1.8.4) con la via B.** Il logo a 140 e' escluso: 5.2 di `style.css` dice che sotto i
+190px le tre righe del marchio non si leggono (era 140, portato a 220 per questo). Dentro la
+`max-width: 1340px` gia' esistente: `--sd-nav-gap` 16 → **8px**, logo 220 → **190px**.
+
+| via (spazio logo → menu, px) | 1121 | 1180 | 1240 | 1341 | 1440 |
+| --- | --- | --- | --- | --- | --- |
+| prima | −56 | 2 | 62 | 64 | 64 |
+| logo 140 | 24 | 82 | 142 | 64 | 64 |
+| **logo 190 + stacco 8 (scelta)** | **22** | **80** | **140** | **64** | **64** |
+| logo 170 + stacco 12 | 18 | 76 | 136 | 64 | 64 |
+| solo stacco 8 | −8 | 50 | 110 | 64 | 64 |
+| logo 190 + stacco 12 | −2 | 56 | 116 | 64 | 64 |
+
+Compromesso: valgono per tutta la fascia 1121–1340, anche dove lo spazio basterebbe. E il logo a
+190 vale anche col menu a tendina, da 782 a 1120 (prima 220): ora la scala del marchio e'
+170 (≤781) → 190 (782–1340) → 220.
 
 ---
 

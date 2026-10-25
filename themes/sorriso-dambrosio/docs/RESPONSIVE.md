@@ -42,7 +42,7 @@ Una scala sola, unificata con `docs/TASKS.md` T1–T5 (tema 1.8.3).
 | `max-width: 781px` / `min-width: 782px` | 6 + 1 | soglia colonne di core (`wp-block-columns` impilano a 781) |
 | `max-width: 899px` | 18 | tablet |
 | `max-width: 1120px` / `min-width: 1121px` | 6 + 3 | **menu a tendina fino a 1120px** (core lo farebbe solo sotto 600); anche hero, capitolo e spaccature |
-| `max-width: 1340px` | 1 | **eccezione giustificata**: non e' layout, e' la misura della riga dell'header (stacco voci `--sd-nav-gap` 28→16px). Commento in §5 di `style.css` |
+| `max-width: 1340px` | 1 | **eccezione giustificata**: non e' layout, e' la misura della riga dell'header (stacco voci `--sd-nav-gap` 28→8px, logo 220→190px). Commento in §5 di `style.css` |
 | `prefers-reduced-motion` | 13 | |
 
 **Regola per il lavoro nuovo:** non aggiungere soglie nuove. Riusare `599 / 781 / 899 / 1120`.
@@ -83,7 +83,7 @@ Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
   Core gestisce apertura, focus, scroll lock. Il tema fa solo il **disegno** (§5 e §20) + `assets/js/menu.js` (Escape).
 - **Tendina fino a 1120px**: il tema rimette le regole di core `.wp-block-navigation__responsive-container`
   (e `…-container-open`) al comportamento mobile.
-- Stacco voci: **una variabile**, `--sd-nav-gap` (28px, 16px sotto 1340). Non usare `blockGap` nel pattern:
+- Stacco voci: **una variabile**, `--sd-nav-gap` (28px, 8px sotto 1340, dove anche il logo scende a 190 — T9). Non usare `blockGap` nel pattern:
   la regola di core (0,1,0) perde contro il tema e "non succede nulla".
 - Voci del pannello: `white-space: normal` + `overflow-wrap` (il `nowrap` della barra si ereditava e faceva sbordare
   «Software di Progettazione…»). Pannello `width: max-content`, tetto `measure--menu`.
