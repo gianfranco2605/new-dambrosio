@@ -25,6 +25,18 @@ def problemi(data):
                 continue
             desktop = w >= 1024
 
+            # sovrapposizioni (es. T9: menu sopra il logo, senza overflow)
+            for o in m.get('overlap', []):
+                out[url].append(('high', 'sovrapposizione', f"{w}px: .{o['a']} su .{o['b']} ({o['ix']}×{o['iy']}px) in .{o['container']}"))
+
+            # console/js
+            for c in m.get('console', []):
+                out[url].append(('high', 'console', f"{w}px: {c}"))
+
+            # testo troncato (ellipsis) piu' corto del box
+            for t in m.get('truncation', []):
+                out[url].append(('medium', 'troncamento', f"{w}px: «{t['t']}» .{t['cls']} ({t['scrollWidth']}>{t['clientWidth']}px)"))
+
             # overflow
             if m['overflow']:
                 out[url].append(('high', 'overflow', f"{w}px: {', '.join(m['overflow'][:3])}"))

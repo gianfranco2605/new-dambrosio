@@ -111,6 +111,48 @@ const METRICS = () => {
 
   const icons = [...document.querySelectorAll('svg.sd-icon')].filter(vis).map(i => Math.round(Math.max(i.getBoundingClientRect().width, i.getBoundingClientRect().height)));
 
+  // --- sovrapposizioni: dentro header e ogni contenitore grid/flex di main,
+  // i figli visibili le cui lastre si intersecano per piu' di 2px (es. T9: il
+  // menu che copre il logo senza produrre overflow).
+  const overlap = [];
+  const containers = [...document.querySelectorAll('header, main *')].filter(el => {
+    const s = getComputedStyle(el);
+    return (s.display === 'grid' || s.display === 'flex' || s.display === 'inline-flex') && el.children.length > 1;
+  });
+  // gli elementi in position:absolute/fixed sono spesso lastre sovrapposte
+  // di proposito (veli, badge): non sono il bug che cerchiamo (T9 era un
+  // normale figlio di flex/grid che ne copriva un altro nel flusso).
+  const inFlow = el => !['absolute', 'fixed'].includes(getComputedStyle(el).position);
+  for (const c of [document.querySelector('header'), ...containers].filter(Boolean)) {
+    const kids = [...c.children].filter(vis).filter(inFlow);
+    for (let i = 0; i < kids.length; i++) {
+      for (let j = i + 1; j < kids.length; j++) {
+        const a = kids[i].getBoundingClientRect();
+        const b2 = kids[j].getBoundingClientRect();
+        const ix = Math.min(a.right, b2.right) - Math.max(a.left, b2.left);
+        const iy = Math.min(a.bottom, b2.bottom) - Math.max(a.top, b2.top);
+        if (ix > 2 && iy > 2) {
+          overlap.push({
+            a: (kids[i].className || '').toString().slice(0, 40) || kids[i].tagName,
+            b: (kids[j].className || '').toString().slice(0, 40) || kids[j].tagName,
+            ix: Math.round(ix), iy: Math.round(iy),
+            container: (c.className || '').toString().slice(0, 40) || c.tagName,
+          });
+        }
+      }
+    }
+  }
+
+  // --- testo troncato con ellipsis dove scrollWidth supera clientWidth
+  const truncation = [...document.querySelectorAll('main *, header *, footer *')]
+    .filter(el => vis(el) && getComputedStyle(el).textOverflow === 'ellipsis')
+    .filter(el => el.scrollWidth > el.clientWidth + 1)
+    .map(el => ({
+      t: el.innerText.trim().slice(0, 40),
+      cls: (el.className || '').toString().slice(0, 40),
+      scrollWidth: el.scrollWidth, clientWidth: el.clientWidth,
+    })).slice(0, 15);
+
   // Le fasce occupate da un'immagine o da una mappa: servono al
   // rilevatore di spazi vuoti, che lavora sui pixel e non saprebbe
   // distinguere una fotografia chiara dal nulla.
@@ -123,6 +165,7 @@ const METRICS = () => {
     images, gaps, emptySections, tapSmall, smallText, longLines, overflow, headings, sectionPads, buttons,
     iconsMax: icons.length ? Math.max(...icons) : 0,
     h1: document.querySelectorAll('main h1').length,
+    overlap, truncation,
   };
 };
 
@@ -133,6 +176,9 @@ for (const u of urls) {
   for (const w of widths) {
     const ctx = await b.newContext({ viewport: { width: w, height: 900 }, deviceScaleFactor: 1 });
     const p = await ctx.newPage();
+    const consoleErrors = [];
+    p.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text().slice(0, 200)); });
+    p.on('pageerror', err => consoleErrors.push(String(err.message || err).slice(0, 200)));
     try {
       await p.goto(BASE + u, { waitUntil: 'load', timeout: 45000 });
       await p.evaluate(() => { const a = document.querySelector('.iubenda-cs-accept-btn'); if (a) a.click(); });
@@ -140,6 +186,7 @@ for (const u of urls) {
       await p.evaluate(async () => { const h = document.body.scrollHeight; for (let y = 0; y < h; y += 600) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 70)); } window.scrollTo(0, 0); });
       await p.waitForTimeout(1600);
       all[u][w] = await p.evaluate(METRICS);
+      all[u][w].console = consoleErrors.slice(0, 10);
       if (shoot) await p.screenshot({ path: path.join(outDir, `${slug(u)}-${w}.png`), fullPage: true });
     } catch (e) { all[u][w] = { error: e.message }; }
     await ctx.close();
