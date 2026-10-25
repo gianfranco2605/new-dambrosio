@@ -56,7 +56,10 @@ Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
 - **Misure di lettura** `settings.custom.measure`: `prose` 38rem, `narrow` 34rem, `menu` 24rem, `thumb`. Mai `ch`.
 - **Proporzioni** `settings.custom.frame`: `hero` 16/9 · `wide` 3/2 · `plate` 4/3 · `portrait` 4/5.
 - **Layout**: `contentSize` 1180px, `wideSize` 1320px; a 1440 il contenuto ≥ 1100px.
-- **Colori**: solo preset di `theme.json` (`surface--tint`, `surface--tintStrong` = primary 8%/14%).
+- **Colori**: solo preset di `theme.json` (`surface--tint`, `surface--tint-strong` = primary 8%/14%).
+  Nel CSS le chiavi camelCase del `theme.json` si scrivono **in kebab-case**: `surface.tintStrong`
+  diventa `--wp--custom--surface--tint-strong`, `rule.onDark` diventa `--wp--custom--rule--on-dark`.
+  Scritto camelCase il `var()` fallisce in silenzio (il fondo resta trasparente).
 - **Font**: Fraunces (`secondary`, h1/h2), DM Sans (`primary`, testo/h3). Preset `nav` 16px `fluid:false`.
 - Verifica a fine lavoro (tutti devono dare 0):
   ```bash
