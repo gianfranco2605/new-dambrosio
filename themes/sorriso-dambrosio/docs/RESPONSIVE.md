@@ -42,8 +42,7 @@ Non c'e' una scala unica: sono cresciuti sezione per sezione.
 | `max-width: 781px` | 5 | soglia colonne di core (`wp-block-columns` impilano a 781) |
 | `max-width: 860px` | 6 | |
 | `max-width: 899px` / `900px` | 7 + 5 | tablet |
-| `max-width: 1023px` | 3 | |
-| `max-width: 1120px` | 2 | **menu a tendina fino a 1120px** (core lo farebbe solo sotto 600) |
+| `max-width: 1120px` / `min-width: 1121px` | 5 + 3 | **menu a tendina fino a 1120px** (core lo farebbe solo sotto 600); da T4 anche hero, capitolo e spaccature |
 | (header) 1340px | — | stacco voci del menu a due gradini (`--sd-nav-gap`) |
 | `prefers-reduced-motion` | 11 | |
 

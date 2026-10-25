@@ -56,21 +56,31 @@ E' quasi sempre un miglioramento (a 870px due colonne sono strette), ma va guard
 > /implantologia/ e /contatti/: nessun overflow orizzontale, niente colonne sotto i 300px.
 > Riferisci in breve e spunta T3 in docs/TASKS.md.
 
-## [ ] T4 — `1023px` (decidere: → 899 o → 1120)
+## [x] T4 — `1023px` → `1120px` (impilate)
+
+Erano 3 `max-width: 1023px` piu' la gemella `min-width: 1024px` della 6.2, che va spostata con
+loro: fra 1024 e 1120 il capitolo a specchio sarebbe rimasto senza griglia ma con le regole del
+rovesciamento. Quattro query, non tre.
 
 | riga | sezione | pagina per controllare |
 | --- | --- | --- |
-| 547 | 4 Hero | `/` |
-| 1487 | 6.2 Capitolo a specchio (Lo Studio) | `/` e `/lo-studio/` |
-| 1522 | 6.1 Colonna di lettura (Lo Studio) | `/` e `/lo-studio/` |
+| 553 | 4 Hero | `/` |
+| 1383 | 6.2 Capitolo a specchio — `min-width: 1121px` | `/` e `/lo-studio/` |
+| 1493 | 6.2 Spaccatura (`.sd-split`) | `/` e `/lo-studio/` |
+| 1536 | 6.1 Colonna di lettura | `/` e `/lo-studio/` |
 
-Domanda da risolvere guardando: fra 900 e 1023px queste sezioni stanno meglio impilate (→ **1120**,
-come il menu) o affiancate (→ **899**)? Tablet orizzontale = 1024px, quindi la scelta conta.
+**Impilate, e la soglia e' 1120** — quella del menu, cosi' un tablet orizzontale a 1024px prende
+la stessa forma in tutte e due le cose.
 
-> Leggi docs/RESPONSIVE.md §2. In style.css ci sono 3 media query `max-width: 1023px` (sezioni 4 Hero,
-> 6.1, 6.2). Fai uno screenshot di / a **960px** cosi' com'e' ora, solo hero e capitolo Lo Studio.
-> Dimmi se a quella larghezza stanno meglio affiancati o impilati e proponi 899 o 1120. Non modificare
-> nulla finche' non scelgo. Poi applica e spunta T4 in docs/TASKS.md.
+Capitoli: la griglia chiede 475px alla fotografia e 845 al testo (36/64 di `--sd-max`), e sotto
+i ~1004px non bastano a nessuna delle due — `minmax()` divide a meta' e il 36/64 non esiste piu'.
+Il testo che resta fa 39 caratteri a 900px, 42 a 960, 45 a 1024, contro i 64 della misura, che
+arriva solo a ~1220px. Impilato ne fa 64.
+
+Hero: il commento diceva che da 1024 in su la scheda contatti sta su una riga sola. Misurando,
+no — entra solo da ~1230 (vedi T8). L'arrotondamento e' comunque a 1120 e non a 899 perche' e'
+quello che riduce il danno: la fascia con i puntini passa da 1024-1230 a 1121-1230, mentre 899
+l'avrebbe allargata fino a 900.
 
 ## [ ] T5 — verifica finale dei breakpoint
 
@@ -102,6 +112,28 @@ rende piu' facile trovarli. Rischio: lo spostamento cambia l'ordine della cascat
 > sezione (19.7 dopo 19.6, 20.5 e 20.6 dopo 20.4) **solo se** nessuna regola fra la posizione vecchia e
 > quella nuova ha gli stessi selettori. Se c'e' conflitto, lasciali e dimmelo. Aggiorna la mappa §1 di
 > docs/RESPONSIVE.md e spunta T7.
+
+## [ ] T8 — la scheda dell'hero tronca fra 1121 e ~1230px
+
+Trovato facendo T4, e piu' vecchio di T4: su una riga sola la scheda contatti non ci sta fino a
+~1230px, quindi `text-overflow: ellipsis` mangia la fine dell'indirizzo (e sotto i ~1150 anche
+dell'email). Misurato a 1180px: «Lungotevere Flaminio 34, Roma» chiede 227px e ne ha 213.
+
+| larghezza | email | telefono | indirizzo |
+| --- | --- | --- | --- |
+| 1121 | troncata | ok | troncato |
+| 1180 | ok (204/204) | ok | **troncato** (227/213) |
+| 1240 | ok | ok | ok |
+
+Non e' un problema di soglia: ~1230 non sta nella scala e non si aggiunge (T5). Va stretto il
+contenuto o il passo. Le vie, da decidere: accorciare `address_short` nel plugin
+(`class-studio.php`); togliere la parola «Roma», che e' gia' implicita; ridurre il `gap` della
+scheda da `space--md` a `space--sm` nella sola fascia 1121-1230; lasciare che la CTA si stringa
+(oggi `flex: 0 0 auto`).
+
+> Guarda la scheda dell'hero di `/` a **1180px**: l'indirizzo finisce con i puntini. Non toccare
+> le soglie. Proponi quale delle quattro vie costa meno e dimmi cosa cambia a 1121, 1180, 1240 e
+> 1440 — poi scelgo io. Niente modifiche prima.
 
 ---
 
