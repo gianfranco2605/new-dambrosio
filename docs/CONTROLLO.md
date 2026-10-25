@@ -45,7 +45,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | fatta `0de3ed0` |
 | F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | fatta `2268268` |
 | F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | fatta `c344d60` (2 tentativi) |
-| F-R-5 | medium | fix | quattro archivi di area senza `<title>` | da fare |
+| F-R-5 | medium | titolare | ~~quattro~~ **cinque** archivi di area senza `<title>`: dato Yoast | in Da decidere |
 | F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | da fare |
 | F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | da fare |
 | F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | da fare |
@@ -68,7 +68,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-P-16 | low | fix | il nonce del riquadro area non è legato all'ID del termine | da fare |
 | F-R-18 | low | fix | la riga del giorno corrente rientra di 12px | da fare |
 | F-R-19 | low | fix | gli estratti delle schede si tagliano a metà parola | da fare |
-| F-R-22 | low | fix | il `<title>` della 404 è in inglese | da fare |
+| F-R-22 | low | titolare | il `<title>` della 404 è in inglese: impostazione Yoast | in Da decidere |
 
 ## Correzioni fatte
 
@@ -100,7 +100,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 
 ## Da decidere (titolare)
 
-Sei domande. Nessuna di queste è stata toccata.
+Nove domande. Nessuna di queste è stata toccata.
 
 1. **La barra fissa in fondo su mobile resta spenta o torna?** (F-T-6) Con lei torna la scorciatoia
    WhatsApp, oggi raggiungibile solo da «Contatti». Finché la decisione è sospesa, pattern, template
@@ -128,6 +128,23 @@ Sei domande. Nessuna di queste è stata toccata.
    sistemarne un altro. Nello stesso giro cinque ritratti di quella pagina, già oltre la misura
    naturale prima di questo giro, crescono di un filo (781: 706 contro 420 naturali; 1440: 376 → 389):
    stessa voce di audit, stessa gravità, si chiude con la rimpaginazione.
+
+8. **Il titolo del documento di tutti e cinque gli archivi d'area è rotto** (F-R-5), non di quattro:
+   `/estetica-dentale/` sembrava sano solo perché mostra la parola `Dentale`. Tutti e cinque i termini
+   hanno un «Titolo SEO» di Yoast che comincia con `%%title%%`, la variabile del *titolo del post*,
+   sempre vuota su un archivio di termine; sul termine 26 il titolare ha scritto anche `Dentale` come
+   testo letterale. Il dato sta in `wpseo_taxonomy_meta`, non in `wp_termmeta`. Il modello già
+   impostato (`%%term_title%% Archivi %%sep%% %%sitename%%`) produrrebbe da sé il titolo giusto: è il
+   dato a batterlo. Due strade, entrambe dal pannello e senza codice — **(a)** svuotare il campo sui
+   cinque termini, **(b)** sostituire `%%title%%` con `%%term_title%%` e togliere `Dentale` dal
+   termine 26. Serve il titolare perché il testo esatto è pubblicità sanitaria e il sito usa già due
+   nomi diversi («Studio Odontoiatrico D'Ambrosio» a mano, «Sorriso D'Ambrosio» da `%%sitename%%`).
+   `wpseo_desc` e `wpseo_focuskw` dei cinque termini sono corretti e non si toccano.
+9. **Il titolo del documento della 404 è in inglese** (F-R-22): «Page not found», mentre la pagina resa
+   dice «Questa pagina non c'è». Anche questa è un'impostazione Yoast, non codice
+   (`title-404-wpseo`, più `breadcrumbs-404crumb` = «Error 404: Page not found»): un filtro
+   `document_title_parts` sarebbe inerte, perché Yoast cortocircuita su `pre_get_document_title`.
+   Si cambia dal pannello; se un domani servisse del codice, l'aggancio è `wpseo_title`.
 
 Resta aperto anche l'elenco delle **fotografie da rifare** (F-R-15): 142 immagini stanno sotto la
 soglia retina perché gli originali in Media Library non sono più grandi. Ingrandirle è proprio quel
