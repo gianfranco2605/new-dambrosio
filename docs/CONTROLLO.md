@@ -38,11 +38,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | id | gravità | tipo | titolo | stato |
 | --- | --- | --- | --- | --- |
 | F-P-1 | high | fix | JSON-LD: `JSON_UNESCAPED_SLASHES` lascia passare `</script>` | fatta `8fc8529` |
-| F-R-1 | high | fix | il ritratto del medico scivola di 156px e copre l'h1 (≤ 899) | da fare |
+| F-R-1 | high | fix | il ritratto del medico scivola di 156px e copre l'h1 (≤ 899) | fatta `881f57f` |
 | F-R-25 | medium | fix | sopra 899 il ritratto non si appiccica mai: `.sd-plate` batte `sticky` | da fare |
-| F-T-1 | high | fix | `--wp--custom--surface--tintStrong` non esiste: voce corrente senza fondo | da fare |
-| F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | da fare |
-| F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | da fare |
+| F-T-1 | high | fix | `--wp--custom--surface--tintStrong` non esiste: voce corrente senza fondo | fatta `739b17b` |
+| F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | fatta `966d8f7` |
+| F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | fatta `0de3ed0` |
 | F-P-4 | medium | fix | i cinque campi dell'area non sono registrati né modificabili | da fare |
 | F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | da fare |
 | F-R-5 | medium | fix | quattro archivi di area senza `<title>` | da fare |
@@ -72,6 +72,19 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 1. **F-P-1** `8fc8529` — JSON-LD: aggiunto `JSON_HEX_TAG`. Con un titolo ostile il blob passava da
    troncato a 1.972 byte con `<script>alert(1)</script>` eseguibile a 2.776 byte interi che
    `json.loads` legge; sulle pagine vere non cambia di un byte (sha1 invariati su 6 URL).
+2. **F-R-1** `881f57f` — `top: auto` dentro la media query che c'era già: `.sd-plate` ridichiara
+   `position: relative` più in basso nel foglio, quindi azzerare `position` non bastava. Erano tutte
+   e 21 le sovrapposizioni del giro: **21 → 0** sulle tre schede professionista.
+3. **F-T-1** `739b17b` — nome del token in kebab-case. Il fondo della voce corrente nel pannello passa da
+   `rgba(0,0,0,0)` a `rgba(18, 98, 250, 0.14)`; corretta anche `RESPONSIVE.md:59`, che insegnava il
+   nome sbagliato ed era l'origine del difetto. Nessun altro token camelCase rotto nel foglio.
+4. **F-P-2** `966d8f7` — un 301 in `legacy_redirects()` verso `get_permalink()`, le 217 regole
+   intatte. **180 indirizzi che rispondevano 200 → 30**: 30 canoniche a zero hop, 150 duplicati a un
+   solo 301, nessun loop. `/prestazioni/<slug>/` resta il ripiego senza area.
+5. **F-P-5** `0de3ed0` — l'ordine delle aree si calcola in PHP: `meta_key` in `get_terms()` filtrava
+   invece di ordinare. Il `<main>` di `/prestazioni/` ha lo stesso sha1 prima e dopo; un'area senza
+   `_sd_ordine` passa da esclusa dalla query a presente e ultima. Provato in memoria, senza
+   scritture in banca dati.
 
 ## Da decidere (titolare)
 
@@ -156,6 +169,15 @@ e `/contatti/` a 1440.
   paragrafi contano come bersagli piccoli (30 delle 105 segnalazioni mobile), e lo scorrimento rapido
   di `audit.mjs` fotografa immagini `lazy` non ancora decodificate. Da sistemare in `docs/audit/` per
   non inseguire difetti che non esistono.
+
+### Scostamenti dalle regole del giro
+
+- **Verifica di F-P-2, scrittura in banca dati.** In banca dati i trattamenti senza area sono 0, così
+  il verificatore ha creato un trattamento pubblicato senza area per misurare il ripiego
+  `/prestazioni/<slug>/`, poi l'ha cancellato con `--force`. La misura è buona — ed era l'unico modo
+  di provare quel ramo invece di crederci — ma il giro vuole WP-CLI in sola lettura e niente
+  scritture in banca dati: è uno scostamento, non un permesso. Stato ripristinato e verificato:
+  30 trattamenti pubblicati, come prima. Per i prossimi: quel ramo si prova in PHP, senza salvare.
 
 **Vincoli dati dal titolare della sessione (25/10, da rispettare nella coda)**
 
