@@ -53,7 +53,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | da fare |
 | F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | fatta `84f112e` |
 | F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | fatta `7de18d6` |
-| F-R-11 | medium | fix | `/casi-studi/`: 412px vuoti a destra da 1121 in su | da fare |
+| F-R-11 | ~~medium~~ | **nota** | `/casi-studi/`: 412px vuoti a destra — misurato, non è un difetto da CSS | declassata, annullata |
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | da fare |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita ×1.01 e due proporzioni in griglia (+ F-R-16) | da fare |
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
@@ -246,6 +246,20 @@ e `/contatti/` a 1440.
   F-R-6: `vis()` scarta gli elementi con `opacity: 0`, così la lente della lightbox — un bersaglio
   vero da 20×20 — non compariva in nessuna misura. Un bersaglio invisibile fino al passaggio del
   cursore resta premibile col dito: va misurato.
+- **F-R-11 declassata a nota dopo una correzione annullata.** Tre colonne da 1121 riempivano la riga,
+  ma il vuoto non spariva: si **spostava**. Misurato in area a 1440: da 412×706 px (290.872 px²) sul
+  margine destro a 867×331 px (286.977 px²) **dentro il gruppo**, accanto alla scheda orfana — l'1,3%
+  di vuoto in meno, in una posizione peggiore, su 6 griglie e 5 pagine. E le foto scendevano a 326px
+  (−18,5%) a 1121. La premessa del rilievo era sbagliata: `/casi-studi/` non ha una griglia da 8 ma
+  **due griglie da 4**, raggruppate per professionista, e tutte e sei le griglie del sito hanno quattro
+  schede — tre colonne danno 3+1 *sempre*, mai 3+3+2. Il vuoto a destra è la conseguenza accettata di
+  originali 400×300, e il rimedio vero è già scritto: `docs/DA-VERIFICARE.md` §14.1, fotografie
+  800×600, e solo allora si alza il `25rem` di `.sd-cases`. Scartate anche `justify-content: center`
+  (titoli dei gruppi a x=92 e schede a x=298), quattro colonne (1.732px, non ci stanno) e schede oltre
+  25rem (ingrandirebbero le foto). `git restore` fatto, niente commesso.
+- **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
+  limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
+  da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
 - **Due sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
   segnalazioni a `/magnetic-mallet/`, che non ha **nessun** blocco `details` (erano 3+3 fra
   `/impianti-dentali/` e `/tooth-transformer/`); e F-R-5 parlava di quattro archivi d'area rotti
