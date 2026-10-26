@@ -59,8 +59,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
 | F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ quarto grep di guardia) | fatta `b7ff013` |
-| F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | da fare |
-| F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | da fare |
+| F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | fatta `437c1ad` |
+| F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | fatta `437c1ad` |
 | F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | da fare |
 | F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | da fare |
 | F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | da fare |
@@ -125,6 +125,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
     §3 ha ora un **quarto grep** che cerca `ch`: i tre vecchi guardavano `clamp`, i colori e i `rem`,
     ed è per questo che quelle due righe erano sopravvissute a tre giri. Provato che il guardiano
     guardi: 0 sul foglio vero, 1 su una copia sabotata dove il pattern ancorato a inizio riga dava 0.
+16. **F-T-9 + F-T-12** `437c1ad` — 19 righe di CSS morto via, 10 di commento al loro posto. Nessun
+    effetto a schermo: **22 screenshot byte-identici** fra correttore e verificatore, e il confronto
+    letto dal CSSOM (foglio prima 72.879 caratteri con le due regole, dopo 72.539 senza) invece che
+    dalla cache.
 
 ## Da decidere (titolare)
 
@@ -273,6 +277,10 @@ e `/contatti/` a 1440.
 - **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
   limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
   da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
+- **I numeri di riga dei referti invecchiano durante il giro.** Ogni riferimento di F-T-9 e F-T-12 era
+  già spostato (§18.4 2881 → 2889, §18.15 3659 → 3708, §19.2 3750 → 3799, §19.3 3816 → 3870), e lo era
+  anche la ri-misura fatta dal verificatore di F-T-3 poche righe prima (3688/3779/3850). Da trattare
+  come indizi: si cerca il selettore con `grep -n`, non si va al numero.
 - **Il commento sopra `.sd-doc__title` dice che `ch` «mentiva del doppio»**: come conteggio di
   caratteri regge, come metrica del font no — in Fraunces il fattore è 1.67, il doppio è di DM Sans.
   Una riga da sistemare al prossimo giro, segnalata dal correttore di F-T-7 e fuori dalle due
