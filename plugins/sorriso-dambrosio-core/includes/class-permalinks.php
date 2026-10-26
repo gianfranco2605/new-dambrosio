@@ -181,8 +181,12 @@ final class Permalinks {
 			return;
 		}
 
-		$request = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
-		$request = is_string( $request ) ? $request : '';
+		// Il superglobale si sanifica, ma con `sanitize_url()` e non con
+		// `sanitize_text_field()`: il secondo cancella le sequenze `%xx`, e
+		// `?s=a%20b` diventerebbe `?s=ab` nel 301 canonico qui sotto, dove la
+		// query deve passare intatta. `sanitize_url()` toglie tag e virgolette
+		// e lascia la percentuale dov'e'.
+		$request = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( (string) $_SERVER['REQUEST_URI'] ) ) : '';
 		$path    = (string) wp_parse_url( $request, PHP_URL_PATH );
 		$path    = user_trailingslashit( '/' . trim( $path, '/' ) );
 

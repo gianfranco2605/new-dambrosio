@@ -130,8 +130,27 @@ final class Fields {
 		);
 	}
 
-	public static function can_edit(): bool {
-		return current_user_can( 'edit_posts' );
+	/**
+	 * Chi puo' scrivere i campi di un articolo.
+	 *
+	 * `auth_callback` e' il cancello di `edit_post_meta` per le chiavi
+	 * protette (tutte le nostre iniziano per `_`): la domanda e' se questo
+	 * utente puo' modificare **questo** articolo, non se puo' modificare
+	 * articoli in generale. `edit_posts` lo ha anche un collaboratore sui
+	 * contenuti altrui, quindi si chiede `edit_post` con l'ID che il filtro
+	 * passa come terzo argomento.
+	 *
+	 * Il permesso si chiede per l'utente che il filtro indica (`$user_id`), non
+	 * per quello collegato: in REST sono lo stesso, ma un `user_can()` su un
+	 * terzo utente con `current_user_can()` avrebbe risposto per il visitatore.
+	 *
+	 * @param bool   $allowed Permesso calcolato da WordPress.
+	 * @param string $key     Chiave del campo.
+	 * @param int    $post_id ID dell'articolo su cui si scrive.
+	 * @param int    $user_id ID dell'utente di cui si chiede il permesso.
+	 */
+	public static function can_edit( bool $allowed, string $key, int $post_id, int $user_id ): bool {
+		return user_can( $user_id, 'edit_post', $post_id );
 	}
 
 	public static function add_meta_boxes(): void {
@@ -429,13 +448,20 @@ final class Fields {
 	 *
 	 * Non `edit_posts`: le aree hanno capability proprie
 	 * (`Content_Types::register_area()`, oggi `edit_terms => edit_pages`) e il
-	 * permesso si chiede alla tassonomia, non si indovina.
+	 * permesso si chiede alla tassonomia, non si indovina. Lo si chiede con
+	 * `edit_term` e l'ID che il filtro passa: `map_meta_cap()` risale dal
+	 * termine alla sua tassonomia e arriva allo stesso `edit_terms` di prima,
+	 * ma legato all'area che si sta scrivendo — come fa `save_area()`.
+	 *
+	 * Come `can_edit()`, il permesso e' quello di `$user_id`.
+	 *
+	 * @param bool   $allowed Permesso calcolato da WordPress.
+	 * @param string $key     Chiave del campo.
+	 * @param int    $term_id ID dell'area su cui si scrive.
+	 * @param int    $user_id ID dell'utente di cui si chiede il permesso.
 	 */
-	public static function can_edit_area(): bool {
-		$taxonomy = get_taxonomy( Content_Types::AREA );
-		$cap      = ( $taxonomy instanceof \WP_Taxonomy ) ? (string) $taxonomy->cap->edit_terms : 'edit_pages';
-
-		return current_user_can( $cap );
+	public static function can_edit_area( bool $allowed, string $key, int $term_id, int $user_id ): bool {
+		return user_can( $user_id, 'edit_term', $term_id );
 	}
 
 	/**
@@ -456,7 +482,7 @@ final class Fields {
 		// Il nonce sta dentro una cella: un `input` figlio diretto di `table`
 		// il browser lo sposta fuori dalla tabella.
 		echo '<tr class="form-field"><th colspan="2"><h2 style="margin:1em 0 0">La pagina dell\'area</h2>';
-		wp_nonce_field( self::NONCE_AREA, self::NONCE_AREA );
+		wp_nonce_field( self::NONCE_AREA . '_' . $term->term_id, self::NONCE_AREA );
 		echo '</th></tr>';
 
 		echo '<tr class="form-field">';
@@ -506,7 +532,11 @@ final class Fields {
 	public static function save_area( int $term_id ): void {
 		$nonce = isset( $_POST[ self::NONCE_AREA ] ) ? sanitize_text_field( wp_unslash( (string) $_POST[ self::NONCE_AREA ] ) ) : '';
 
-		if ( '' === $nonce || ! wp_verify_nonce( $nonce, self::NONCE_AREA ) ) {
+		// Il nonce e' legato all'ID dell'area: uno preso dal modulo di un'altra
+		// area non vale qui. Il nonce degli articoli (`sd_core_fields`, verificato
+		// in `save()`) non e' invece ancora legato al `$post_id`: l'asimmetria e'
+		// nota, non una dimenticanza.
+		if ( '' === $nonce || ! wp_verify_nonce( $nonce, self::NONCE_AREA . '_' . $term_id ) ) {
 			return;
 		}
 
