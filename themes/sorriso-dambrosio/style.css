@@ -4557,10 +4557,28 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 		font-size: 1rem;
 	}
 
-	/* Le domande della FAQ: `summary` e' il comando che apre. */
-	.sd-areatext summary {
+	/* Le domande della FAQ: `summary` e' il comando che apre. La regola
+	   nasce per `.sd-areatext`, ma la stessa FAQ sta anche nella prosa dei
+	   trattamenti e delle tecnologie (`.sd-prose`), dove `summary` restava
+	   alto quanto la riga: 350x29px a 390. Si ancora al blocco di core, che
+	   e' l'unico posto dove un `summary` compare. Niente `display: flex`:
+	   sposterebbe il triangolino `disclosure-closed`, che e' il ::marker
+	   del `list-item`. Bastano i 2x8px di `padding`: 45px totali. */
+	.wp-block-details > summary {
 		min-height: var(--wp--custom--tap);
 		padding-block: 0.5rem;
+	}
+
+	/* La lente della lightbox di core: 20x20px. Cresce solo l'area
+	   premibile, non l'aspetto — il pulsante ha `opacity: 0` e si vede
+	   all'hover, che su mobile non arriva. La specificita' in piu' serve
+	   perche' core la fissa con `.wp-lightbox-container button`; `top` e
+	   `right` restano i suoi 16px (li scrive in linea), quindi i 44px
+	   crescono verso il basso e verso sinistra: dentro la foto, anche la
+	   piu' piccola della coppia di `/magnetic-mallet/` (170x128px). */
+	.wp-lightbox-container button.lightbox-trigger {
+		block-size: var(--wp--custom--tap);
+		inline-size: var(--wp--custom--tap);
 	}
 
 	/* Restano sotto i 16px: sono testo, non etichette. */
