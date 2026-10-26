@@ -300,6 +300,11 @@ e `/contatti/` a 1440.
   opzione, niente banca dati), così invece di spendere un giro di verifica per una riga ho allargato
   F-T-14 da due a tre occorrenze.
 
+- **Due righe in un commit solo** (F-T-9 e F-T-12). Il giro vuole «una correzione verificata, un
+  commit»; queste due sono cancellazioni di CSS morto nello stesso file, entrambe senza effetto su
+  schermo, e la ragione per cui le correzioni sono in fila — un solo agente che scrive — resta
+  rispettata. Ho preferito un commit a un giro di andata e ritorno in più: è una scelta mia, non una
+  svista.
 - **Verifica di F-P-2, scrittura in banca dati.** In banca dati i trattamenti senza area sono 0, così
   il verificatore ha creato un trattamento pubblicato senza area per misurare il ripiego
   `/prestazioni/<slug>/`, poi l'ha cancellato con `--force`. La misura è buona — ed era l'unico modo
