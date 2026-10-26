@@ -54,7 +54,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | fatta `84f112e` |
 | F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | fatta `7de18d6` |
 | F-R-11 | ~~medium~~ | **nota** | `/casi-studi/`: 412px vuoti a destra — misurato, non è un difetto da CSS | declassata, annullata |
-| F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | da fare |
+| F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | fatta `653a7fc` |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita ×1.01 e due proporzioni in griglia (+ F-R-16) | da fare |
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
 | F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
@@ -112,6 +112,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 12. **F-R-6** `7de18d6` — bersagli a 44px: la regola di §19.7 era ancorata a `.sd-areatext` e non
     arrivava alla FAQ dentro la prosa. `summary` 350×29 → 350×60, lente 20×20 → 44×44 su dodici
     bersagli, tutte dentro la loro immagine. Niente `flex`: sposterebbe il `::marker`.
+13. **F-R-13** `653a7fc` — la misura di lettura entra anche nei blocchi Colonne: riga massima
+    **100 → 75 caratteri** a 1440, `tipografia` 9 → 0. Serviva una seconda regola: quei pannelli
+    stanno in un Gruppo flex verticale, e stringere il paragrafo deformava la foto (287×500 invece
+    di 350×500). `align-self: stretch` riporta la geometria identica.
 
 ## Da decidere (titolare)
 
