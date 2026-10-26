@@ -3887,6 +3887,42 @@ img {
 	max-width: none;
 }
 
+/* I due pannelli di testo+foto di /studio-dentistico/ tengono le
+   Colonne dentro un Gruppo verticale di core (`is-layout-flex` con
+   `align-items: flex-start`): li' la larghezza e' quella del
+   contenuto, quindi dare una misura al paragrafo rimpiccioliva tutto
+   il pannello. Misurato a 1440: il blocco Colonne scendeva da 1216 a
+   978px e la fotografia dambrosio-mobile da 359 a 287px di colonna,
+   resa 287x500 invece di 350x500 — cioe' deformata. `align-self:
+   stretch` rida' al blocco la larghezza del genitore; sulle altre due
+   Colonne della pagina, che stanno in un Gruppo a blocco, non ha
+   effetto. */
+.sd-doc__body .wp-block-columns,
+.sd-entry__body .wp-block-columns,
+.sd-areatext .wp-block-columns {
+	align-self: stretch;
+}
+
+/* Dentro un blocco Colonne il testo non e' figlio diretto del corpo, e
+   la misura qui sopra non lo raggiunge: i nove paragrafi della colonna
+   al 70% stavano a 837px (1440) e 809px (1280), cioe' righe da 89 a
+   100 caratteri — e a 781, dove le colonne si impilano a tutta
+   larghezza, 706px e fino a 94. Prendono la misura del testo corrente,
+   38rem come `.sd-doc__body > p`: 68 caratteri a 1440, 75 nel
+   paragrafo piu' lungo. 40rem non bastava (76 su quel paragrafo, sopra
+   il limite di 75).
+
+   Solo i figli diretti della colonna: piu' in basso stanno le
+   copertine dei professionisti e le quattro schede dei servizi, con
+   una misura loro (351 e 271px, 29-43 caratteri) da non toccare.
+   `.sd-entry__body` e `.sd-areatext` oggi non hanno Colonne: ci stanno
+   perche' il ruolo e' lo stesso. */
+.sd-doc__body .wp-block-column > p,
+.sd-entry__body .wp-block-column > p,
+.sd-areatext .wp-block-column > p {
+	max-width: var(--wp--custom--measure--prose);
+}
+
 /* ---------------------------------------------------------------
    19.4 Un solo stile di pulsante
 
