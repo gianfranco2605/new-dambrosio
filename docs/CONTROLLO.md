@@ -58,7 +58,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita e due proporzioni in griglia (+ F-R-16) | fatta `0a3b93c` (resto al titolare) |
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
 | F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
-| F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ DESIGN-SPEC §3.1) | da fare |
+| F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ quarto grep di guardia) | fatta `b7ff013` |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | da fare |
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | da fare |
 | F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | da fare |
@@ -120,6 +120,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
     1120 nel `sizes`: **immagini rese oltre la larghezza vera del file 2 → 0**. Nella matrice la
     cornice è quella della cella e il ritaglio sta al centro: scarto dei titoli 65 → 25px a 1440,
     35 → 0 a 781.
+15. **F-T-7** `b7ff013` — i due `max-width` in `ch` diventano token (`prose` sull'hero, `wide` sul
+    titolo di pagina): nessuna riga guadagnata o persa a otto larghezze. Soprattutto, `RESPONSIVE.md`
+    §3 ha ora un **quarto grep** che cerca `ch`: i tre vecchi guardavano `clamp`, i colori e i `rem`,
+    ed è per questo che quelle due righe erano sopravvissute a tre giri. Provato che il guardiano
+    guardi: 0 sul foglio vero, 1 su una copia sabotata dove il pattern ancorato a inizio riga dava 0.
 
 ## Da decidere (titolare)
 
@@ -268,6 +273,10 @@ e `/contatti/` a 1440.
 - **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
   limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
   da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
+- **Il commento sopra `.sd-doc__title` dice che `ch` «mentiva del doppio»**: come conteggio di
+  caratteri regge, come metrica del font no — in Fraunces il fattore è 1.67, il doppio è di DM Sans.
+  Una riga da sistemare al prossimo giro, segnalata dal correttore di F-T-7 e fuori dalle due
+  rifiniture che gli avevo chiesto.
 - **`naturalWidth` non misura il file.** Con `srcset` è il valore **corretto per densità** e segue
   `sizes`: per questo l'audit vedeva ×0.99 sulla foto del capitolo e il difetto vero — ×1.43 fra 1024
   e 1120 — restava invisibile. Le misure di ingrandimento si fanno con `getimagesize()` sul file in
