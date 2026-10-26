@@ -51,8 +51,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | fatta `8286a9d` |
 | F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | fatta `0feb2cb` (recapiti; orari al titolare) |
 | F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | da fare |
-| F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | da fare |
-| F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | da fare |
+| F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | fatta `84f112e` |
+| F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | fatta `7de18d6` |
 | F-R-11 | medium | fix | `/casi-studi/`: 412px vuoti a destra da 1121 in su | da fare |
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | da fare |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita ×1.01 e due proporzioni in griglia (+ F-R-16) | da fare |
@@ -107,6 +107,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
    cinque righe morte. Screenshot d'elemento con lo stesso md5 prima e dopo.
 10. **F-T-4** `0feb2cb` — recapiti del footer e della barra mobile dall'unica fonte: letterali 9 → 0,
     HTML servito identico byte per byte. Gli orari restano a mano, in attesa del titolare.
+11. **F-R-3** `84f112e` — sotto i 1121 l'indirizzo dell'hero va a capo invece di troncarsi. Erano le
+    **due sole** segnalazioni di troncamento del giro: 2 → 0. Sopra i 1120 niente cambia.
+12. **F-R-6** `7de18d6` — bersagli a 44px: la regola di §19.7 era ancorata a `.sd-areatext` e non
+    arrivava alla FAQ dentro la prosa. `summary` 350×29 → 350×60, lente 20×20 → 44×44 su dodici
+    bersagli, tutte dentro la loro immagine. Niente `flex`: sposterebbe il `::marker`.
 
 ## Da decidere (titolare)
 
@@ -237,7 +242,14 @@ e `/contatti/` a 1440.
 - **F-R-8** e **F-R-23** — due difetti dello strumento, non del sito: i link in linea dentro i
   paragrafi contano come bersagli piccoli (30 delle 105 segnalazioni mobile), e lo scorrimento rapido
   di `audit.mjs` fotografa immagini `lazy` non ancora decodificate. Da sistemare in `docs/audit/` per
-  non inseguire difetti che non esistono.
+  non inseguire difetti che non esistono. **Terzo difetto dello strumento**, trovato verificando
+  F-R-6: `vis()` scarta gli elementi con `opacity: 0`, così la lente della lightbox — un bersaglio
+  vero da 20×20 — non compariva in nessuna misura. Un bersaglio invisibile fino al passaggio del
+  cursore resta premibile col dito: va misurato.
+- **Due sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
+  segnalazioni a `/magnetic-mallet/`, che non ha **nessun** blocco `details` (erano 3+3 fra
+  `/impianti-dentali/` e `/tooth-transformer/`); e F-R-5 parlava di quattro archivi d'area rotti
+  quando sono cinque. Gli agenti che misurano sbagliano anche loro: il verificatore serve a questo.
 
 ### Scostamenti dalle regole del giro
 
