@@ -31,7 +31,7 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 
 ## Coda
 
-54 rilievi dei tre agenti → **28 righe `fix`**, più tre righe trovate correggendo: F-R-25 (durante F-R-1), F-P-16 (durante F-P-4), F-R-26 e F-R-27 (durante F-R-12), F-T-17 (durante F-T-2): **33**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
+54 rilievi dei tre agenti → **28 righe `fix`**, più tre righe trovate correggendo: F-R-25 (durante F-R-1), F-P-16 (durante F-P-4), F-R-26 e F-R-27 (durante F-R-12), F-T-17 (durante F-T-2), F-P-18 (durante F-P-16): **34**. Uniti i doppioni: F-T-4 = F-P-3 (orari del footer),
 F-R-17 = F-P-11 (accenti dei giorni), F-R-14 + F-R-16 (taglio e proporzioni del capitolo in home).
 F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede il revisore.
 
@@ -57,16 +57,17 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | fatta `653a7fc` |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita e due proporzioni in griglia (+ F-R-16) | fatta `0a3b93c` (resto al titolare) |
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
-| F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
+| F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | in Da decidere |
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ quarto grep di guardia) | fatta `b7ff013` |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | fatta `437c1ad` |
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | fatta `437c1ad` |
 | F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | fatta `82bf075` |
 | F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | fatta `82bf075` |
-| F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | da fare |
-| F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | da fare |
+| F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | fatta `71480b7` |
+| F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | fatta `71480b7` |
 | F-P-13 | low | fix | `"anchor": true` sui 14 blocchi, ancora mai resa | da fare |
-| F-P-16 | low | fix | il nonce del riquadro area non è legato all'ID del termine | da fare |
+| F-P-16 | low | fix | il nonce del riquadro area non è legato all'ID del termine | fatta `71480b7` |
+| F-P-18 | low | fix | anche il nonce dei campi post (`sd_core_fields`) non è legato all'ID | da fare |
 | F-R-18 | low | fix | la riga del giorno corrente rientra di 12px | da fare |
 | F-R-19 | low | fix | gli estratti delle schede si tagliano a metà parola | da fare |
 | F-R-22 | low | titolare | il `<title>` della 404 è in inglese: impostazione Yoast | in Da decidere |
@@ -133,6 +134,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
     (il terzo l'aveva aggiunto questo stesso giro), `phpcs:ignore` sull'indirizzo 3 → 0, e
     `SORRISO_DAMBROSIO_VERSION` torna d'accordo con `Version:` (1.8.10), con un commento che dice di
     alzarle insieme. HTML servito byte-identico su quattro pagine.
+18. **F-P-7 + F-P-8 + F-P-16** `71480b7` — i controlli di permesso rispondono per l'utente e
+    l'oggetto giusti (`user_can( $user_id, 'edit_post', $post_id )`): misurato,
+    `user_can( 1, 'edit_post_meta', 2106, … )` passa da **no** a **sì**, perché prima rispondeva per
+    il visitatore. Nonce dell'area legato al termine: 5 scritture → 0 con quello di un'altra area.
+    Banca dati invariata (MD5 delle tabelle identici).
 
 ## Da decidere (titolare)
 
@@ -281,6 +287,14 @@ e `/contatti/` a 1440.
 - **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
   limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
   da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
+- **Una regressione evitata perché il correttore ha provato la proposta invece di applicarla.**
+  F-P-8 chiedeva `sanitize_text_field()` su `REQUEST_URI`; `_sanitize_text_fields()` di core ha un
+  ciclo `while ( preg_match( '/%[a-f0-9]{2}/i', … ) )` che cancella le sequenze percento, e quella
+  query finisce dritta nel `Location` del 301 di `966d8f7`: `?s=a%20b&utm=x%2By` sarebbe diventata
+  `?s=ab&utm=xy`. Una riga `low` avrebbe rotto una `medium` chiusa poche ore prima. `sanitize_url()`
+  fa il lavoro — toglie `%0d`/`%0a`, ed è l'identità su tutte e 69 le rotte. Avvertenza onesta del
+  verificatore: WPCS non è installato in locale, quindi lo sniff non è stato eseguito; quel punto è
+  ragionato sul codice di core, non misurato.
 - **La causa scritta in F-T-14 era sbagliata, il rimedio giusto.** Il rilievo diceva che `esc_html()`
   avrebbe mostrato `&#8211;` in chiaro: falso, `_wp_specialchars()` lavora con `double_encode = false`
   e le entità valide restano intatte (misurato: `esc_html($addr) === $addr`). La ragione vera di
