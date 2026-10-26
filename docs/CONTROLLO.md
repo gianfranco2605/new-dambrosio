@@ -48,8 +48,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-5 | medium | titolare | ~~quattro~~ **cinque** archivi di area senza `<title>`: dato Yoast | in Da decidere |
 | F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | fatta `4c63766` |
 | F-T-17 | medium | fix | `--sd-sticky-top` (156px) supera di 71-78px l'header vero sotto i 1121 | da fare |
-| F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | da fare |
-| F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | da fare |
+| F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | fatta `8286a9d` |
+| F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | fatta `0feb2cb` (recapiti; orari al titolare) |
 | F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | da fare |
 | F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | da fare |
 | F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | da fare |
@@ -61,7 +61,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ DESIGN-SPEC §3.1) | da fare |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | da fare |
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | da fare |
-| F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in due pattern | da fare |
+| F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | da fare |
 | F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | da fare |
 | F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | da fare |
 | F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | da fare |
@@ -102,10 +102,15 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
    regola col token, e il bordo della sezione restava 54-64px **sotto** l'header. Ora 4-14px sotto di
    esso. In più `/lo-studio/` aveva un `id="orari"` che atterrava a 88 mentre il vicino
    `#prenota-cta` atterrava a 156: ora vanno d'accordo.
+9. **F-T-3** `8286a9d` — una sola dichiarazione di misura per lede. DESIGN-SPEC non fissa la
+   larghezza di un lede, quindi resta quella che la pagina mostra da sempre (608px) e spariscono le
+   cinque righe morte. Screenshot d'elemento con lo stesso md5 prima e dopo.
+10. **F-T-4** `0feb2cb` — recapiti del footer e della barra mobile dall'unica fonte: letterali 9 → 0,
+    HTML servito identico byte per byte. Gli orari restano a mano, in attesa del titolare.
 
 ## Da decidere (titolare)
 
-Nove domande. Nessuna di queste è stata toccata.
+Dieci domande. Nessuna di queste è stata toccata.
 
 1. **La barra fissa in fondo su mobile resta spenta o torna?** (F-T-6) Con lei torna la scorciatoia
    WhatsApp, oggi raggiungibile solo da «Contatti». Finché la decisione è sospesa, pattern, template
@@ -150,6 +155,16 @@ Nove domande. Nessuna di queste è stata toccata.
    (`title-404-wpseo`, più `breadcrumbs-404crumb` = «Error 404: Page not found»): un filtro
    `document_title_parts` sarebbe inerte, perché Yoast cortocircuita su `pre_get_document_title`.
    Si cambia dal pannello; se un domani servisse del codice, l'aggancio è `wpseo_title`.
+
+10. **La tabella degli orari nel footer resta scritta a mano** (parte di F-T-4). Recapiti, email,
+    tre numeri, indirizzo e WhatsApp ora leggono l'unica fonte, e il footer servito non cambia di un
+    byte. Gli **orari** no: la fonte ha sette giorni (Sabato e Domenica «Chiuso»), il footer ne
+    pubblica cinque e il fine settimana lo dice a parole nella riga «Sabato-Domenica chiuso».
+    Collegarla aggiungerebbe due righe di testo nuove al footer di **ogni** pagina — contenuto, non
+    impianto. Due strade: **(a)** il footer continua a dire il fine settimana a parole e accetta di
+    non leggere la fonte per gli orari; **(b)** passa alla tabella di sette righe come la fascia
+    orari, e la riga a parole sparisce. Finché non si decide, un orario cambiato dal pannello non
+    arriva al footer: è la ragione per cui il rilievo esisteva.
 
 Resta aperto anche l'elenco delle **fotografie da rifare** (F-R-15): 142 immagini stanno sotto la
 soglia retina perché gli originali in Media Library non sono più grandi. Ingrandirle è proprio quel
@@ -225,6 +240,17 @@ e `/contatti/` a 1440.
   non inseguire difetti che non esistono.
 
 ### Scostamenti dalle regole del giro
+
+- **Un verificatore si è piantato** (F-T-4, primo tentativo): morto al primo passo, senza toccare
+  niente — `git stash list` vuoto, i tre file ancora modificati, `Version:` ancora 1.8.8. Ripreso con
+  una consegna più corta (sei controlli, nessun lavoro col browser: non c'era niente di visivo da
+  misurare) ed è passato. Da ricordare: dopo un agente caduto, la **prima** cosa da guardare è lo
+  stash, perché il verificatore usa `git stash` per lo scatto «prima».
+- **Correggendo F-T-4 è nata una terza copia del difetto di F-T-14**: `footer.php:50` stampa
+  `$sd_c['address']` grezzo con `phpcs:ignore`, copiando il precedente di `prenota.php:48` — che è
+  proprio la versione non aggiornata. Non è una via di iniezione (è un letterale di codice, niente
+  opzione, niente banca dati), così invece di spendere un giro di verifica per una riga ho allargato
+  F-T-14 da due a tre occorrenze.
 
 - **Verifica di F-P-2, scrittura in banca dati.** In banca dati i trattamenti senza area sono 0, così
   il verificatore ha creato un trattamento pubblicato senza area per misurare il ripiego
