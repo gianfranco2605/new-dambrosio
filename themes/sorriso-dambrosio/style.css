@@ -561,6 +561,16 @@ Text Domain: sorriso-dambrosio
 		padding: 1.25rem;
 	}
 
+	/* Qui ogni voce ha la larghezza di una cella, non della riga, e il
+	   `nowrap` di sopra si vede: «Lungotevere Flaminio 34, Roma» misura
+	   229px contro i 216 della cella a 600px e i 206 della colonna sola
+	   a 320px, e «Roma» finiva nei puntini. Meglio due righe che un
+	   indirizzo a meta': il `nowrap` serve solo da 1121 in su, dove le
+	   tre voci stanno su una riga e i puntini non scattano mai. */
+	.sd-hero__bar-value {
+		white-space: normal;
+	}
+
 	.sd-hero__bar-cta {
 		grid-column: 1 / -1;
 		width: 100%;
