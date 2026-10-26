@@ -16,6 +16,18 @@
  * dal bordo sinistro della finestra e resta ferma mentre scorre il testo.
  * Il `sizes` e' scritto a mano: quello che WordPress deduce dalla misura
  * dichiarava 768px anche sotto i 1024, dove la fotografia e' a tutta fascia.
+ *
+ * La soglia e' 1120, non 1023: la griglia a due colonne parte da 1121 (le
+ * due regole in fondo alla sezione 6 del foglio), e fra 1024 e 1120 la
+ * fotografia e' gia' a tutta fascia. Dichiarando 528px il browser scaricava
+ * il taglio 768 e lo stirava su una cornice larga 1100: x1.43, misurato.
+ *
+ * E 1152px, non 528, da 1121 in su. La cornice e' alta `100vh` meno la
+ * barra (riga 1371 del foglio) e `object-fit: cover` su un originale 3/4
+ * chiede altezza x 0,75 di sorgente: 558px a 1440x900, 783 a 1440x1200,
+ * 810 a 1920x1080 — oltre i 768 del taglio `large`. Il taglio 1152x1536 e'
+ * gia' in libreria ed e' quello che serve /lo-studio/: li' bastano, qui
+ * avanzano anche sugli schermi a doppia densita'.
  */
 $sd_media_id = 654;
 
@@ -36,7 +48,7 @@ $sd_accoglienza_id = 1321;
 <div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"tagName":"section","className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <section class="wp-block-group sd-chapter__grid" aria-labelledby="sd-lo-studio-titolo"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
-<?php echo sorriso_dambrosio_image( $sd_media_id, 'large', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 528px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php echo sorriso_dambrosio_image( $sd_media_id, '1536x1536', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1120px) 100vw, 1152px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
 <!-- /wp:group -->
 

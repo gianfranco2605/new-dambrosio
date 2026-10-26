@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.8
+Version: 1.8.9
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -4713,6 +4713,26 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
    e' elencato in DA-VERIFICARE. */
 .sd-plate--contain.sd-entry__figure {
 	aspect-ratio: var(--wp--custom--frame--plate);
+}
+
+/* Nella matrice la cornice non si fa della misura del ritaglio.
+
+   `width: fit-content` (19.6) ha senso dove il ritaglio e' solo, perche'
+   la cornice gli si stringe addosso invece di circondarlo di fondo. In
+   una griglia si rovescia: le celle di una riga stanno accanto, e una
+   cornice piu' stretta e' anche piu' bassa — a 1440 la lampada Fotosan
+   (300x424) teneva 300x225 contro i 386x289 delle vicine, e il titolo
+   sotto partiva 65px piu' in alto. Qui la cornice e' quella della cella,
+   4/3 come tutte, e il ritaglio si posa al centro.
+
+   Niente `max-height: 100%` come sulle cornici larghe: quella lampada e'
+   piu' alta che larga e il tetto la ridurrebbe a 204px di base, un terzo
+   in meno di adesso. `overflow: hidden` le toglie 67px di margine bianco
+   sopra e sotto — misurato: il soggetto e' alto 233px e nella cornice da
+   289 ci sta intero. */
+.sd-plate--contain.sd-matrix__figure {
+	justify-content: center;
+	width: 100%;
 }
 
 .sd-zig__figure img,
