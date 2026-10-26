@@ -53,7 +53,7 @@ $sd_map = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2968.6339163717
 <ul class="sd-visit__list">
 	<li>
 		<?php echo sorriso_dambrosio_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span><a href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener"><?php echo $sd_c['address']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a></span>
+		<span><a href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener"><?php echo wp_kses_post( $sd_c['address'] ); ?></a></span>
 	</li>
 	<li>
 		<?php echo sorriso_dambrosio_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

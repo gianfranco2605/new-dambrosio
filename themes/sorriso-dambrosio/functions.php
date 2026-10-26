@@ -13,8 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Riserva di wp_enqueue_style quando style.css manca: tenerla pari al suo Version.
 if ( ! defined( 'SORRISO_DAMBROSIO_VERSION' ) ) {
-	define( 'SORRISO_DAMBROSIO_VERSION', '1.0.0' );
+	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.10' );
 }
 
 /**
@@ -42,9 +43,9 @@ add_action( 'wp_enqueue_scripts', 'sorriso_dambrosio_enqueue_styles', 20 );
 /**
  * L'unico JavaScript del tema: il primo Escape sul menu mobile.
  *
- * Sedici righe, nessuna dipendenza, in coda al documento. Tutto il resto del
- * comportamento del menu lo fa gia' il blocco Navigation di core — vedi il
- * commento in cima a assets/js/menu.js per che cosa non fa.
+ * Nessuna dipendenza, in coda al documento. Tutto il resto del comportamento
+ * del menu lo fa gia' il blocco Navigation di core — vedi il commento in cima
+ * a assets/js/menu.js per che cosa non fa.
  */
 function sorriso_dambrosio_enqueue_menu_script() {
 	$path = get_stylesheet_directory() . '/assets/js/menu.js';

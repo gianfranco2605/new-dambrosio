@@ -45,7 +45,7 @@ $sd_form = do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" h
 	</li>
 	<li>
 		<?php echo sorriso_dambrosio_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span><a href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener"><?php echo $sd_c['address']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a></span>
+		<span><a href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener"><?php echo wp_kses_post( $sd_c['address'] ); ?></a></span>
 	</li>
 	<li>
 		<?php echo sorriso_dambrosio_icon( 'clock' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

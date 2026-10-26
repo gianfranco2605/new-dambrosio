@@ -47,7 +47,7 @@ $sd_hours = array(
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"textColor":"main-accent","fontSize":"x-small"} -->
-<p class="has-main-accent-color has-text-color has-x-small-font-size">Rag. Sociale: Studio Odontoiatrico Specialistico Associato D&#8217;Ambrosio<br>Indirizzo: <?php echo $sd_c['address']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><br>Partita IVA: 05429801003</p>
+<p class="has-main-accent-color has-text-color has-x-small-font-size">Rag. Sociale: Studio Odontoiatrico Specialistico Associato D&#8217;Ambrosio<br>Indirizzo: <?php echo wp_kses_post( $sd_c['address'] ); ?><br>Partita IVA: 05429801003</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:social-links {"openInNewTab":true,"className":"sd-social","style":{"spacing":{"blockGap":{"top":"16px","left":"16px"},"margin":{"top":"var:preset|spacing|small"}}},"layout":{"type":"flex"}} -->
