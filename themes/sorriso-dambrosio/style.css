@@ -392,10 +392,16 @@ Text Domain: sorriso-dambrosio
 	margin: 0 0 var(--wp--custom--space--xs);
 }
 
+/* L'andata a capo cade dopo «Odontoiatrico», e li' deve restare. In
+   Fraunces lo zero e' 0.597em (a 72px 1ch = 42.98px; il mezzo em di
+   §19.3 e' DM Sans), quindi `ch` mentiva e il vincolo cresceva col
+   corpo: 476px a 782, 602px a 1440. `prose` (38rem = 608px) e' il token
+   piu' vicino alla misura resa e tiene le due righe da 782 a 1440;
+   `statement` (36rem = 576px) ne faceva tre da 1320 in su. Sotto i 782px il vincolo non c'e' (vedi sotto). */
 .sd-hero__title {
 	font-weight: 300;
 	margin: 0;
-	max-width: 14ch;
+	max-width: var(--wp--custom--measure--prose);
 }
 
 .sd-hero__lede {
@@ -3159,11 +3165,15 @@ img {
 	margin-bottom: var(--wp--custom--space--lg);
 }
 
+/* Come nell'hero, `ch` cresceva col corpo (567px a 390, 821px a 1440) e
+   mentiva del doppio. Il vincolo morde solo sopra i ~700px di viewport:
+   `wide` (46rem = 736px) e' il valore piu' vicino al reso (740px a 1024) e
+   lascia su una riga sola tutti i titoli esistenti, 404 compreso. */
 .sd-doc__title {
 	font-size: var(--wp--preset--font-size--title);
 	line-height: 1.08;
 	margin: 0;
-	max-width: 22ch;
+	max-width: var(--wp--custom--measure--wide);
 }
 
 /* ---------------------------------------------------------------

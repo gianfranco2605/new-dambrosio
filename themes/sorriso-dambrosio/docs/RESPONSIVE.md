@@ -66,7 +66,14 @@ Larghezze di controllo: **390 · 768 · 1024 · 1280 · 1440**.
   grep -cE '(^|[^&])#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' style.css
   grep -c 'clamp(' style.css
   grep -cE 'max-width: *[0-9.]+rem' style.css
+  grep -cE '(^|[{;])[[:space:]]*[a-z-]+: *[^;}]*[0-9.]+ch\b' style.css
   ```
+  Il quarto e' nato tardi: per tre giri nessuno cercava `ch` e due `max-width`
+  (hero e titolo di pagina) sono sopravvissuti al divieto. Guarda solo le
+  dichiarazioni, cosi' la frase di §19.3 che spiega perche' `ch` mente non
+  conta come errore. L'ancora e' `(^|[{;])` e non `^`: nel foglio ci sono 21
+  regole scritte su una riga sola, e ancorata solo a inizio riga la ricerca
+  non ci guardava dentro.
 
 ## 4. Componenti e regole fisse
 
