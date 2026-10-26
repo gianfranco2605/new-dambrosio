@@ -2885,14 +2885,10 @@ img {
 	white-space: nowrap;
 }
 
-.sd-section--tint .sd-rows {
-	border-top-color: var(--wp--preset--color--main);
-}
-
-.sd-section--tint .sd-rows__row {
-	border-bottom-color: var(--wp--preset--color--main);
-}
-
+/* Sul fondo tinto i filetti sono il `main` al 24%: una sola `border-color`,
+   che e' la scorciatoia dei quattro lati. Ripetere `border-top-color` e
+   `border-bottom-color` pieni non serviva - stessa specificita' (0,2,0) e
+   piu' in alto, quindi non rendevano - come in §18.8 e §18.11. */
 .sd-section--tint .sd-rows,
 .sd-section--tint .sd-rows__row {
 	border-color: color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
@@ -3705,11 +3701,6 @@ img {
 /* Su /contatti/ il modulo non ha i recapiti accanto — stanno gia' in cima
    alla pagina — quindi occupa la colonna intera e i campi restano su due
    file invece di stringersi in una. */
-.sd-prenota--wide .sd-prenota__lede {
-	margin-bottom: var(--wp--custom--space--lg);
-	max-width: var(--wp--custom--measure--narrow);
-}
-
 .sd-prenota--wide .sd-form-wrapper {
 	max-width: var(--wp--custom--measure--form);
 }
@@ -3795,8 +3786,7 @@ img {
 	.sd-people__bio,
 	.sd-zig__text,
 	.sd-hours-band__note,
-	.sd-hero__bar-value,
-	.sd-prenota__lede {
+	.sd-hero__bar-value {
 		font-size: 1rem !important;
 	}
 
@@ -3859,15 +3849,16 @@ img {
 	max-width: var(--wp--custom--measure--narrow);
 }
 
-/* Il lede di queste quattro sezioni e' testo corrente: prende la stessa
-   misura della prosa, 38rem. Le stesse quattro classi portavano accanto
+/* Il lede di queste tre sezioni e' testo corrente: prende la stessa
+   misura della prosa, 38rem. Le stesse tre classi portavano accanto
    alla loro sezione un `lede` (32rem) che non ha mai reso nulla - pari
    specificita', ma questo blocco sta piu' in basso - e che e' stato
-   rimosso: la misura di un elemento sta in un posto solo. */
+   rimosso: la misura di un elemento sta in un posto solo.
+   Era quattro: `sd-prenota__lede` non esiste in nessun markup - il
+   paragrafo e' stato tolto dal pattern - e le sue regole sono andate via. */
 .sd-chapter__lede,
 .sd-areahead__lede,
 .sd-cta__lede,
-.sd-prenota__lede,
 /* Il contenuto di una pagina generica o di un articolo arriva da
    `post-content`, che non porta le classi del tema: la misura si
    impone sul contenitore. */
