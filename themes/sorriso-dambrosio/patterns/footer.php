@@ -9,8 +9,22 @@
  * @package SorrisoDambrosio
  */
 
-$sd_whatsapp = 'https://api.whatsapp.com/send/?phone=3755524596&text&type=phone_number&app_absent=0';
-$sd_hours    = array(
+/*
+ * Recapiti dall'unica fonte: `sorriso_dambrosio_contacts()` delega a
+ * `SD\Core\Studio::contacts()`, come fanno header, hero, prenota e
+ * vieni-a-trovarci. Il footer sta su ogni pagina: se il titolare cambiava un
+ * numero dal pannello, qui restava il vecchio.
+ *
+ * Gli orari, invece, restano scritti a mano, e non e' una dimenticanza: la
+ * fonte ha sette giorni (sabato e domenica «Chiuso» su entrambi i turni),
+ * questa tabella ne pubblica cinque e il fine settimana lo dice a parole
+ * nella riga «Sabato-Domenica chiuso» qui sotto. Leggere la fonte
+ * aggiungerebbe due righe di tabella al footer di ogni pagina: e' una
+ * modifica di contenuto visibile, non di impianto, e la decide il titolare
+ * (F-T-4).
+ */
+$sd_c     = sorriso_dambrosio_contacts();
+$sd_hours = array(
 	array( 'Lunedi', '9:00 &#8211; 13:00', '14:00 &#8211; 19:00' ),
 	array( 'Martedi', '9:00 &#8211; 13:00', 'Chiuso' ),
 	array( 'Mercoled&igrave;', '9:00 &#8211; 13:00', '14:00 &#8211; 19:00' ),
@@ -25,19 +39,19 @@ $sd_hours    = array(
 <?php echo sorriso_dambrosio_image( 60, 'full', 'logo-footer' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="mailto:studio@sorrisodambrosio.it">studio@sorrisodambrosio.it</a></p>
+<p class="has-small-font-size"><a href="<?php echo esc_url( $sd_c['email_href'] ); ?>"><?php echo esc_html( $sd_c['email'] ); ?></a></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">Tel: <a href="tel:063225754">+39 06 322 5754</a> &#8594;&nbsp;<br>Tel: <a href="tel:063610625">+39 06 361 0625 &#8594;</a><br>Cel: <a href="tel:+393755524596">+39 375 552 4596</a></p>
+<p class="has-small-font-size">Tel: <a href="<?php echo esc_url( $sd_c['phone_href'] ); ?>"><?php echo esc_html( $sd_c['phone'] ); ?></a> &#8594;&nbsp;<br>Tel: <a href="<?php echo esc_url( $sd_c['phone2_href'] ); ?>"><?php echo esc_html( $sd_c['phone2'] ); ?> &#8594;</a><br>Cel: <a href="<?php echo esc_url( $sd_c['mobile_href'] ); ?>"><?php echo esc_html( $sd_c['mobile'] ); ?></a></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"textColor":"main-accent","fontSize":"x-small"} -->
-<p class="has-main-accent-color has-text-color has-x-small-font-size">Rag. Sociale: Studio Odontoiatrico Specialistico Associato D&#8217;Ambrosio<br>Indirizzo: Lungotevere Flaminio n. 34 &#8211; 00196 &#8211; Roma (RM)<br>Partita IVA: 05429801003</p>
+<p class="has-main-accent-color has-text-color has-x-small-font-size">Rag. Sociale: Studio Odontoiatrico Specialistico Associato D&#8217;Ambrosio<br>Indirizzo: <?php echo $sd_c['address']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><br>Partita IVA: 05429801003</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:social-links {"openInNewTab":true,"className":"sd-social","style":{"spacing":{"blockGap":{"top":"16px","left":"16px"},"margin":{"top":"var:preset|spacing|small"}}},"layout":{"type":"flex"}} -->
-<ul class="wp-block-social-links sd-social" style="margin-top:var(--wp--preset--spacing--small)"><!-- wp:social-link {"url":"<?php echo esc_url( $sd_whatsapp ); ?>","service":"whatsapp"} /-->
+<ul class="wp-block-social-links sd-social" style="margin-top:var(--wp--preset--spacing--small)"><!-- wp:social-link {"url":"<?php echo esc_url( $sd_c['whatsapp'] ); ?>","service":"whatsapp"} /-->
 
 <!-- wp:social-link {"url":"https://www.instagram.com/studioodontoiatricodambrosio/","service":"instagram"} /-->
 
