@@ -1,5 +1,28 @@
 # CONTROLLO — stato del giro di controllo (2026-10-25)
 
+> ## Giro fermato dal titolare il 26 ottobre
+>
+> **22 righe chiuse su 30, ognuna verificata da un secondo agente e committata a sé.** Niente è
+> rimasto a metà: l'albero è pulito, nessuno stash, l'ultimo controllo di regressione (69 URL + 71
+> URL legacy + `debug.log`) è pulito dopo `71480b7`.
+>
+> **Chiuse nella misura:** sovrapposizioni 21 → 0 · troncamenti 2 → 0 · immagini oltre la misura
+> vera del file 2 → 0 · righe oltre 75 caratteri su `/studio-dentistico/` 9 → 0 · bersagli sotto i
+> 44px della FAQ e della lightbox 12 → 0. Overflow orizzontale e bande vuote erano già a 0.
+> Il JSON-LD non può più uscire dal suo `<script>`, e un trattamento ha un indirizzo solo invece di
+> sei (180 indirizzi 200 → 30, con un 301 per ciascun duplicato).
+>
+> **Non fatto:** le 8 righe rimandate qui sotto, la fase 3 (T6/T7 di `TASKS.md`) e la fase 4 — quindi
+> **non esiste un «Dopo»** da mettere accanto al «Prima», e la mappa di `RESPONSIVE.md` §1 ha i numeri
+> di riga vecchi: il foglio è cresciuto durante il giro.
+>
+> **Come si riprende:** stesso messaggio di `docs/LOOP-CONTROLLO.md`, dalla prima riga non spuntata.
+> Le 8 rimandate sono in `## Note` con la loro prova. Prima di toccare il CSS conviene rifare la
+> mappa di §1, e trattare i numeri di riga dei referti come indizi: invecchiano a ogni commit.
+>
+> **Undici domande aspettano il titolare**, in `## Da decidere`. Due righe della coda si sono
+> rivelate non difetti e sono state annullate (F-R-11) o riclassificate (F-R-5, F-R-22).
+
 Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTROLLO.md`).
 
 ## Checklist
@@ -15,19 +38,19 @@ Ramo: `controllo/2026-10-25` · lo guida il capo della squadra (`docs/LOOP-CONTR
 - [x] 1.2 coda in questo file, Prima nelle note
 
 #### Phase 2 — Fix loop
-- [ ] 2.1 correttore → verificatore → commit, una riga della coda alla volta
-- [ ] 2.2 controllo di regressione ogni 5 correzioni e a fine coda
+- [~] 2.1 correttore → verificatore → commit — **22 righe su 30 chiuse, 8 rimandate** (giro fermato dal titolare)
+- [x] 2.2 controllo di regressione ogni 5 correzioni — fatto quattro volte, sempre pulito
 
 #### Phase 3 — TASKS.md
-- [ ] 3.1 F-X-1 (T6 resto) e F-X-2 (T7) nel giro 2.1
-- [ ] 3.2 T6/T7 spuntati, RESPONSIVE §1 aggiornato
+- [ ] 3.1 F-X-1 (T6 resto) e F-X-2 (T7) — **non iniziata**, giro fermato prima
+- [ ] 3.2 T6/T7 spuntati, RESPONSIVE §1 aggiornato — **non iniziata**
 
 #### Phase 4 — Close
-- [ ] 4.1 misuratore final, Dopo nelle note
-- [ ] 4.2 RESPONSIVE §1: righe e versione
-- [ ] 4.3 controlli finali
-- [ ] 4.4 riepilogo in cima a questo file
-- [ ] 4.5 push e stop
+- [ ] 4.1 misuratore final — **non eseguito**: non c'è un «Dopo» da confrontare con «Prima»
+- [ ] 4.2 RESPONSIVE §1: righe e versione — **non fatta** (la mappa delle sezioni è da rifare: il foglio è cresciuto)
+- [ ] 4.3 controlli finali completi — **non fatti**; valgono i quattro controlli di 2.2, l'ultimo dopo `71480b7`
+- [x] 4.4 riepilogo in cima a questo file
+- [x] 4.5 push e stop
 
 ## Coda
 
@@ -39,7 +62,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | --- | --- | --- | --- | --- |
 | F-P-1 | high | fix | JSON-LD: `JSON_UNESCAPED_SLASHES` lascia passare `</script>` | fatta `8fc8529` |
 | F-R-1 | high | fix | il ritratto del medico scivola di 156px e copre l'h1 (≤ 899) | fatta `881f57f` |
-| F-R-25 | medium | fix | sopra 899 il ritratto non si appiccica mai: `.sd-plate` batte `sticky` | da fare |
+| F-R-25 | medium | fix | sopra 899 il ritratto non si appiccica mai: `.sd-plate` batte `sticky` | **rimandata** |
 | F-T-1 | high | fix | `--wp--custom--surface--tintStrong` non esiste: voce corrente senza fondo | fatta `739b17b` |
 | F-P-2 | medium | fix | ogni trattamento risponde 200 sotto tutte e sei le radici | fatta `966d8f7` |
 | F-P-5 | medium | fix | un'area creata dal pannello sparisce da `/prestazioni/` | fatta `0de3ed0` |
@@ -47,16 +70,16 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-12 | medium | fix | il corpo delle pagine interne non si allinea al titolo (e la 404 galleggia) | fatta `c344d60` (2 tentativi) |
 | F-R-5 | medium | titolare | ~~quattro~~ **cinque** archivi di area senza `<title>`: dato Yoast | in Da decidere |
 | F-T-2 | medium | fix | `#prenota`, `#orari`, `#chi-siamo` finiscono sotto l'header appiccicato | fatta `4c63766` |
-| F-T-17 | medium | fix | `--sd-sticky-top` (156px) supera di 71-78px l'header vero sotto i 1121 | da fare |
+| F-T-17 | medium | fix | `--sd-sticky-top` (156px) supera di 71-78px l'header vero sotto i 1121 | **rimandata** |
 | F-T-3 | medium | fix | `measure--lede` annullata da §19.3; `measure--short` mai applicata | fatta `8286a9d` |
 | F-T-4 | medium | fix | footer e mobile-cta riscrivono orari e recapiti invece di leggerli (= F-P-3) | fatta `0feb2cb` (recapiti; orari al titolare) |
-| F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | da fare |
+| F-T-5 | medium | fix | 76px di banda vuota sotto il footer ≤ 781 (vedi vincolo nelle note) | **rimandata** |
 | F-R-3 | medium | fix | l'indirizzo nella barra dell'hero finisce in puntini a 320 e 600 | fatta `84f112e` |
 | F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | fatta `7de18d6` |
 | F-R-11 | ~~medium~~ | **nota** | `/casi-studi/`: 412px vuoti a destra — misurato, non è un difetto da CSS | declassata, annullata |
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | fatta `653a7fc` |
 | F-R-14 | medium | fix | capitolo in home: foto ingrandita e due proporzioni in griglia (+ F-R-16) | fatta `0a3b93c` (resto al titolare) |
-| F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
+| F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | **rimandata** |
 | F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | in Da decidere |
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ quarto grep di guardia) | fatta `b7ff013` |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | fatta `437c1ad` |
@@ -65,11 +88,11 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | fatta `82bf075` |
 | F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | fatta `71480b7` |
 | F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | fatta `71480b7` |
-| F-P-13 | low | fix | `"anchor": true` sui 14 blocchi, ancora mai resa | da fare |
+| F-P-13 | low | fix | `"anchor": true` sui 14 blocchi, ancora mai resa | **rimandata** |
 | F-P-16 | low | fix | il nonce del riquadro area non è legato all'ID del termine | fatta `71480b7` |
-| F-P-18 | low | fix | anche il nonce dei campi post (`sd_core_fields`) non è legato all'ID | da fare |
-| F-R-18 | low | fix | la riga del giorno corrente rientra di 12px | da fare |
-| F-R-19 | low | fix | gli estratti delle schede si tagliano a metà parola | da fare |
+| F-P-18 | low | fix | anche il nonce dei campi post (`sd_core_fields`) non è legato all'ID | **rimandata** |
+| F-R-18 | low | fix | la riga del giorno corrente rientra di 12px | **rimandata** |
+| F-R-19 | low | fix | gli estratti delle schede si tagliano a metà parola | **rimandata** |
 | F-R-22 | low | titolare | il `<title>` della 404 è in inglese: impostazione Yoast | in Da decidere |
 
 ## Correzioni fatte
@@ -224,6 +247,36 @@ che non si fa. `DA-VERIFICARE.md` §2.4, §14, §15.2.
 Le 323 segnalazioni si riducono a 24 cause distinte. Tastiera: **nessun problema** (F-R-24) — skip
 link, pannello, sottomenu, Escape e contorno di fuoco tutti a posto, su `/` a 390 e su `/lo-studio/`
 e `/contatti/` a 1440.
+
+### Righe rimandate col giro fermo (8) — nessuna toccata
+
+Tutte e otto restano nella coda con stato `rimandata`: niente è stato modificato, niente annullato.
+Due sono `medium` e vale la pena guardarle per prime, perché nascono dallo stesso token.
+
+- **F-T-17** `medium` — `--sd-sticky-top` è 9.75rem (156px) ma l'header vero misura **78px a 390 e
+  781**, 85 a 1120, 142 a 1121 e 1180, 152 a 1440 (misurati dal verificatore di F-T-2). Sotto i 1121
+  il token supera l'header di 71-78px, e il commento di §1 dice 155/142/134, sbagliando su mobile.
+  Non è una sostituzione di numero: lo stesso token regge il `min-height` dell'hero (riga 298), la
+  foto del capitolo (1366-1369) e tre colonne appiccicate (1779, 3387).
+- **F-R-25** `medium` — sopra gli 899 il ritratto del medico non si appiccica mai: `.sd-plate`
+  ridichiara `position: relative` più in basso nel foglio e batte lo `sticky` di §18.10, come lo
+  batteva sotto. Confermato in proprio da due agenti (correttore di F-R-1 e suo verificatore):
+  a 900/1024/1440 la figure ha `position: relative` e `top: 156px`, prima e dopo F-R-1.
+- **F-T-5** `medium` — i 76px di banda vuota sotto il footer ≤ 781. **Attenzione al vincolo dato dal
+  titolare** (più sotto): non si cancella il `padding-bottom`, va legato alla barra mobile, così
+  riaccendendo la barra lo spazio torna con lei.
+- **F-R-26** `low` — `.sd-doctor__bio` non si allinea al nome, stessa famiglia di F-R-12
+  (`/professionisti/giuseppe-dambrosio/` a 1440: nome x=511, bio x=625).
+- **F-R-18** `low` — la riga del giorno corrente nel blocco orari rientra di 12px: il filetto blu è un
+  `border-inline-start` che sposta il contenuto invece di posarsi sopra.
+- **F-R-19** `low` — gli estratti delle schede si tagliano a metà parola: il taglio è a numero di
+  caratteri, non all'ultimo spazio. È lavoro di plugin (`class-render.php`), non di tema.
+- **F-P-13** `low` — `"anchor": true` sui 14 `block.json` ma nessun render callback stampa
+  `$attrs['anchor']`: un'ancora messa nell'editor viene accettata e persa. Da leggere insieme a F-P-9
+  (i blocchi non compaiono nell'inseritore, quindi oggi nessuno può impostarla).
+- **F-P-18** `low` — il nonce dei campi post (`sd_core_fields`) non è legato al `$post_id`, mentre
+  quello dell'area ora lo è. **Il commento in `class-fields.php` dice già che l'asimmetria è nota**:
+  se si chiude questa riga, quel commento va aggiornato nello stesso momento.
 
 ### Rilievi archiviati come nota (nessuna modifica)
 
