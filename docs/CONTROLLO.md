@@ -61,8 +61,8 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ quarto grep di guardia) | fatta `b7ff013` |
 | F-T-9 | low | fix | `.sd-prenota__lede` definita in quattro punti, in nessun markup | fatta `437c1ad` |
 | F-T-12 | low | fix | due dichiarazioni annullate tre righe dopo, §18.4 | fatta `437c1ad` |
-| F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | da fare |
-| F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | da fare |
+| F-T-14 | low | fix | `$sd_c['address']` stampato grezzo in **tre** pattern (anche `footer.php:50`) | fatta `82bf075` |
+| F-T-15 | low | fix | `SORRISO_DAMBROSIO_VERSION` ferma a 1.0.0; docblock di `menu.js` sbagliato | fatta `82bf075` |
 | F-P-7 | low | fix | `auth_callback` guarda `edit_posts`, non il contenuto (anche `can_edit_area()`) | da fare |
 | F-P-8 | low | fix | `$_SERVER['REQUEST_URI']` letto senza sanitizzare | da fare |
 | F-P-13 | low | fix | `"anchor": true` sui 14 blocchi, ancora mai resa | da fare |
@@ -129,6 +129,10 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
     effetto a schermo: **22 screenshot byte-identici** fra correttore e verificatore, e il confronto
     letto dal CSSOM (foglio prima 72.879 caratteri con le due regole, dopo 72.539 senza) invece che
     dalla cache.
+17. **F-T-14 + F-T-15** `82bf075` — l'indirizzo passa da `wp_kses_post()` in tutti e quattro i punti
+    (il terzo l'aveva aggiunto questo stesso giro), `phpcs:ignore` sull'indirizzo 3 → 0, e
+    `SORRISO_DAMBROSIO_VERSION` torna d'accordo con `Version:` (1.8.10), con un commento che dice di
+    alzarle insieme. HTML servito byte-identico su quattro pagine.
 
 ## Da decidere (titolare)
 
@@ -277,6 +281,12 @@ e `/contatti/` a 1440.
 - **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
   limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
   da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
+- **La causa scritta in F-T-14 era sbagliata, il rimedio giusto.** Il rilievo diceva che `esc_html()`
+  avrebbe mostrato `&#8211;` in chiaro: falso, `_wp_specialchars()` lavora con `double_encode = false`
+  e le entità valide restano intatte (misurato: `esc_html($addr) === $addr`). La ragione vera di
+  `wp_kses_post()` è che l'indirizzo può contenere marcatura (`<br>`). Il codice non cambia, ma il
+  verificatore ha restituito NON PASSA sulla **motivazione** — ed era giusto così: un commit che
+  spiega male il perché è il difetto della prossima volta. Quarto sbaglio nei rilievi di fase 1.
 - **I numeri di riga dei referti invecchiano durante il giro.** Ogni riferimento di F-T-9 e F-T-12 era
   già spostato (§18.4 2881 → 2889, §18.15 3659 → 3708, §19.2 3750 → 3799, §19.3 3816 → 3870), e lo era
   anche la ri-misura fatta dal verificatore di F-T-3 poche righe prima (3688/3779/3850). Da trattare
@@ -289,11 +299,12 @@ e `/contatti/` a 1440.
   `sizes`: per questo l'audit vedeva ×0.99 sulla foto del capitolo e il difetto vero — ×1.43 fra 1024
   e 1120 — restava invisibile. Le misure di ingrandimento si fanno con `getimagesize()` sul file in
   `uploads/`. Da sistemare in `docs/audit/` insieme agli altri tre difetti dello strumento.
-- **Tre sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
+- **Quattro sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
   segnalazioni a `/magnetic-mallet/`, che non ha **nessun** blocco `details` (erano 3+3 fra
   `/impianti-dentali/` e `/tooth-transformer/`); F-R-5 parlava di quattro archivi d'area rotti quando
   sono cinque; F-R-14 metteva l'ingrandimento a 1440, dove il file bastava, mentre era a 1024 e 1120.
-  Gli agenti che misurano sbagliano anche loro: il verificatore serve a questo.
+  F-T-14 dava una ragione falsa per un rimedio giusto. Gli agenti che misurano sbagliano anche loro:
+  il verificatore serve a questo.
 
 ### Scostamenti dalle regole del giro
 
