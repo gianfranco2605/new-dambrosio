@@ -55,7 +55,7 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
 | F-R-6 | medium | fix | bersagli < 44px: `summary` delle domande e lente della lightbox | fatta `7de18d6` |
 | F-R-11 | ~~medium~~ | **nota** | `/casi-studi/`: 412px vuoti a destra — misurato, non è un difetto da CSS | declassata, annullata |
 | F-R-13 | medium | fix | righe da 88 caratteri dentro le colonne di `/studio-dentistico/` | fatta `653a7fc` |
-| F-R-14 | medium | fix | capitolo in home: foto ingrandita ×1.01 e due proporzioni in griglia (+ F-R-16) | da fare |
+| F-R-14 | medium | fix | capitolo in home: foto ingrandita e due proporzioni in griglia (+ F-R-16) | fatta `0a3b93c` (resto al titolare) |
 | F-R-26 | low | fix | `.sd-doctor__bio` non si allinea al nome (stessa famiglia di F-R-12) | da fare |
 | F-R-27 | low | titolare | `/studio-dentistico/`: la gronda e le foto sotto misura sono impaginazione, non CSS | da fare |
 | F-T-7 | low | fix | due `max-width` in `ch`, vietati da CLAUDE.md (+ DESIGN-SPEC §3.1) | da fare |
@@ -116,10 +116,14 @@ F-T-8 (commenti sui `!important`) è assorbito dalla fase 3, F-X-1, come chiede 
     **100 → 75 caratteri** a 1440, `tipografia` 9 → 0. Serviva una seconda regola: quei pannelli
     stanno in un Gruppo flex verticale, e stringere il paragrafo deformava la foto (287×500 invece
     di 350×500). `align-self: stretch` riporta la geometria identica.
+14. **F-R-14 + F-R-16** `0a3b93c` — taglio `1152x1536` (quello che serve già `/lo-studio/`) e soglia
+    1120 nel `sizes`: **immagini rese oltre la larghezza vera del file 2 → 0**. Nella matrice la
+    cornice è quella della cella e il ritaglio sta al centro: scarto dei titoli 65 → 25px a 1440,
+    35 → 0 a 781.
 
 ## Da decidere (titolare)
 
-Dieci domande. Nessuna di queste è stata toccata.
+Undici domande. Nessuna di queste è stata toccata.
 
 1. **La barra fissa in fondo su mobile resta spenta o torna?** (F-T-6) Con lei torna la scorciatoia
    WhatsApp, oggi raggiungibile solo da «Contatti». Finché la decisione è sospesa, pattern, template
@@ -264,10 +268,15 @@ e `/contatti/` a 1440.
 - **Il contenitore BEAF ha `max-width: none`**, non `100%`: vince l'`unset !important` del plugin. A
   limitare le foto delle schede caso è il `minmax(0, 25rem)` della colonna, non una regola del tema —
   da ricordare per T6/F-X-1, che parla proprio di quel `!important`.
-- **Due sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
+- **`naturalWidth` non misura il file.** Con `srcset` è il valore **corretto per densità** e segue
+  `sizes`: per questo l'audit vedeva ×0.99 sulla foto del capitolo e il difetto vero — ×1.43 fra 1024
+  e 1120 — restava invisibile. Le misure di ingrandimento si fanno con `getimagesize()` sul file in
+  `uploads/`. Da sistemare in `docs/audit/` insieme agli altri tre difetti dello strumento.
+- **Tre sbagli nei rilievi stessi**, da ricordare quando si legge un referto: F-R-6 attribuiva tre
   segnalazioni a `/magnetic-mallet/`, che non ha **nessun** blocco `details` (erano 3+3 fra
-  `/impianti-dentali/` e `/tooth-transformer/`); e F-R-5 parlava di quattro archivi d'area rotti
-  quando sono cinque. Gli agenti che misurano sbagliano anche loro: il verificatore serve a questo.
+  `/impianti-dentali/` e `/tooth-transformer/`); F-R-5 parlava di quattro archivi d'area rotti quando
+  sono cinque; F-R-14 metteva l'ingrandimento a 1440, dove il file bastava, mentre era a 1024 e 1120.
+  Gli agenti che misurano sbagliano anche loro: il verificatore serve a questo.
 
 ### Scostamenti dalle regole del giro
 
