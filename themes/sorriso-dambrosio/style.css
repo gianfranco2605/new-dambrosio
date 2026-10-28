@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.10
+Version: 1.8.11
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -2486,18 +2486,25 @@ Text Domain: sorriso-dambrosio
 	   altrove: a pari peso e pari specificita' avrebbe vinto comunque
 	   questa, che sta piu' in basso nel foglio. Era gia' successo.
 
-	   Per riaccenderla: `display: flex !important`. Con lei torna anche
-	   la scorciatoia WhatsApp, oggi raggiungibile solo da «Contatti».
-	   Decisione del titolare: `DA-VERIFICARE.md`. */
-	.sd-mobile-cta {
-		display: none !important;
-		/* Il badge fisso di iubenda occupa l'angolo in basso a destra. */
-		padding-right: 3.75rem !important;
+	   L'interruttore e lo spazio che la barra si porta dietro stanno nella
+	   regola qui sotto, insieme: la barra e' `position: fixed`, quindi la
+	   banda che le impedisce di coprire il footer deve stare su un antenato,
+	   ma i due valori si cambiano in un punto solo. Per riaccenderla:
+	   `flex` e `4.75rem` (l'altezza della barra) qui sotto. Tenuti lontani,
+	   spegnere la barra lasciava la banda orfana: 76px di vuoto sotto il
+	   footer in ogni pagina. E' successo.
+
+	   Con la barra torna anche la scorciatoia WhatsApp, oggi raggiungibile
+	   solo da «Contatti». Decisione del titolare: `DA-VERIFICARE.md`. */
+	.wp-site-blocks {
+		--sd-mobile-cta--display: none;
+		padding-bottom: 0;
 	}
 
-	/* Spazio in fondo alla pagina perche' la barra non copra il footer. */
-	.wp-site-blocks {
-		padding-bottom: 4.75rem;
+	.sd-mobile-cta {
+		display: var( --sd-mobile-cta--display, none ) !important;
+		/* Il badge fisso di iubenda occupa l'angolo in basso a destra. */
+		padding-right: 3.75rem !important;
 	}
 }
 
