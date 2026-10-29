@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.11
+Version: 1.8.12
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -2519,6 +2519,16 @@ Text Domain: sorriso-dambrosio
 /* ---------------------------------------------------------------
    15. Footer
    --------------------------------------------------------------- */
+
+/* Lo stacco sopra il footer e' lo stesso respiro delle sezioni
+   (`--sd-rhythm`, 86px a 1440): con `x-large` negli attributi del blocco
+   erano 44px e il footer sembrava schiacciato contro la mappa.
+   Sta qui e non negli attributi perche' il valore deve seguire il ritmo
+   delle sezioni, non una misura propria: un `padding-top` inline
+   batterebbe questa regola. Gli altri tre lati restano del blocco. */
+.sd-footer {
+	padding-top: var(--sd-rhythm);
+}
 
 .sd-footer .logo-footer img {
 	height: auto;
