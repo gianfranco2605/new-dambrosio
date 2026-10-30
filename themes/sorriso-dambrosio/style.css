@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.12
+Version: 1.8.14
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -2697,33 +2697,48 @@ img {
 /* ---------------------------------------------------------------
    18.2 Intestazione di una pagina d'area
 
-   Fascia tinta, titolo a sinistra e fotografia a destra che esce
-   verso il bordo della finestra. L'occhiello non e' un'etichetta:
-   e' il conto dei trattamenti, cioe' un'informazione.
+   Fascia tinta, solo tipografia: il titolo su sette dodicesimi,
+   l'introduzione su cinque allineata al suo piede, e sotto un
+   filetto le pillole dei trattamenti con il pulsante di
+   prenotazione in fondo alla riga.
+
+   Era una spaccatura con la fotografia dell'area a destra. Le cinque
+   copertine hanno tagli e misure diverse e la lastra le serviva
+   `cover` o `contain` secondo la larghezza del file: la stessa
+   pagina cambiava faccia da un'area all'altra, ed era l'unica cosa
+   che variava. Senza fotografia le cinque pagine si aprono identiche,
+   e quello che varia e' il testo che ci sta scritto.
+
+   Niente qui dentro ha una misura propria: il titolo e' il corpo piu'
+   grande della scala (`xx-large`, lo stesso che theme.json da' a ogni
+   `h1`), le pillole sono il pulsante di §3b, lo stacco e' `--sd-rhythm`.
    --------------------------------------------------------------- */
 
 .sd-areahead {
-	overflow: hidden;
-	padding-bottom: 0;
+	background-color: var(--wp--custom--surface--tint);
 }
 
 .sd-areahead__grid {
 	align-items: end;
+	column-gap: var(--wp--custom--space--xl);
 	display: grid;
-	gap: var(--wp--custom--space--xl);
-	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+	grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+	row-gap: var(--wp--custom--space--md);
 }
 
-.sd-areahead__text {
-	padding-bottom: var(--sd-rhythm);
+/* Senza introduzione — «Denti e postura» non ne ha — il titolo prende
+   la riga intera: una colonna vuota accanto a un titolo da 72px si
+   legge come un pezzo di pagina che non e' arrivato. */
+.sd-areahead__grid--solo {
+	grid-template-columns: minmax(0, 1fr);
 }
 
-.sd-areahead .sd-head {
-	margin-bottom: var(--wp--custom--space--md);
-}
-
-.sd-areahead h1 {
-	font-size: var(--wp--preset--font-size--xx-large);
+/* Fraunces light, come il titolo dell'hero in homepage: a 72px il 400
+   di theme.json e' un peso da manifesto.
+   Il corpo non si ridichiara: `xx-large` e' gia' quello che
+   theme.json da' a ogni `h1`, ed e' il piu' grande della scala. */
+.sd-areahead__title {
+	font-weight: 300;
 	margin: 0;
 }
 
@@ -2734,31 +2749,86 @@ img {
 	margin: 0;
 }
 
-/* La fotografia esce verso destra fino al bordo della finestra: e'
-   il sanguinamento da un lato solo che DESIGN-SPEC isola come
-   costante del riferimento. */
-.sd-areahead__figure {
-	margin: 0;
-	margin-right: calc(var(--sd-bleed) * -1);
+/* Il filetto: sulla fascia tinta l'`hairline` grigio sparisce, come in
+   18.11, quindi il tono viene dal `main` al 24%. */
+.sd-areahead__bar {
+	align-items: end;
+	border-top: 1px solid color-mix(in srgb, var(--wp--preset--color--main) 24%, transparent);
+	column-gap: var(--wp--custom--space--md);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin-top: var(--sd-rhythm);
+	padding-top: var(--wp--custom--space--md);
+	row-gap: var(--wp--custom--space--sm);
 }
 
-/* Proporzione e riempimento li governa la lastra (§19.6). */
+/* Il punto di partenza e' una quota della riga, non il contenuto: con
+   `auto` la base sarebbe la larghezza delle pillole tutte in fila —
+   duemila pixel con dodici trattamenti — e la riga manderebbe il
+   pulsante a capo anche a 1440, invece di far andare a capo le
+   pillole. Da qui cresce fino a riempire quel che il pulsante lascia. */
+.sd-areahead__group {
+	flex: 1 1 60%;
+	min-width: 0;
+}
+
+.sd-areahead__label {
+	margin-bottom: var(--wp--custom--space--xs);
+}
+
+.sd-areahead__pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--custom--space--xxs);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Un titolo di trattamento arriva a 44 caratteri («Implantologia
+   Senza Incisione Lembo e Suture»): il pulsante di §3b e'
+   `white-space: nowrap`, e a 390px una pillola sola sfonderebbe la
+   riga. Qui il testo va a capo dentro la pillola, che non supera
+   mai la colonna. L'altezza minima di 44px la da' §19.1. */
+.sd-areahead__pill {
+	max-width: 100%;
+	white-space: normal;
+}
 
 @media (max-width: 899px) {
 	.sd-areahead__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
-	.sd-areahead__text {
-		padding-bottom: var(--wp--custom--space--lg);
+	/* Tutto in colonna: titolo, introduzione, etichetta, pillole,
+	   pulsante. `align-items` torna a sinistra, altrimenti il
+	   pulsante si stirerebbe per tutta la larghezza. */
+	.sd-areahead__bar {
+		align-items: flex-start;
+		flex-direction: column;
 	}
+}
 
-	.sd-areahead__figure {
-		margin-inline: calc(var(--sd-bleed) * -1);
-	}
+/* Sul telefono le pillole se ne vanno, il pulsante resta.
 
-	.sd-areahead__figure {
-		aspect-ratio: var(--wp--custom--frame--wide);
+   Una pillola per trattamento sta larga quanto la colonna: su
+   /trattamenti/ le dodici occupavano undici righe e l'intestazione
+   arrivava a 1088px, una schermata e mezza prima del primo
+   trattamento. Quello che le pillole fanno — portare al trattamento —
+   lo fa gia' lo zig-zag che comincia subito sotto: su tutte e cinque
+   le aree la sezione che segue l'intestazione collega gli stessi
+   contenuti, uno per uno (misurato: 5, 4, 6, 3, 12 pillole, zero
+   collegamenti che manchino li' sotto). Sul telefono sono un sommario
+   che costa piu' di quel che fa risparmiare.
+
+   Va via il gruppo intero, etichetta compresa: «Trattamenti» senza
+   trattamenti sotto non e' un'etichetta di niente. Il filetto e il
+   pulsante restano, perche' prenotare non ha un altro posto dove
+   stare in cima alla pagina. */
+@media (max-width: 599px) {
+	.sd-areahead__group {
+		display: none;
 	}
 }
 
@@ -4066,10 +4136,6 @@ img {
 }
 
 /* Le proporzioni per ruolo. Una per griglia, mai due. */
-.sd-areahead__figure {
-	aspect-ratio: var(--wp--custom--frame--wide);
-}
-
 .sd-entry__figure {
 	aspect-ratio: var(--wp--custom--frame--wide);
 }
@@ -4679,8 +4745,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
    larghe passano da 16/9 a 3/2 e non superano mai i 20rem.
    --------------------------------------------------------------- */
 
-.sd-zig__figure,
-.sd-areahead__figure {
+.sd-zig__figure {
 	aspect-ratio: var(--wp--custom--frame--wide);
 }
 
@@ -4754,8 +4819,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 }
 
 .sd-zig__figure img,
-.sd-entry__figure img,
-.sd-areahead__figure img {
+.sd-entry__figure img {
 	max-height: 100%;
 }
 
@@ -4764,17 +4828,18 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
    Era scritto su tutte le cornici larghe, e su una fotografia faceva
    il contrario di quel che doveva: la cornice ha una proporzione
    fissa, quindi un tetto d'altezza le taglia anche la **larghezza**.
-   Nell'intestazione d'area la colonna e' larga 741px e la fotografia
+   Nell'intestazione d'area la colonna era larga 741px e la fotografia
    ne occupava 480 — 262px di colonna inutilizzati, misurati — con
-   l'aria che restava a sinistra dell'immagine. Era la voce 21.
+   l'aria che restava a sinistra dell'immagine. Era la voce 21: quella
+   intestazione oggi non ha piu' fotografia (18.2), la misura resta
+   percio' come ragione e non come caso da guardare.
 
    La fascia vuota che il tetto doveva togliere nasce solo quando
    dentro la cornice c'e' un ritaglio che non la riempie. Li' il tetto
    resta. Una fotografia riempie la cornice per definizione: di fascia
    vuota non ne produce, e puo' prendersi la colonna. */
 .sd-plate--contain.sd-zig__figure,
-.sd-plate--contain.sd-entry__figure,
-.sd-plate--contain.sd-areahead__figure {
+.sd-plate--contain.sd-entry__figure {
 	max-height: 20rem;
 }
 
@@ -4784,8 +4849,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	   quella fascia si legge come vuota. Qui il tetto torna su
 	   tutte, fotografie comprese. */
 	.sd-zig__figure,
-	.sd-entry__figure,
-	.sd-areahead__figure {
+	.sd-entry__figure {
 		max-height: 17rem;
 	}
 
@@ -4802,8 +4866,7 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	}
 
 	.sd-plate--panorama.sd-entry__figure,
-	.sd-plate--panorama.sd-zig__figure,
-	.sd-plate--panorama.sd-areahead__figure {
+	.sd-plate--panorama.sd-zig__figure {
 		aspect-ratio: var(--sd-ar);
 		max-height: none;
 	}

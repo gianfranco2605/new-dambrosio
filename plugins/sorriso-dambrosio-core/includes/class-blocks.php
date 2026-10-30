@@ -198,9 +198,17 @@ final class Blocks {
 	/**
 	 * L'intestazione di una pagina d'area.
 	 *
-	 * Titolo, introduzione e immagine stanno sul **termine**, non su una
-	 * pagina: aggiungere un'area e' creare un termine, non costruire una
-	 * pagina da zero.
+	 * Titolo e introduzione stanno sul **termine**, non su una pagina:
+	 * aggiungere un'area e' creare un termine, non costruire una pagina da
+	 * zero.
+	 *
+	 * **L'intestazione e' tipografica: nessuna fotografia.** Le cinque aree
+	 * hanno copertine di taglio e misura diversi, e la lastra le serviva
+	 * `cover` o `contain` secondo la larghezza del file: la stessa pagina
+	 * cambiava faccia da un'area all'altra. Qui dentro non c'e' piu' nessun
+	 * dato che varii per area tranne il testo, quindi le cinque pagine si
+	 * aprono identiche. Il campo `_sd_cover` resta sul termine e nella
+	 * libreria: questo blocco smette di leggerlo, non lo cancella.
 	 *
 	 * @param array<string, mixed> $attrs Attributi.
 	 */
@@ -211,43 +219,60 @@ final class Blocks {
 			return '';
 		}
 
-		$cover = (int) get_term_meta( $area->term_id, '_sd_cover', true );
-		$count = count( Relations::in_area( Content_Types::TRATTAMENTO, (int) $area->term_id ) );
+		$solo = '' === $area->description;
 
-		$eyebrow = $count > 0
-			? $count . ( 1 === $count ? ' trattamento' : ' trattamenti' )
-			: 'Area';
-
-		$body = '<div class="sd-areahead__grid">'
-			. '<div class="sd-areahead__text">'
-			. Render::head( $eyebrow, $area->name, 1 )
-			. ( '' !== $area->description ? '<p class="sd-areahead__lede">' . wp_kses_post( $area->description ) . '</p>' : '' )
+		// Senza introduzione il titolo prende la riga intera: una colonna
+		// vuota accanto a un `h1` da 72px si legge come un errore.
+		$grid = '<div class="sd-areahead__grid' . ( $solo ? ' sd-areahead__grid--solo' : '' ) . '">'
+			. '<h1 class="wp-block-heading sd-areahead__title" id="sd-areahead-titolo">' . esc_html( $area->name ) . '</h1>'
+			. ( $solo ? '' : '<p class="sd-areahead__lede">' . wp_kses_post( $area->description ) . '</p>' )
 			. '</div>';
 
-		if ( $cover > 0 ) {
-			/*
-			 * `large` e' 1024px e il browser sceglieva il taglio da 768 per uno
-			 * spazio da 744: nessun margine per uno schermo retina. `sizes`
-			 * dice quanto spazio occupa davvero, cosi' srcset sceglie bene.
-			 */
-			$img = wp_get_attachment_image(
-				$cover,
-				'full',
-				false,
-				array(
-					'class' => 'sd-img',
-					'sizes' => '(max-width: 900px) 100vw, 62vw',
-				)
-			);
+		/*
+		 * Il pulsante va a `/contatti/#prenota` e non a `#prenota`: su una
+		 * pagina d'area quell'ancora non esiste — il modulo sta su
+		 * /contatti/, e la fascia che chiude la pagina si chiama
+		 * `prenota-cta`. E' la stessa destinazione del pulsante
+		 * dell'header su ogni pagina che non sia la home.
+		 */
+		$body = $grid . '<div class="sd-areahead__bar">' . self::area_pills( (int) $area->term_id )
+			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( home_url( '/contatti/#prenota' ) ) . '">'
+			. 'Prenota un appuntamento</a>'
+			. '</div>';
 
-			$meta    = wp_get_attachment_metadata( $cover );
-			$natural = isset( $meta['width'] ) ? (int) $meta['width'] : 0;
-			$mode    = $natural >= 1190 ? 'sd-plate--cover' : 'sd-plate--contain';
+		$class = trim( 'sd-section sd-areahead ' . self::attr( $attrs, 'fondo', '' ) );
 
-			$body .= '<figure class="sd-plate ' . esc_attr( $mode ) . ' sd-areahead__figure">' . $img . '</figure>';
+		// `Render::section()` non sa dare un nome alla sezione, e una
+		// <section> senza nome accessibile vale un <div>: il nome e' l'h1.
+		return '<section class="' . esc_attr( $class ) . '" aria-labelledby="sd-areahead-titolo">'
+			. '<div class="sd-wrap">' . $body . '</div></section>';
+	}
+
+	/**
+	 * I trattamenti dell'area come pillole, sotto il filetto.
+	 *
+	 * Sono gli stessi contenuti che l'elenco piu' sotto racconta per esteso:
+	 * qui servono da sommario e da scorciatoia, uno per trattamento.
+	 */
+	private static function area_pills( int $term_id ): string {
+		$posts = Relations::in_area( Content_Types::TRATTAMENTO, $term_id );
+
+		if ( array() === $posts ) {
+			return '';
 		}
 
-		return Render::section( $body . '</div>', trim( 'sd-areahead ' . self::attr( $attrs, 'fondo', '' ) ) );
+		$items = '';
+
+		foreach ( $posts as $post ) {
+			$items .= '<li><a class="sd-btn sd-btn--outline sd-areahead__pill" href="'
+				. esc_url( (string) get_permalink( $post ) ) . '">'
+				. esc_html( get_the_title( $post ) ) . '</a></li>';
+		}
+
+		return '<div class="sd-areahead__group">'
+			. '<p class="sd-eyebrow sd-areahead__label has-x-small-font-size">Trattamenti</p>'
+			. '<ul class="sd-areahead__pills">' . $items . '</ul>'
+			. '</div>';
 	}
 
 	/**
