@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.14
+Version: 1.8.15
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -859,7 +859,7 @@ Text Domain: sorriso-dambrosio
    il tratto blu sotto il testo si leggeva come un secondo bordo. E sulle
    due azioni, che li' sono pillole, passava sotto il pulsante — una
    sottolineatura sotto un pulsante non esiste in nessun sistema. */
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 	background-color: var(--wp--preset--color--primary);
 	bottom: -4px;
 	content: "";
@@ -870,13 +870,13 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item > .wp-block-navigation-item__content::after {
+	.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item > .wp-block-navigation-item__content::after {
 		transition: width var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	}
 }
 
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item:hover > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item:focus-within > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
@@ -884,8 +884,8 @@ Text Domain: sorriso-dambrosio
    Anche per un ramo aperto il segno va sull'etichetta: prima stava sul
    bottone della freccia, ed era il secondo tratto di quella riga
    spezzata. */
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
-.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item.current-menu-item > .wp-block-navigation-item__content::after,
+.sd-header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__container > .wp-block-navigation-item.current-menu-ancestor > .wp-block-navigation-item__content::after {
 	width: 100%;
 }
 
