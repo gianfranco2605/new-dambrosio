@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.15
+Version: 1.8.16
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -713,11 +713,12 @@ Text Domain: sorriso-dambrosio
 	margin-right: var(--wp--custom--space--xs);
 }
 
-/* Era 140px: illeggibile accanto a sette voci di menu. Il marchio ha
-   tre righe di testo dentro, sotto i 190px non si leggono. */
+/* Il marchio "da" e' quadrato (150×160 naturali), non piu' le tre righe
+   del vecchio wordmark: si misura in altezza, non in larghezza, e non
+   sale mai sopra la sua misura naturale. */
 .sd-header .wp-block-site-logo img {
-	height: auto;
-	width: 220px;
+	height: 72px;
+	width: auto;
 }
 
 /* Sette voci di primo livello. Non vanno mai a capo: sotto i 1120px
@@ -991,18 +992,15 @@ Text Domain: sorriso-dambrosio
 
    Anche con 16px non bastava: il menu e' allineato a destra e, quando la
    riga non gli basta, sborda a sinistra sopra il marchio — a 1121 copriva
-   «Studio Odontoiatrico» di 56px (T9). Qui si stringono le due cose:
-   lo stacco a 8px e il logo a 190, il minimo a cui le sue tre righe si
-   leggono (vedi 5.2: 140 era illeggibile). Spazio logo → menu: 22px a
-   1121, 80 a 1180, 140 a 1240. A 1341 tornano 28px e 220: 64px. */
+   «Studio Odontoiatrico» di 56px (T9). Qui lo stacco scende a 8px.
+   DA VERIFICARE: la regola nasceva anche per il logo a 190px (il
+   wordmark largo); col marchio "da" a 72px di altezza lo spazio
+   logo → menu e' molto piu' ampio e questa riduzione potrebbe non
+   servire piu' — da confermare misurando 1121–1340 col marchio nuovo. */
 @media (max-width: 1340px) {
 	.sd-header__nav.wp-block-navigation {
 		--sd-nav-gap: 0.5rem;
 		--sd-nav-chevron-gap: 0.25rem;
-	}
-
-	.sd-header .wp-block-site-logo img {
-		width: 190px;
 	}
 }
 
@@ -1028,12 +1026,10 @@ Text Domain: sorriso-dambrosio
 		width: 20px;
 	}
 
-	/* Il logo resta il piu' grande che la riga regge accanto al panino:
-	   misurato (T5), 170px lascia 84px di stacco a 390px e 20 a 320.
-	   Era 132px. Sotto i 480 scendeva a 148: con una sola icona
-	   telefono nella riga (giro 2 dell'header) non serve piu'. */
+	/* Sotto il 781 la riga e' piu' bassa (panino + telefono): il marchio
+	   scende con lei, sempre per altezza. */
 	.sd-header .wp-block-site-logo img {
-		width: 170px;
+		height: 56px;
 	}
 
 	.sd-header__inner {
