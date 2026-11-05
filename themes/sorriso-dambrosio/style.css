@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.17
+Version: 1.8.18
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -3598,9 +3598,17 @@ img {
    18.12 La fascia di prenotazione che chiude ogni pagina interna
    --------------------------------------------------------------- */
 
+/* Era `sd-section--dark`: lo stesso scuro del footer subito sotto
+   faceva leggere le due fasce come un unico footer lungo. La classe
+   generica `sd-section--tint` da sola darebbe il `tertiary` pieno
+   (§1, piu' carico): qui invece serve lo stesso velo chiarissimo
+   dell'intestazione d'area (`surface--tint`, 8% di `primary` — vedi
+   §18.2), quindi il fondo si ridichiara. Il testo normale basta, senza
+   bisogno di `color` qui — e l'occhiello prende gia' `main` dalla
+   regola di §3 per `sd-section--tint`. I pulsanti contornati restano
+   quelli di base (§3b): bordo e testo `main`, forte sul chiaro. */
 .sd-cta {
-	background-color: var(--wp--preset--color--main);
-	color: var(--wp--preset--color--base);
+	background-color: var(--wp--custom--surface--tint);
 }
 
 .sd-cta__grid {
@@ -3625,21 +3633,18 @@ img {
 	gap: 0.75rem;
 }
 
-.sd-cta .sd-btn--outline {
-	border-color: var(--wp--custom--rule--on-dark);
-	color: var(--wp--preset--color--base);
-}
-
-.sd-cta .sd-btn--outline:hover,
-.sd-cta .sd-btn--outline:focus-visible {
-	background-color: var(--wp--preset--color--base);
-	color: var(--wp--preset--color--main);
-}
-
 @media (max-width: 899px) {
 	.sd-cta__grid {
 		grid-template-columns: minmax(0, 1fr);
 	}
+}
+
+/* Due fasce tinte una sopra l'altra si fonderebbero in una sola: capita
+   quando la sezione appena sopra la prenotazione ha anch'essa
+   `sd-section--tint` (trattamenti, professionista, 404). Un filo
+   d'ordine basta a separarle. */
+.sd-section--tint + .sd-section--tint {
+	border-top: 1px solid var(--wp--custom--border--hairline);
 }
 
 /* ---------------------------------------------------------------

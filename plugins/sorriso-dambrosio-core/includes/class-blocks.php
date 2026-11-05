@@ -775,6 +775,10 @@ final class Blocks {
 	 * Una volta sola, qui: se cambia il testo o l'indirizzo del modulo, cambia
 	 * in tutte le pagine insieme.
 	 *
+	 * Fondo `sd-section--tint`, non piu' `sd-section--dark`: lo stesso scuro
+	 * del footer, appena sopra, faceva leggere le due fasce come un unico
+	 * footer lungo. Il colore del testo e dei pulsanti segue dal CSS.
+	 *
 	 * @param array<string, mixed> $attrs Attributi.
 	 */
 	public static function cta_prenota( array $attrs ): string {
@@ -794,6 +798,6 @@ final class Blocks {
 			. Render::icon( 'whatsapp' ) . '<span>WhatsApp</span></a>'
 			. '</div></div>';
 
-		return Render::section( $body, 'sd-section--dark sd-cta', 'prenota-cta' );
+		return Render::section( $body, 'sd-section--tint sd-cta', 'prenota-cta' );
 	}
 }
