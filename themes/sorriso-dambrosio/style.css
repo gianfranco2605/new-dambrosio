@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.18
+Version: 1.8.25
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -285,13 +285,33 @@ Text Domain: sorriso-dambrosio
    Impianto del riferimento Prism: fotografia intera, velo dalla sinistra,
    testo bianco allineato a sinistra, scheda contatti bianca arrotondata
    vicino al fondo e social in fondo a destra.
-   --------------------------------------------------------------- */
+
+   La foto (Team Studio D'Ambrosio, 5:2) ha i tre dottori sulla destra e
+   la finestra con le orchidee sulla sinistra: ancorata a destra
+   (`object-position`), `object-fit: cover` ritaglia sempre dalla finestra,
+   mai da un volto, qualunque sia il rapporto fra larghezza e altezza
+   dell'hero.
+
+   80vh da solo non basta: l'hero e' largo quanto il viewport ma alto
+   quanto la finestra, quindi il suo rapporto larghezza/altezza cambia
+   con la larghezza mentre l'80vh resta fermo. A 1121px un'altezza da
+   80vh (~720px) da' all'hero un rapporto piu' stretto del 5:2 della
+   foto: `object-fit: cover` deve allora ritagliare parecchio dai lati
+   per riempire quell'altezza, e quel ritaglio sposta il primo dottore
+   molto piu' a sinistra che a 1440 — misurato, finiva sotto al titolo
+   (T12). Il tetto `38vw` tiene l'hero abbastanza basso, a ogni
+   larghezza, perche' quel ritaglio orizzontale non serva mai: a 1121px
+   e' 426px, a 1920px e' 730px — sempre sotto l'altezza che userebbe un
+   rapporto 5:2 pieno, quindi la foto intera entra senza tagliare un
+   lato. Il contenuto (titolo, lede, scheda) resta la misura minima
+   vera: se gli servisse piu' spazio di 38vw crescerebbe comunque,
+   perche' qui sotto non c'e' un'altezza fissa, solo un pavimento. */
 
 .sd-hero {
 	align-items: stretch;
 	display: flex;
 	isolation: isolate;
-	min-height: max(80vh, calc(100vh - var(--sd-sticky-top)));
+	min-height: min(max(80vh, calc(100vh - var(--sd-sticky-top))), 38vw);
 	position: relative;
 }
 
@@ -306,22 +326,26 @@ Text Domain: sorriso-dambrosio
 	display: block;
 	height: 100%;
 	object-fit: cover;
-	object-position: 62% 40%;
+	object-position: right;
 	width: 100%;
 }
 
 /* Il velo scurisce la colonna del testo e si dissolve prima del soggetto:
    a sinistra il fondo efficace e' praticamente `main`, quindi il bianco ci
-   legge sopra come leggerebbe su una fascia scura piena. */
+   legge sopra come leggerebbe su una fascia scura piena. La dissolvenza di
+   sotto (`to top`) salda il bordo inferiore della foto con la scheda
+   contatti, che puo' sovrapporsi alla parte bassa della fotografia ma mai
+   a un volto. */
 .sd-hero__veil {
 	background:
 		linear-gradient(
-			100deg,
+			90deg,
 			var(--wp--custom--veil--deep) 0%,
-			var(--wp--custom--veil--deep) 28%,
-			var(--wp--custom--veil--mid) 46%,
-			var(--wp--custom--veil--edge) 62%,
-			var(--wp--custom--veil--none) 78%
+			rgba(20, 35, 61, 0.75) 15%,
+			rgba(20, 35, 61, 0.82) 30%,
+			rgba(20, 35, 61, 0.62) 45%,
+			var(--wp--custom--veil--edge) 55%,
+			var(--wp--custom--veil--none) 62%
 		),
 		linear-gradient(
 			to top,
@@ -397,38 +421,79 @@ Text Domain: sorriso-dambrosio
    §19.3 e' DM Sans), quindi `ch` mentiva e il vincolo cresceva col
    corpo: 476px a 782, 602px a 1440. `prose` (38rem = 608px) e' il token
    piu' vicino alla misura resa e tiene le due righe da 782 a 1440;
-   `statement` (36rem = 576px) ne faceva tre da 1320 in su. Sotto i 782px il vincolo non c'e' (vedi sotto). */
+   `statement` (36rem = 576px) ne faceva tre da 1320 in su. Sotto i 782px il vincolo non c'e' (vedi sotto).
+
+   Il `min(…, 45vw)` non e' un'altra soglia: scende sotto i 608px solo
+   fra 782 e 1267px circa, dove il contenuto (titolo e scheda) e' gia'
+   piu' alto degli 80vh e il primo dottore, spostato dal ritaglio
+   dell'immagine, finisce piu' vicino al bordo sinistro — misurato a
+   1121px, il titolo arrivava sul suo viso (T14). A 1440 e oltre non
+   cambia nulla: 45vw supera sempre 608px. */
 .sd-hero__title {
 	font-weight: 300;
 	margin: 0;
-	max-width: var(--wp--custom--measure--prose);
+	max-width: min(var(--wp--custom--measure--prose), 45vw);
 }
 
 .sd-hero__lede {
 	margin: var(--wp--custom--space--md) 0 0;
-	max-width: var(--wp--custom--measure--lede);
+	max-width: min(var(--wp--custom--measure--lede), 45vw);
 }
 
-/* La scheda contatti: bianca, completamente arrotondata, ancorata in basso. */
+/* La scheda contatti: bianca, arrotondata, ancorata in basso.
+
+   Non ci sono piu' soglie fisse (griglia 2x2 sotto i 1121px, colonna
+   sotto i 599): la riga si piega da sola, in due passi, quando non ci
+   sta — non per larghezza di schermo ma per spazio disponibile davvero,
+   cosi' un editor con sidebar stretta o un pannello di WordPress aperto
+   si comportano come la larghezza che mostrano, non come il viewport.
+
+   1. `.sd-hero__bar` e `.sd-hero__bar-cta` sono entrambi item flessibili
+      del bar: finche' `.sd-hero__bar-info` (le tre voci) piu' il bottone
+      ci stanno affiancati, restano su una riga.
+   2. Quando non ci stanno, il `flex-wrap` manda il bottone sulla riga
+      sotto per primo — e' l'ultimo item, quindi e' il primo a cui tocca
+      il turno di andare a capo.
+   3. Se anche le tre voci da sole non ci stanno piu' sulla loro riga,
+      `.sd-hero__bar-info` ha il suo `flex-wrap`: le voci scendono una
+      per una, come sul telefono. */
 .sd-hero__bar {
 	align-items: center;
 	background-color: var(--wp--custom--surface--pure);
-	border-radius: 999px;
+	border-radius: 1.75rem;
 	box-shadow: 0 24px 60px -30px var(--wp--custom--shadow--bar);
 	color: var(--wp--preset--color--main);
 	display: flex;
-	gap: var(--wp--custom--space--md);
+	flex-wrap: wrap;
+	column-gap: var(--wp--custom--space--md);
+	row-gap: var(--wp--custom--space--xs);
 	padding: 0.6rem 0.6rem 0.6rem var(--wp--custom--space--md);
 }
 
-/* Ogni voce parte dalla misura del proprio testo (`auto`, non `0`):
-   con tre parti uguali il telefono avanzava spazio e indirizzo ed
-   email finivano coi puntini fino a ~1230px (T8). */
+/* La base (480px) e' la misura approssimativa delle tre voci affiancate,
+   coi loro testi piu' lunghi: sotto quella soglia il bottone non ci sta
+   piu' accanto e scende (punto 2 qui sopra). Sopra, `flex-grow` la
+   allarga a riempire lo spazio che il bottone — a larghezza fissa — non
+   usa. */
+.sd-hero__bar-info {
+	align-items: center;
+	display: flex;
+	flex: 1 1 480px;
+	flex-wrap: wrap;
+	column-gap: var(--wp--custom--space--md);
+	row-gap: var(--wp--custom--space--xs);
+	min-width: 0;
+}
+
+/* Ogni voce parte dalla misura del proprio testo (`auto`, non `0`): con
+   tre parti uguali il telefono avanzava spazio e indirizzo ed email
+   finivano stretti. La base di 180px e' quanto basta perche' le tre
+   voci scendano una alla volta (punto 3), non a coppie imprevedibili. */
 .sd-hero__bar-item {
 	align-items: center;
 	color: inherit;
 	display: flex;
-	flex: 1 1 auto;
+	flex: 1 1 180px;
 	gap: 0.75rem;
 	min-width: 0;
 	padding-block: 0.5rem;
@@ -439,6 +504,7 @@ Text Domain: sorriso-dambrosio
 	color: var(--wp--preset--color--primary);
 	height: 22px;
 	width: 22px;
+	flex-shrink: 0;
 }
 
 .sd-hero__bar-text {
@@ -452,12 +518,13 @@ Text Domain: sorriso-dambrosio
 	line-height: 1.3;
 }
 
+/* Mai troncato: l'indirizzo o l'email vanno a capo (due righe) piuttosto
+   che sparire nei puntini, a qualunque larghezza. */
 .sd-hero__bar-value {
 	font-size: var(--wp--preset--font-size--small);
 	line-height: 1.35;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	overflow-wrap: break-word;
+	white-space: normal;
 }
 
 .sd-hero__bar-item:hover .sd-hero__bar-value,
@@ -547,43 +614,12 @@ Text Domain: sorriso-dambrosio
 	}
 }
 
-/* Sotto i 1121px la scheda non ci sta su una riga sola, e diventa una
-   griglia 2x2.
-
-   Qui c'era 1023, con scritto che da 1024 in su la riga ci stava.
-   Misurato (T4): non era vero — con tre voci della stessa larghezza
-   indirizzo ed email si troncavano fino a ~1230. Da quando ogni voce
-   parte dalla misura del suo testo (T8, `flex: 1 1 auto` sopra) la
-   riga entra gia' a 1121: l'indirizzo ha ~15px di margine, l'email ~16.
-
-   1120 e' quella del menu, cosi' un tablet orizzontale prende la stessa
-   forma in tutte e due le cose. Piu' sotto, la 2x2 diventa una colonna. */
+/* La soglia e' 1120, quella del menu (non piu' 781): fra 782 e 1120 le
+   due colonne erano cosi' strette che il titolo e la riga finivano sopra
+   il primo dottore — misurato, non solo visto. Impilati, lo stesso tablet
+   verticale prende la stessa forma che gia' prende nel menu e nella
+   scheda qui sopra. */
 @media (max-width: 1120px) {
-	.sd-hero__bar {
-		border-radius: 1.75rem;
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.5rem 1.25rem;
-		padding: 1.25rem;
-	}
-
-	/* Qui ogni voce ha la larghezza di una cella, non della riga, e il
-	   `nowrap` di sopra si vede: «Lungotevere Flaminio 34, Roma» misura
-	   229px contro i 216 della cella a 600px e i 206 della colonna sola
-	   a 320px, e «Roma» finiva nei puntini. Meglio due righe che un
-	   indirizzo a meta': il `nowrap` serve solo da 1121 in su, dove le
-	   tre voci stanno su una riga e i puntini non scattano mai. */
-	.sd-hero__bar-value {
-		white-space: normal;
-	}
-
-	.sd-hero__bar-cta {
-		grid-column: 1 / -1;
-		width: 100%;
-	}
-}
-
-@media (max-width: 781px) {
 	/* Senza display:block la <picture> e il testo restano due celle flex
 	   affiancate: il titolo finirebbe sopra la fotografia, non sotto. */
 	.sd-hero {
@@ -591,14 +627,19 @@ Text Domain: sorriso-dambrosio
 		min-height: 0;
 	}
 
+	/* Impilata, la foto passa dal suo 5:2 al 3:2: `aspect-ratio` fissa il
+	   riquadro, `object-fit: cover` lo riempie. Il 3:2 e' piu' alto del
+	   5:2 (0.667 contro 0.4): a parita' di larghezza il ritaglio toglie
+	   sempre dai lati, mai sopra o sotto — l'altezza intera dei 1000px
+	   originali entra nel riquadro senza perdere un pixel in verticale,
+	   quindi le teste restano con tutta l'aria che hanno nella foto.
+	   `object-position: right` (ereditato da sopra) sposta il ritaglio
+	   orizzontale sulla finestra, mai su un dottore. */
 	.sd-hero__media {
-		height: 42vh;
-		min-height: 15rem;
+		aspect-ratio: 3 / 2;
+		height: auto;
 		position: static;
-	}
-
-	.sd-hero__media img {
-		object-position: 50% 58%;
+		width: 100%;
 	}
 
 	/* Finita la sovrapposizione, il velo non serve: il testo sta su `main`. */
@@ -607,18 +648,12 @@ Text Domain: sorriso-dambrosio
 	}
 
 	.sd-hero__frame {
-		background-color: var(--wp--preset--color--main);
+		background-color: var(--wp--preset--color--navy);
 		padding-block: var(--wp--custom--space--lg);
 	}
 
 	.sd-hero__title {
 		max-width: none;
-	}
-}
-
-@media (max-width: 599px) {
-	.sd-hero__bar {
-		grid-template-columns: minmax(0, 1fr);
 	}
 }
 

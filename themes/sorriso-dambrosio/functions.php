@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Riserva di wp_enqueue_style quando style.css manca: tenerla pari al suo Version.
 if ( ! defined( 'SORRISO_DAMBROSIO_VERSION' ) ) {
-	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.18' );
+	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.25' );
 }
 
 /**
@@ -341,3 +341,108 @@ function sorriso_dambrosio_cf7_no_autop() {
 	return false;
 }
 add_filter( 'wpcf7_autop_or_not', 'sorriso_dambrosio_cf7_no_autop' );
+
+/**
+ * Segna la voce corrente nel menu — il menu usa solo link "custom" (URL
+ * letterali, non ID di pagina), perche' ci sta anche "Altri trattamenti"
+ * che punta alla stessa /trattamenti/ del suo genitore. Core aggiunge
+ * `current-menu-item` solo ai link che portano un ID di pagina (vedi
+ * `block_core_navigation_link_render()`): con un URL letterale non lo fa
+ * mai, su nessuna voce. Il CSS che disegna il segno (§5.2, sottolineatura
+ * su `.current-menu-item`) esisteva gia' e aspettava solo questa classe.
+ *
+ * @param string $url URL del link, assoluto o relativo.
+ * @return string Il path, senza slash finale, per il confronto.
+ */
+function sorriso_dambrosio_nav_url_path( $url ) {
+	return untrailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) );
+}
+
+/**
+ * @return string Il path della richiesta corrente, senza slash finale.
+ */
+function sorriso_dambrosio_nav_current_path() {
+	static $path = null;
+	if ( null === $path ) {
+		$uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		$path = untrailingslashit( (string) wp_parse_url( $uri, PHP_URL_PATH ) );
+	}
+	return $path;
+}
+
+/**
+ * La classe del primo `<li>` nell'HTML gia' reso — non una ricerca sulla
+ * stringa intera, che per un sottomenu conterrebbe anche le classi dei
+ * figli e darebbe un falso positivo su "gia' segnato".
+ *
+ * @param string $block_content HTML gia' reso del blocco.
+ * @return string La classe del wrapper, o stringa vuota se non trovata.
+ */
+function sorriso_dambrosio_nav_wrapper_class( $block_content ) {
+	return preg_match( '/^.*?class="([^"]*)"/s', $block_content, $m ) ? $m[1] : '';
+}
+
+/**
+ * @param string $block_content HTML gia' reso del blocco.
+ * @return string HTML con `current-menu-item` aggiunto, se la voce e' quella corrente.
+ */
+function sorriso_dambrosio_nav_mark_current_link( $block_content, $block ) {
+	if ( empty( $block['attrs']['url'] ) ) {
+		return $block_content;
+	}
+	// Il blocco Navigation rende la voce due volte nella stessa richiesta
+	// (barra e pannello mobile condividono il nodo prima di separarsi in
+	// CSS): senza questa guardia la classe finiva scritta due volte.
+	if ( str_contains( sorriso_dambrosio_nav_wrapper_class( $block_content ), 'current-menu-item' ) ) {
+		return $block_content;
+	}
+	if ( sorriso_dambrosio_nav_url_path( $block['attrs']['url'] ) !== sorriso_dambrosio_nav_current_path() ) {
+		return $block_content;
+	}
+	$block_content = preg_replace( '/class="([^"]*wp-block-navigation-item[^"]*)"/', 'class="$1 current-menu-item"', $block_content, 1 );
+	return (string) preg_replace( '/(<a[^>]*wp-block-navigation-item__content[^>]*)(>)/', '$1 aria-current="page"$2', $block_content, 1 );
+}
+add_filter( 'render_block_core/navigation-link', 'sorriso_dambrosio_nav_mark_current_link', 10, 2 );
+
+/**
+ * Come sopra, per le voci con sottomenu: sottolinea il genitore
+ * (`current-menu-ancestor`) quando non e' lui la pagina corrente ma uno
+ * dei suoi figli lo e' — es. su /implantologia/, "Trattamenti".
+ *
+ * @param string $block_content HTML gia' reso del blocco.
+ * @return string HTML con la classe aggiunta, se pertinente.
+ */
+function sorriso_dambrosio_nav_mark_current_submenu( $block_content, $block ) {
+	// Stessa guardia di sorriso_dambrosio_nav_mark_current_link(), sul
+	// wrapper del sottomenu — non sulla stringa intera, che a questo punto
+	// contiene gia' il `current-menu-item` del figlio corrente, se c'e'.
+	$wrapper_class = sorriso_dambrosio_nav_wrapper_class( $block_content );
+	if ( str_contains( $wrapper_class, 'current-menu-item' ) || str_contains( $wrapper_class, 'current-menu-ancestor' ) ) {
+		return $block_content;
+	}
+
+	$current = sorriso_dambrosio_nav_current_path();
+
+	$is_current = ! empty( $block['attrs']['url'] ) && sorriso_dambrosio_nav_url_path( $block['attrs']['url'] ) === $current;
+
+	$has_current_child = false;
+	if ( ! $is_current && ! empty( $block['innerBlocks'] ) ) {
+		foreach ( $block['innerBlocks'] as $inner_block ) {
+			if ( ! empty( $inner_block['attrs']['url'] ) && sorriso_dambrosio_nav_url_path( $inner_block['attrs']['url'] ) === $current ) {
+				$has_current_child = true;
+				break;
+			}
+		}
+	}
+
+	if ( $is_current ) {
+		return (string) preg_replace( '/class="([^"]*wp-block-navigation-item[^"]*)"/', 'class="$1 current-menu-item"', $block_content, 1 );
+	}
+
+	if ( $has_current_child ) {
+		return (string) preg_replace( '/class="([^"]*wp-block-navigation-item[^"]*)"/', 'class="$1 current-menu-ancestor"', $block_content, 1 );
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block_core/navigation-submenu', 'sorriso_dambrosio_nav_mark_current_submenu', 10, 2 );

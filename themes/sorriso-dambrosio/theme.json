@@ -48,6 +48,11 @@
 					"name": "Base",
 					"slug": "base",
 					"color": "#fcfcfc"
+				},
+				{
+					"name": "Navy",
+					"slug": "navy",
+					"color": "rgb(20, 35, 61)"
 				}
 			]
 		},
@@ -204,10 +209,10 @@
 				"onDark": "rgba(252, 252, 252, 0.22)"
 			},
 			"veil": {
-				"deep": "rgba(57, 56, 58, 0.94)",
-				"mid": "rgba(57, 56, 58, 0.80)",
-				"edge": "rgba(57, 56, 58, 0.35)",
-				"none": "rgba(57, 56, 58, 0)"
+				"deep": "rgba(20, 35, 61, 0.90)",
+				"mid": "rgba(20, 35, 61, 0.55)",
+				"edge": "rgba(20, 35, 61, 0.10)",
+				"none": "rgba(20, 35, 61, 0)"
 			},
 			"shadow": {
 				"bar": "rgba(57, 56, 58, 0.28)",

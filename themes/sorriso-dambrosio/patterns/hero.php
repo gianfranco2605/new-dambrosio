@@ -10,29 +10,25 @@
  */
 
 /*
- * Immagine: 636 AGA_5209 (2500x1685), lo studio vero con la luce della finestra.
- * La composizione — il dottore a sinistra, la famiglia a destra — e' quella che
- * serve a questo impianto: il velo scurisce la sinistra e lascia in chiaro il
- * soggetto a destra, come nel riferimento.
- * Sotto i 782px passa l'immagine verticale 1492.
+ * Immagine: 2225 "Team Studio D'Ambrosio" (2500x1000, 5:2), i tre dottori
+ * sulla destra, finestra e orchidee sulla sinistra.
  *
- * Il testo e' quello gia' pubblicato: "Dal 1956", il nome dello studio,
- * "Gli specialisti del sorriso" e il claim. Le combinazioni alternative sono
- * elencate in docs/DA-VERIFICARE.md perche' le scelga il titolare.
+ * Una sola immagine per tutte le larghezze (niente piu' il secondo file
+ * verticale sotto i 782px): e' larga abbastanza (5:2) da restare leggibile
+ * anche ritagliata al 3:2 in pila. Ancorata a destra (`object-position`)
+ * cosi' il ritaglio — a tutta pagina sopra i 1120px, nel suo 3:2 impilato
+ * sotto — toglie sempre dalla finestra a sinistra, mai da un dottore.
  */
-$sd_desktop_id = 636;
-$sd_mobile_id  = 1492;
+$sd_photo_id = 2225;
 
-$sd_desktop        = sorriso_dambrosio_image_url( $sd_desktop_id, 'full' );
-$sd_mobile         = sorriso_dambrosio_image_url( $sd_mobile_id, 'full' );
-$sd_desktop_srcset = wp_get_attachment_image_srcset( $sd_desktop_id, 'full' );
-$sd_mobile_srcset  = wp_get_attachment_image_srcset( $sd_mobile_id, 'full' );
+$sd_photo        = sorriso_dambrosio_image_url( $sd_photo_id, 'full' );
+$sd_photo_srcset = wp_get_attachment_image_srcset( $sd_photo_id, 'full' );
 
-$sd_meta   = wp_get_attachment_metadata( $sd_desktop_id );
+$sd_meta   = wp_get_attachment_metadata( $sd_photo_id );
 $sd_width  = isset( $sd_meta['width'] ) ? (int) $sd_meta['width'] : 2500;
-$sd_height = isset( $sd_meta['height'] ) ? (int) $sd_meta['height'] : 1685;
+$sd_height = isset( $sd_meta['height'] ) ? (int) $sd_meta['height'] : 1000;
 
-$sd_alt = get_post_meta( $sd_desktop_id, '_wp_attachment_image_alt', true );
+$sd_alt = get_post_meta( $sd_photo_id, '_wp_attachment_image_alt', true );
 $sd_alt = is_string( $sd_alt ) ? $sd_alt : '';
 
 $sd_c = sorriso_dambrosio_contacts();
@@ -48,8 +44,7 @@ $sd_social = array(
 <section class="wp-block-group sd-hero" aria-labelledby="sd-hero-titolo" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 <!-- wp:html -->
 <picture class="sd-hero__media">
-	<source media="(max-width: 781px)" sizes="150vw" srcset="<?php echo $sd_mobile_srcset ? esc_attr( $sd_mobile_srcset ) : esc_url( $sd_mobile ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
-	<img src="<?php echo esc_url( $sd_desktop ); ?>"<?php echo $sd_desktop_srcset ? ' sizes="100vw" srcset="' . esc_attr( $sd_desktop_srcset ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> alt="<?php echo esc_attr( $sd_alt ); ?>" fetchpriority="high" decoding="async" width="<?php echo esc_attr( (string) $sd_width ); ?>" height="<?php echo esc_attr( (string) $sd_height ); ?>">
+	<img src="<?php echo esc_url( $sd_photo ); ?>"<?php echo $sd_photo_srcset ? ' sizes="100vw" srcset="' . esc_attr( $sd_photo_srcset ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> alt="<?php echo esc_attr( $sd_alt ); ?>" fetchpriority="high" decoding="async" width="<?php echo esc_attr( (string) $sd_width ); ?>" height="<?php echo esc_attr( (string) $sd_height ); ?>">
 </picture>
 <div class="sd-hero__veil" aria-hidden="true"></div>
 <!-- /wp:html -->
@@ -72,27 +67,29 @@ $sd_social = array(
 <!-- wp:html -->
 <div class="sd-hero__tail">
 <div class="sd-hero__bar">
-	<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['email_href'] ); ?>">
-		<?php echo sorriso_dambrosio_icon( 'mail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="sd-hero__bar-text">
-			<span class="sd-hero__bar-label">Email</span>
-			<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['email'] ); ?></span>
-		</span>
-	</a>
-	<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['phone_href'] ); ?>">
-		<?php echo sorriso_dambrosio_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="sd-hero__bar-text">
-			<span class="sd-hero__bar-label">Telefono</span>
-			<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['phone'] ); ?></span>
-		</span>
-	</a>
-	<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener">
-		<?php echo sorriso_dambrosio_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="sd-hero__bar-text">
-			<span class="sd-hero__bar-label">Indirizzo</span>
-			<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['address_short'] ); ?></span>
-		</span>
-	</a>
+	<div class="sd-hero__bar-info">
+		<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['email_href'] ); ?>">
+			<?php echo sorriso_dambrosio_icon( 'mail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<span class="sd-hero__bar-text">
+				<span class="sd-hero__bar-label">Email</span>
+				<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['email'] ); ?></span>
+			</span>
+		</a>
+		<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['phone_href'] ); ?>">
+			<?php echo sorriso_dambrosio_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<span class="sd-hero__bar-text">
+				<span class="sd-hero__bar-label">Telefono</span>
+				<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['phone'] ); ?></span>
+			</span>
+		</a>
+		<a class="sd-hero__bar-item" href="<?php echo esc_url( $sd_c['map_href'] ); ?>" target="_blank" rel="noreferrer noopener">
+			<?php echo sorriso_dambrosio_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<span class="sd-hero__bar-text">
+				<span class="sd-hero__bar-label">Indirizzo</span>
+				<span class="sd-hero__bar-value"><?php echo esc_html( $sd_c['address_short'] ); ?></span>
+			</span>
+		</a>
+	</div>
 	<a class="sd-btn sd-btn--solid sd-hero__bar-cta" href="#prenota">Prenota un appuntamento</a>
 </div>
 
