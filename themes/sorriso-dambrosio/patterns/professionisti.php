@@ -28,14 +28,14 @@ $sd_doctors = array(
 		'image'  => 1085,
 		'name'   => 'Dott.ssa Stefania D&#8217;Ambrosio',
 		'bio'    => 'La Dott.ssa Stefania D&#8217;Ambrosio si distingue nell&#8217;Ortodonzia per pazienti di tutte le et&agrave;, utilizzando tecniche tradizionali, linguali e invisibili. La sua pratica mira a garantire risultati estetici e funzionali personalizzati, incorporando le ultime innovazioni nel campo ortodontico.',
-		'link'   => '/ortodonzia/#sty-casi',
+		'link'   => '/casi-studi/#casi-stefania-dambrosio',
 	),
 	array(
 		'anchor' => 'giuseppe',
 		'image'  => 75,
 		'name'   => 'Dott. Giuseppe D&#8217;Ambrosio',
 		'bio'    => 'Il Dott. Giuseppe D&#8217;Ambrosio eccelle nei campi dell&#8217;Implantologia, Chirurgia Orale e Osseo-Ricostruttiva, Parodontologia e Protesi Estetica, fornendo competenze specializzate e personalizzate a una vasta gamma di pazienti.<br>La sua dedizione si estende oltre la mera pratica, abbracciando un approccio completo che integra tecniche avanzate e metodologie all&#8217;avanguardia in ciascuna di queste discipline.',
-		'link'   => '/estetica-dentale/#casi-giuseppe',
+		'link'   => '/casi-studi/#casi-giuseppe-dambrosio',
 	),
 );
 ?>

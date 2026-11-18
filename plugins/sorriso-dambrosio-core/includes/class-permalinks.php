@@ -197,6 +197,12 @@ final class Permalinks {
 			exit;
 		}
 
+		// La pagina dei professionisti e' stata assorbita da `/lo-studio/`.
+		if ( '/professionisti/' === $path || str_starts_with( $path, '/professionisti/' ) ) {
+			wp_safe_redirect( home_url( '/lo-studio/' ), 301 );
+			exit;
+		}
+
 		self::canonical_trattamento( $path, $request );
 	}
 

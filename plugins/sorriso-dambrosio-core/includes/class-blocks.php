@@ -408,14 +408,11 @@ final class Blocks {
 			. '<div class="sd-people sd-people--' . esc_attr( $layout ) . '">';
 
 		foreach ( $posts as $doctor ) {
-			$link = (string) get_permalink( $doctor );
-
 			$body .= '<article class="sd-people__row">'
 				. Render::thumb( $doctor->ID, 'medium_large', 'sd-people__portrait', 216 )
 				. '<div class="sd-people__text">'
-				. '<' . $tag . ' class="sd-people__name"><a href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></' . $tag . '>'
+				. '<' . $tag . ' class="sd-people__name">' . esc_html( get_the_title( $doctor ) ) . '</' . $tag . '>'
 				. '<p class="sd-people__bio">' . esc_html( Render::excerpt( $doctor, 40 ) ) . '</p>'
-				. '<p class="sd-more"><a href="' . esc_url( $link ) . '">LA SCHEDA &rarr;</a></p>'
 				. '</div></article>';
 		}
 
@@ -450,16 +447,21 @@ final class Blocks {
 
 		if ( $grouped ) {
 			$groups = array();
+			$slugs  = array();
 
 			foreach ( $posts as $case ) {
 				$doctor = (int) get_post_meta( $case->ID, Fields::PROFESSIONISTA, true );
 				$label  = $doctor > 0 ? get_the_title( $doctor ) : 'Altri casi';
 				$groups[ $label ][] = $case;
+				if ( $doctor > 0 ) {
+					$slugs[ $label ] = get_post_field( 'post_name', $doctor );
+				}
 			}
 
 			foreach ( $groups as $label => $group ) {
-				$tag   = Render::tag( self::livello( $attrs ) + 1 );
-				$body .= '<' . $tag . ' class="sd-cases__group">' . esc_html( (string) $label ) . '</' . $tag . '>'
+				$tag = Render::tag( self::livello( $attrs ) + 1 );
+				$id  = isset( $slugs[ $label ] ) ? ' id="casi-' . esc_attr( $slugs[ $label ] ) . '"' : '';
+				$body .= '<' . $tag . $id . ' class="sd-cases__group">' . esc_html( (string) $label ) . '</' . $tag . '>'
 					. self::cases_grid( $group );
 			}
 		} else {
@@ -636,7 +638,7 @@ final class Blocks {
 
 		if ( $doctor > 0 ) {
 			$meta[] = '<li class="sd-case__meta-item"><span class="sd-case__meta-label">Seguito da</span>'
-				. '<a href="' . esc_url( (string) get_permalink( $doctor ) ) . '">' . esc_html( get_the_title( $doctor ) ) . '</a></li>';
+				. esc_html( get_the_title( $doctor ) ) . '</li>';
 		}
 
 		if ( $area instanceof \WP_Term ) {
