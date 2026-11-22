@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.40
+Version: 1.8.41
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -5129,4 +5129,74 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 
 .sd-visit__map:has(iframe._iub_cs_activate:not(._iub_cs_activate-activated)) iframe {
 	height: 100%;
+}
+
+/* ---------------------------------------------------------------
+   20.7 Ritocchi dal giro di grafica (area 4 dell'audit, 22/11)
+   --------------------------------------------------------------- */
+
+/* Casi Studi: su due colonne la griglia occupava il 60% della pagina
+   a 1440 e a destra restava il vuoto. Tre colonne da 25rem al massimo
+   (la misura dei file, vedi 18.9): con tre il riquadro scende sotto i
+   400px, quindi l'immagine si riduce e non si ingrandisce mai. */
+@media (min-width: 1120px) {
+	.sd-cases {
+		grid-template-columns: repeat(3, minmax(0, 25rem));
+	}
+}
+
+/* Il caso singolo: il titolo e' allineato a sinistra, la foto e le
+   informazioni erano centrate e sembravano staccate. Ora partono
+   dallo stesso bordo del titolo. */
+.sd-case,
+.sd-case__meta {
+	margin-inline: 0;
+}
+
+/* La foto della scheda (trattamento o tecnologia) quando e' un
+   ritaglio piccolo: la stessa lastra delle schede di /tecnologie/
+   (sopra, .sd-matrix). Accanto al testo, da sola, la foto di 300px
+   lasciava mezza colonna vuota; la lastra riempie la colonna e il
+   ritaglio resta alla sua misura naturale, al centro. Vale solo qui:
+   negli elenchi (.sd-zig) resta senza scatola, come da voce 25. */
+.sd-plate--contain.sd-entry__figure {
+	background-color: var(--wp--custom--surface--pure);
+	border: 1px solid var(--wp--custom--border--hairline);
+	border-radius: var(--wp--custom--radius--panel);
+	box-sizing: border-box;
+	margin-left: 0;
+	margin-right: 0;
+	justify-content: center;
+	padding: var(--wp--custom--space--sm);
+	width: 100%;
+}
+
+.sd-plate--contain.sd-entry__figure img {
+	height: auto;
+	max-width: 100%;
+	object-fit: contain;
+	width: auto;
+}
+
+/* Le domande della FAQ nelle aree: il grassetto del Fraunces stonava
+   con gli altri titoli del sito, che lo usano a peso normale. */
+.sd-areatext .wp-block-details summary {
+	font-weight: 400;
+}
+
+@media (max-width: 781px) {
+	/* Il footer prende il rientro dagli attributi del blocco (`medium`,
+	   14px a 390) e il resto del sito da --sd-gutter (20px): il bordo
+	   sinistro saltava di 6px proprio in fondo alla pagina. Lo stile
+	   inline del blocco vince su qualsiasi selettore, da qui
+	   l'`!important`. */
+	.sd-footer.has-global-padding {
+		padding-left: var(--sd-gutter) !important;
+		padding-right: var(--sd-gutter) !important;
+	}
+
+	/* 150px su un telefono sono un terzo della larghezza. */
+	.sd-footer .logo-footer img {
+		width: 96px;
+	}
 }

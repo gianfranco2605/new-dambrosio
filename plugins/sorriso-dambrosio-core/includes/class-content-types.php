@@ -170,7 +170,7 @@ final class Content_Types {
 		register_post_type(
 			self::CASO,
 			array(
-				'labels'        => self::labels( 'Caso clinico', 'Casi Clinici', 'il caso' ),
+				'labels'        => self::labels( 'Caso clinico', 'Casi Studi', 'il caso' ),
 				'description'   => 'Un caso prima/dopo. La galleria resta quella del plugin Before and After: qui si sceglie soltanto quale mostrare, chi l\'ha seguito e in che area.',
 				'public'        => true,
 				'show_in_rest'  => true,
