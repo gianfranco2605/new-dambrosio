@@ -26,6 +26,7 @@
 		}
 	},
 	"supports": {
+		"autoRegister": true,
 		"html": false,
 		"align": false,
 		"anchor": true,

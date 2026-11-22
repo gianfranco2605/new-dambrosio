@@ -724,6 +724,8 @@ final class Blocks {
 			. '<div class="sd-hours-band__actions">'
 			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( $c['phone_href'] ) . '">'
 			. Render::icon( 'phone' ) . '<span>' . esc_html( $c['phone'] ) . '</span></a>'
+			. '<a class="sd-btn sd-btn--solid" href="' . esc_url( $c['phone2_href'] ) . '">'
+			. Render::icon( 'phone' ) . '<span>' . esc_html( $c['phone2'] ) . '</span></a>'
 			. '<a class="sd-btn sd-btn--ghost" href="' . esc_url( $href ) . '">'
 			. Render::icon( 'calendar' ) . '<span>Prenota un appuntamento</span></a>'
 			. '</div></div>';
