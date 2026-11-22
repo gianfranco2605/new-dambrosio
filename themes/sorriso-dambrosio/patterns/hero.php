@@ -23,6 +23,10 @@ $sd_photo_id = 2225;
 
 $sd_photo        = sorriso_dambrosio_image_url( $sd_photo_id, 'full' );
 $sd_photo_srcset = wp_get_attachment_image_srcset( $sd_photo_id, 'full' );
+// `sizes`: fino a 1120px la foto (2,5:1) riempie un riquadro 7:5 con
+// `object-fit: cover`, quindi e' larga 2,5 / 1,4 = 1,79 volte lo schermo.
+// Con `100vw` il browser sceglieva un file troppo piccolo e lo ingrandiva
+// di 1,7 volte (misurato a 390px): sfocato su telefono e tablet.
 
 $sd_meta   = wp_get_attachment_metadata( $sd_photo_id );
 $sd_width  = isset( $sd_meta['width'] ) ? (int) $sd_meta['width'] : 2500;
@@ -44,7 +48,7 @@ $sd_social = array(
 <section class="wp-block-group sd-hero" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 <!-- wp:html -->
 <picture class="sd-hero__media">
-	<img src="<?php echo esc_url( $sd_photo ); ?>"<?php echo $sd_photo_srcset ? ' sizes="100vw" srcset="' . esc_attr( $sd_photo_srcset ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> alt="<?php echo esc_attr( $sd_alt ); ?>" fetchpriority="high" decoding="async" width="<?php echo esc_attr( (string) $sd_width ); ?>" height="<?php echo esc_attr( (string) $sd_height ); ?>">
+	<img src="<?php echo esc_url( $sd_photo ); ?>"<?php echo $sd_photo_srcset ? ' sizes="(max-width: 1120px) 179vw, 100vw" srcset="' . esc_attr( $sd_photo_srcset ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> alt="<?php echo esc_attr( $sd_alt ); ?>" fetchpriority="high" decoding="async" width="<?php echo esc_attr( (string) $sd_width ); ?>" height="<?php echo esc_attr( (string) $sd_height ); ?>">
 </picture>
 <div class="sd-hero__veil" aria-hidden="true"></div>
 <!-- /wp:html -->

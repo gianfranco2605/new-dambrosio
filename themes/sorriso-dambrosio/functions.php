@@ -185,6 +185,16 @@ function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '
  * @return string Markup a blocchi.
  */
 function sorriso_dambrosio_prenota( $is_page = false ) {
+	// Una sola generazione per richiesta: WordPress legge entrambi i pattern
+	// (prenota e prenota-pagina) anche dove ne stampa uno, e Contact Form 7
+	// lascia gli id dei campi (quelli a cui puntano le <label>) solo al primo
+	// modulo generato. Il modulo si genera quindi una volta e si riusa.
+	static $cache = array();
+	$key          = $is_page ? 'page' : 'home';
+	if ( isset( $cache[ $key ] ) ) {
+		return $cache[ $key ];
+	}
+
 	$c = sorriso_dambrosio_contacts();
 
 	$head = $is_page
@@ -213,7 +223,7 @@ function sorriso_dambrosio_prenota( $is_page = false ) {
 		$list .= "\t<li>" . sorriso_dambrosio_icon( $item[0] ) . '<span>' . $item[1] . "</span></li>\n";
 	}
 
-	return '<!-- wp:group {"tagName":"section","className":"' . esc_attr( $class ) . '","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->'
+	$cache[ $key ] = '<!-- wp:group {"tagName":"section","className":"' . esc_attr( $class ) . '","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->'
 		. '<section class="wp-block-group ' . esc_attr( $class ) . '" id="prenota" style="margin-top:0;margin-bottom:0">'
 		. '<!-- wp:group {"className":"sd-wrap sd-prenota__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->'
 		. '<div class="wp-block-group sd-wrap sd-prenota__grid">'
@@ -222,10 +232,12 @@ function sorriso_dambrosio_prenota( $is_page = false ) {
 		. "<!-- wp:html -->\n<ul class=\"sd-prenota__contacts\">\n" . $list . "</ul>\n<!-- /wp:html -->"
 		. '</div><!-- /wp:group -->'
 		. "<!-- wp:html -->\n<div class=\"sd-prenota__form\">\n"
-		. do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" html_class="sd-form-wrapper"]' )
+		. ( $cache['form'] ??= do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" html_class="sd-form-wrapper"]' ) )
 		. "\n</div>\n<!-- /wp:html -->"
 		. '</div><!-- /wp:group -->'
 		. '</section><!-- /wp:group -->';
+
+	return $cache[ $key ];
 }
 
 /**

@@ -197,6 +197,13 @@ final class Permalinks {
 			exit;
 		}
 
+		// La vecchia home (pagina 57) resta pubblicata ma non e' piu' la home:
+		// stesso titolo e canonical verso `/`, quindi la si manda li'.
+		if ( '/studio-dentistico/' === $path ) {
+			wp_safe_redirect( home_url( '/' ), 301 );
+			exit;
+		}
+
 		// La pagina dei professionisti e' stata assorbita da `/lo-studio/`.
 		if ( '/professionisti/' === $path || str_starts_with( $path, '/professionisti/' ) ) {
 			wp_safe_redirect( home_url( '/lo-studio/' ), 301 );
