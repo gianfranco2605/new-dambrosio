@@ -193,6 +193,7 @@
 		"custom": {
 			"border": {
 				"hairline": "#e3e3ea",
+				"hairlineDark": "rgba(252, 252, 252, 0.18)",
 				"field": "#d0ccde"
 			},
 			"surface": {
@@ -264,6 +265,7 @@
 			},
 			"radius": {
 				"panel": "1.25rem",
+				"bar": "1.75rem",
 				"field": "6px"
 			}
 		},

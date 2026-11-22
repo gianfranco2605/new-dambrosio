@@ -41,7 +41,7 @@ $sd_social = array(
 );
 ?>
 <!-- wp:group {"tagName":"section","className":"sd-hero","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"0","bottom":"0","right":"0","left":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-hero" aria-labelledby="sd-hero-titolo" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
+<section class="wp-block-group sd-hero" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 <!-- wp:html -->
 <picture class="sd-hero__media">
 	<img src="<?php echo esc_url( $sd_photo ); ?>"<?php echo $sd_photo_srcset ? ' sizes="100vw" srcset="' . esc_attr( $sd_photo_srcset ) . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> alt="<?php echo esc_attr( $sd_alt ); ?>" fetchpriority="high" decoding="async" width="<?php echo esc_attr( (string) $sd_width ); ?>" height="<?php echo esc_attr( (string) $sd_height ); ?>">

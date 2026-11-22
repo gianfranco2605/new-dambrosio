@@ -47,7 +47,7 @@ $sd_services = array(
 );
 ?>
 <!-- wp:group {"tagName":"section","className":"sd-section sd-section--flush","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-section sd-section--flush" aria-labelledby="sd-servizi-titolo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-section sd-section--flush" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-wrap">
 <?php echo sorriso_dambrosio_section_head( 'Prestazioni', 'Nostri servizi', 2, '', 'sd-servizi-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>

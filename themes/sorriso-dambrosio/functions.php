@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Riserva di wp_enqueue_style quando style.css manca: tenerla pari al suo Version.
 if ( ! defined( 'SORRISO_DAMBROSIO_VERSION' ) ) {
-	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.25' );
+	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.40' );
 }
 
 /**
@@ -164,6 +164,71 @@ function sorriso_dambrosio_section_head( $eyebrow, $title, $level = 2, $href = '
 }
 
 /**
+ * La sezione «Prenota un appuntamento»: recapiti a sinistra, modulo a destra.
+ *
+ * Una sola sezione per due pagine. I pattern `prenota` (homepage) e
+ * `prenota-pagina` (/contatti/) la chiamano entrambi e cambiano soltanto
+ * l'intestazione: in homepage e' un h2 fra le altre sezioni, su /contatti/
+ * e' l'h1 della pagina. Un pattern non riceve attributi dal template, per
+ * questo la variante passa di qui.
+ *
+ * L'ancora #prenota e' il bersaglio dei pulsanti nell'header, nell'hero e
+ * nella fascia degli orari: se cambia, vanno cambiati anche quelli.
+ *
+ * Il modulo e' Contact Form 7. Il blocco core/shortcode non esegue gli
+ * shortcode (fa solo wpautop) e i pattern non passano dal filtro
+ * the_content: qui serve do_shortcode(). I <p> e <br> automatici di CF7
+ * sono spenti con il filtro wpcf7_autop_or_not, altrimenti spezzano la
+ * griglia.
+ *
+ * @param bool $is_page True su /contatti/: titolo h1 «Contatti».
+ * @return string Markup a blocchi.
+ */
+function sorriso_dambrosio_prenota( $is_page = false ) {
+	$c = sorriso_dambrosio_contacts();
+
+	$head = $is_page
+		? sorriso_dambrosio_section_head( 'Dove siamo', 'Contatti', 1, '', 'sd-prenota-titolo' )
+		: sorriso_dambrosio_section_head( 'Contatti', 'Prenota un appuntamento', 2, '', 'sd-prenota-titolo' );
+
+	$class = 'sd-section sd-prenota' . ( $is_page ? ' sd-prenota--page' : '' );
+
+	$items = array(
+		array(
+			'phone',
+			'<a href="' . esc_url( $c['phone_href'] ) . '">' . esc_html( $c['phone'] ) . '</a><br>'
+			. '<a href="' . esc_url( $c['phone2_href'] ) . '">' . esc_html( $c['phone2'] ) . '</a>',
+		),
+		array(
+			'whatsapp',
+			'<a href="' . esc_url( $c['whatsapp'] ) . '" target="_blank" rel="noreferrer noopener">WhatsApp ' . esc_html( $c['mobile'] ) . '</a>',
+		),
+		array( 'mail', '<a href="' . esc_url( $c['email_href'] ) . '">' . esc_html( $c['email'] ) . '</a>' ),
+		array( 'pin', '<a href="' . esc_url( $c['map_href'] ) . '" target="_blank" rel="noreferrer noopener">' . wp_kses_post( $c['address'] ) . '</a>' ),
+		array( 'clock', '<a href="#orari">I Nostri Orari</a>' ),
+	);
+
+	$list = '';
+	foreach ( $items as $item ) {
+		$list .= "\t<li>" . sorriso_dambrosio_icon( $item[0] ) . '<span>' . $item[1] . "</span></li>\n";
+	}
+
+	return '<!-- wp:group {"tagName":"section","className":"' . esc_attr( $class ) . '","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->'
+		. '<section class="wp-block-group ' . esc_attr( $class ) . '" id="prenota" style="margin-top:0;margin-bottom:0">'
+		. '<!-- wp:group {"className":"sd-wrap sd-prenota__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->'
+		. '<div class="wp-block-group sd-wrap sd-prenota__grid">'
+		. '<!-- wp:group {"className":"sd-prenota__aside","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->'
+		. '<div class="wp-block-group sd-prenota__aside">' . $head
+		. "<!-- wp:html -->\n<ul class=\"sd-prenota__contacts\">\n" . $list . "</ul>\n<!-- /wp:html -->"
+		. '</div><!-- /wp:group -->'
+		. "<!-- wp:html -->\n<div class=\"sd-prenota__form\">\n"
+		. do_shortcode( '[contact-form-7 id="17f113f" title="Modulo contatto" html_class="sd-form-wrapper"]' )
+		. "\n</div>\n<!-- /wp:html -->"
+		. '</div><!-- /wp:group -->'
+		. '</section><!-- /wp:group -->';
+}
+
+/**
  * Markup di un blocco immagine a partire da un allegato della Media Library.
  *
  * Usa wp_get_attachment_image() cosi' srcset, dimensioni e lazy loading
@@ -183,17 +248,29 @@ function sorriso_dambrosio_image( $id, $size = 'large', $classname = '', $attr =
 		return '';
 	}
 
-	$img = wp_get_attachment_image( $id, $size, false, $attr );
+	$src = wp_get_attachment_image_url( $id, $size );
 
-	if ( '' === $img ) {
+	if ( ! is_string( $src ) || '' === $src ) {
 		return '';
 	}
 
+	/*
+	 * Il markup e' quello che il blocco Immagine di core salva, carattere per
+	 * carattere: `src`, `alt` e la classe `wp-image-ID`, niente altro. Prima
+	 * qui si usava wp_get_attachment_image(), che aggiunge srcset, dimensioni
+	 * e classi proprie: sul sito rendeva uguale, ma nell'editor ogni immagine
+	 * risultava «contenuto inaspettato o non valido». srcset, sizes e
+	 * lazy loading li aggiunge WordPress al momento di stampare la pagina
+	 * (wp_filter_content_tags), quindi la pagina pubblica non cambia.
+	 * `$attr` resta per compatibilita' con chi lo passa, ma non entra piu'
+	 * nel markup salvato.
+	 */
+	$alt          = (string) get_post_meta( $id, '_wp_attachment_image_alt', true );
 	$figure_class = trim( 'wp-block-image size-' . $size . ' ' . $classname );
 
 	return '<!-- wp:image {"id":' . $id . ',"sizeSlug":"' . $size . '","linkDestination":"none"'
 		. ( '' !== $classname ? ',"className":"' . esc_attr( $classname ) . '"' : '' )
-		. '} --><figure class="' . esc_attr( $figure_class ) . '">' . $img . '</figure><!-- /wp:image -->';
+		. '} --><figure class="' . esc_attr( $figure_class ) . '"><img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" class="wp-image-' . $id . '"/></figure><!-- /wp:image -->';
 }
 
 /**
@@ -341,6 +418,22 @@ function sorriso_dambrosio_cf7_no_autop() {
 	return false;
 }
 add_filter( 'wpcf7_autop_or_not', 'sorriso_dambrosio_cf7_no_autop' );
+
+/**
+ * Il campo «Messaggio» del modulo e' alto 5 righe: il default di Contact
+ * Form 7 e' 10, troppo per un messaggio di poche parole. Si imposta qui e
+ * non nel modulo, cosi' resta nel tema e non nel database.
+ *
+ * @param array $tag Etichetta del modulo.
+ * @return array
+ */
+function sorriso_dambrosio_cf7_textarea_rows( $tag ) {
+	if ( is_array( $tag ) && isset( $tag['basetype'] ) && 'textarea' === $tag['basetype'] ) {
+		$tag['options'][] = 'rows:5';
+	}
+	return $tag;
+}
+add_filter( 'wpcf7_form_tag', 'sorriso_dambrosio_cf7_textarea_rows' );
 
 /**
  * Segna la voce corrente nel menu — il menu usa solo link "custom" (URL

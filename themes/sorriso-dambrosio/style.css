@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.25
+Version: 1.8.40
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -460,7 +460,7 @@ Text Domain: sorriso-dambrosio
 .sd-hero__bar {
 	align-items: center;
 	background-color: var(--wp--custom--surface--pure);
-	border-radius: 1.75rem;
+	border-radius: var(--wp--custom--radius--bar);
 	box-shadow: 0 24px 60px -30px var(--wp--custom--shadow--bar);
 	color: var(--wp--preset--color--main);
 	display: flex;
@@ -636,7 +636,10 @@ Text Domain: sorriso-dambrosio
 	   `object-position: right` (ereditato da sopra) sposta il ritaglio
 	   orizzontale sulla finestra, mai su un dottore. */
 	.sd-hero__media {
-		aspect-ratio: 3 / 2;
+		/* 7:5 e non 3:2: i tre dottori occupano il 46-98% della foto,
+		   e solo una finestra di questa larghezza li tiene al centro
+		   (un filo d'aria per lato). Vale per tablet e telefono. */
+		aspect-ratio: 7 / 5;
 		height: auto;
 		position: static;
 		width: 100%;
@@ -652,8 +655,22 @@ Text Domain: sorriso-dambrosio
 		padding-block: var(--wp--custom--space--lg);
 	}
 
-	.sd-hero__title {
+	.sd-hero__title,
+	.sd-hero__lede {
 		max-width: none;
+	}
+
+	/* Email, telefono e indirizzo uno sopra l'altro: affiancati, l'email
+	   lunga finiva sopra l'icona del telefono. Il bottone resta sotto. */
+	.sd-hero__bar-info {
+		align-items: flex-start;
+		flex: 1 1 100%;
+		flex-direction: column;
+		row-gap: 0;
+	}
+
+	.sd-hero__bar-item {
+		flex: 0 0 auto;
 	}
 }
 
@@ -2045,6 +2062,14 @@ Text Domain: sorriso-dambrosio
 	margin-top: var(--wp--custom--space--md);
 }
 
+/* Sulla fascia scura il pulsante pieno, al passaggio, diventava `main`:
+   lo stesso colore dello sfondo, e il pulsante spariva. Resta del colore
+   della fascia ma con il filetto chiaro, cosi' si stacca dal fondo. */
+.sd-hours-band .sd-btn--solid:hover,
+.sd-hours-band .sd-btn--solid:focus-visible {
+	border-color: var(--wp--preset--color--base);
+}
+
 .sd-hours-week {
 	list-style: none;
 	margin: 0;
@@ -2144,11 +2169,47 @@ Text Domain: sorriso-dambrosio
    spezzerebbero la griglia a due colonne.
    --------------------------------------------------------------- */
 
+/* Una carta sola, divisa in due pannelli: i recapiti su grafite, il
+   modulo su bianco. Raggio e ombra sono quelli della barra dell'hero,
+   cosi' le due superfici in rilievo della homepage parlano la stessa
+   lingua. La carta toglie a `.sd-wrap` le costole interne e se le
+   tiene come margine: dentro, lo spazio lo danno i pannelli. */
 .sd-prenota__grid {
-	align-items: start;
+	background-color: var(--wp--custom--surface--pure);
+	border-radius: var(--wp--custom--radius--bar);
+	box-shadow: 0 24px 60px -30px var(--wp--custom--shadow--bar);
 	display: grid;
-	gap: var(--wp--custom--space--xl);
+	gap: 0;
 	grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+	max-width: calc(var(--sd-max) - 2 * var(--sd-gutter));
+	overflow: hidden;
+	padding-inline: 0;
+	width: calc(100% - 2 * var(--sd-gutter));
+}
+
+.sd-prenota__aside,
+.sd-prenota__form {
+	min-width: 0;
+	padding: var(--wp--custom--space--xl) var(--wp--custom--space--lg);
+}
+
+/* Il pannello scuro e' `main`, il grafite del footer: era `navy`, ma un
+   secondo blu accanto a `primary` (pulsanti e collegamenti) sembrava una
+   sfumatura sbagliata, non una scelta. Sul grafite il base fa 11:1 e il
+   tertiary 6,9:1: anche l'occhiello, che altrove e' secondary, qui sale
+   a tertiary. */
+.sd-prenota__aside {
+	background-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-prenota__aside .sd-eyebrow {
+	color: var(--wp--preset--color--tertiary);
+}
+
+.sd-prenota__aside .sd-head h1,
+.sd-prenota__aside .sd-head h2 {
+	color: var(--wp--preset--color--base);
 }
 
 .sd-prenota__contacts {
@@ -2159,24 +2220,27 @@ Text Domain: sorriso-dambrosio
 
 .sd-prenota__contacts li {
 	align-items: flex-start;
-	border-top: 1px solid var(--wp--custom--border--hairline);
+	border-top: 1px solid var(--wp--custom--border--hairline-dark);
 	display: flex;
-	gap: 0.85rem;
-	padding-block: 0.9rem;
+	gap: var(--wp--custom--space--xs);
+	padding-block: var(--wp--custom--space--xs);
 }
 
 .sd-prenota__contacts li:first-child {
 	border-top: 0;
+	padding-top: 0;
 }
 
 .sd-prenota__contacts .sd-icon {
-	color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--tertiary);
+	flex: none;
 	height: 21px;
 	margin-top: 0.15em;
 	width: 21px;
 }
 
 .sd-prenota__contacts a {
+	color: var(--wp--preset--color--base);
 	text-decoration: none;
 }
 
@@ -2186,6 +2250,13 @@ Text Domain: sorriso-dambrosio
 	text-underline-offset: 0.25em;
 }
 
+/* L'anello di default e' primary: sul grafite farebbe 2,9:1. */
+.sd-prenota__aside a:focus-visible {
+	outline: 2px solid var(--wp--preset--color--base);
+	outline-offset: 2px;
+}
+
+/* Il pannello del modulo. */
 .sd-form__row {
 	margin-bottom: var(--wp--custom--space--sm);
 }
@@ -2199,15 +2270,20 @@ Text Domain: sorriso-dambrosio
 .sd-form__field {
 	display: flex;
 	flex-direction: column;
-	gap: 0.4rem;
+	gap: var(--wp--custom--space--xxxs);
 	min-width: 0;
 }
 
 .sd-form__field label {
-	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--secondary);
+	font-size: var(--wp--preset--font-size--x-small);
 	font-weight: 500;
+	letter-spacing: 0.02em;
 }
 
+/* Il bordo e' `border.field`, non `hairline`: il filetto da 1,2:1 sul
+   bianco non disegnerebbe il campo. Niente ombre: il campo attivo lo
+   dice l'anello primary. */
 .sd-form__field input[type="text"],
 .sd-form__field input[type="email"],
 .sd-form__field input[type="tel"],
@@ -2215,18 +2291,19 @@ Text Domain: sorriso-dambrosio
 .sd-form__field textarea {
 	background-color: var(--wp--custom--surface--pure);
 	border: 1px solid var(--wp--custom--border--field);
-	border-radius: 6px;
+	border-radius: var(--wp--custom--radius--field);
 	color: var(--wp--preset--color--main);
 	font-family: var(--wp--preset--font-family--primary);
 	font-size: var(--wp--preset--font-size--small);
 	line-height: 1.5;
-	padding: 0.75em 0.9em;
+	min-height: var(--wp--custom--tap);
+	padding: var(--wp--custom--space--xxs) var(--wp--custom--space--xs);
 	transition: border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), box-shadow var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 	width: 100%;
 }
 
 .sd-form__field textarea {
-	min-height: 9rem;
+	min-height: calc(var(--wp--custom--tap) * 3);
 	resize: vertical;
 }
 
@@ -2234,7 +2311,7 @@ Text Domain: sorriso-dambrosio
 .sd-form__field select:focus,
 .sd-form__field textarea:focus {
 	border-color: var(--wp--preset--color--primary);
-	box-shadow: 0 0 0 3px var(--wp--custom--state--ok-tint);
+	box-shadow: 0 0 0 1px var(--wp--preset--color--primary);
 	outline: none;
 }
 
@@ -2250,7 +2327,7 @@ Text Domain: sorriso-dambrosio
 .sd-form__privacy label {
 	align-items: flex-start;
 	display: flex;
-	gap: 0.6rem;
+	gap: var(--wp--custom--space--xxs);
 }
 
 .sd-form__privacy input[type="checkbox"] {
@@ -2265,29 +2342,36 @@ Text Domain: sorriso-dambrosio
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.85rem;
+	gap: var(--wp--custom--space--xs);
 }
 
-/* Il submit di CF7 e' un <input>: prende l'aspetto dei pulsanti pieni. */
-.sd-form__submit,
-.sd-form input[type="submit"] {
-	background-color: var(--wp--preset--color--primary);
-	border: 1px solid var(--wp--preset--color--primary);
+/* Il submit e' la pillola contornata del «Prenota un appuntamento»
+   nell'header (`.sd-btn--outline`). `.sd-prenota` davanti perche' le
+   regole di `.wpcf7-submit` in §19 stanno piu' in basso nel foglio. */
+.sd-prenota .sd-form__submit {
+	background-color: transparent;
+	border: 1px solid var(--wp--preset--color--main);
 	border-radius: 999px;
-	color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--main);
 	cursor: pointer;
 	font-family: var(--wp--preset--font-family--primary);
 	font-size: var(--wp--preset--font-size--x-small);
 	font-weight: 500;
 	letter-spacing: 0.02em;
-	padding: 0.95em 2em;
-	transition: background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+	line-height: 1.2;
+	padding: 0.85em 1.5em;
+	transition: background-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), border-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
 }
 
-.sd-form__submit:hover,
-.sd-form__submit:focus-visible {
+.sd-prenota .sd-form__submit:hover,
+.sd-prenota .sd-form__submit:focus-visible {
 	background-color: var(--wp--preset--color--main);
-	border-color: var(--wp--preset--color--main);
+	color: var(--wp--preset--color--base);
+}
+
+.sd-prenota .sd-form__submit:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
 }
 
 /* --- Stati di Contact Form 7 -------------------------------------
@@ -2315,7 +2399,7 @@ Text Domain: sorriso-dambrosio
 .sd-prenota form.wpcf7-form .wpcf7-response-output {
 	border: 1px solid var(--wp--custom--border--field);
 	border-left-width: 3px;
-	border-radius: 4px;
+	border-radius: var(--wp--custom--radius--field);
 	font-size: var(--wp--preset--font-size--small);
 	margin: var(--wp--custom--space--sm) 0 0;
 	padding: 0.9em 1.1em;
@@ -2362,6 +2446,8 @@ Text Domain: sorriso-dambrosio
 	border-color: var(--wp--preset--color--main-accent);
 }
 
+/* Sotto i 900px i pannelli si impilano, navy sopra: la carta tiene il
+   suo raggio. */
 @media (max-width: 899px) {
 	.sd-prenota__grid {
 		grid-template-columns: minmax(0, 1fr);
@@ -2369,6 +2455,11 @@ Text Domain: sorriso-dambrosio
 }
 
 @media (max-width: 599px) {
+	.sd-prenota__aside,
+	.sd-prenota__form {
+		padding: var(--wp--custom--space--lg) var(--wp--custom--space--md);
+	}
+
 	.sd-form__row--2col {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -2580,6 +2671,34 @@ Text Domain: sorriso-dambrosio
 
 .sd-footer .wp-block-social-link a {
 	text-decoration: none;
+}
+
+/* I collegamenti del footer (recapiti, firma) non sono sottolineati a
+   riposo. Il filetto c'e' ma trasparente: al passaggio prende colore e
+   sale verso il testo, mentre la voce schiarisce a tertiary (6,9:1 su
+   main). Si anima il filetto e non uno sfondo disegnato sotto, perche'
+   su mobile §19 da' a questi collegamenti un'area premibile piu' alta
+   del testo, e uno sfondo finirebbe in fondo all'area, non sotto le
+   lettere. Il pulsante di iubenda e i social hanno il loro aspetto. */
+.sd-footer a:not(.wp-block-social-link-anchor):not(.iubenda-white):not(.iubenda-nostyle) {
+	color: var(--wp--preset--color--base);
+	text-decoration-color: transparent;
+	text-decoration-line: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.5em;
+	transition: color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), text-decoration-color var(--wp--custom--motion--duration) var(--wp--custom--motion--ease), text-underline-offset var(--wp--custom--motion--duration) var(--wp--custom--motion--ease);
+}
+
+.sd-footer a:not(.wp-block-social-link-anchor):not(.iubenda-white):not(.iubenda-nostyle):hover,
+.sd-footer a:not(.wp-block-social-link-anchor):not(.iubenda-white):not(.iubenda-nostyle):focus-visible {
+	color: var(--wp--preset--color--tertiary);
+	text-decoration-color: currentColor;
+	text-underline-offset: 0.25em;
+}
+
+/* L'anello primary su main farebbe 2,9:1: qui diventa base. */
+.sd-footer a:focus-visible {
+	outline-color: var(--wp--preset--color--base);
 }
 
 /* ---------------------------------------------------------------
@@ -3034,37 +3153,22 @@ img {
    fin qui non era stata usata da nessuna parte.
    --------------------------------------------------------------- */
 
-/* I filetti sono bordi delle celle, non un fondo che traspare da una
-   griglia con `gap: 1px`: con otto voci su nove caselle, quel trucco
-   lasciava l'ultima casella grigia e vuota. */
+/* La griglia e' fatta di schede: stessa larghezza, stesso passo, niente
+   filetti incrociati. Prima le celle erano divise da bordi e la prima e
+   l'ultima colonna avevano meno margine interno delle altre, quindi le
+   figure di una stessa riga non erano nemmeno larghe uguale. */
 .sd-matrix {
-	border-bottom: 1px solid var(--wp--custom--border--hairline);
+	column-gap: var(--wp--custom--space--lg);
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
+	row-gap: var(--wp--custom--space--xl);
 }
 
 .sd-matrix__cell {
-	border-left: 1px solid var(--wp--custom--border--hairline);
-	border-top: 1px solid var(--wp--custom--border--hairline);
 	display: flex;
 	flex-direction: column;
-	padding: var(--wp--custom--space--md);
+	padding: 0;
 }
-
-.sd-matrix__cell:nth-child(3n + 1) {
-	border-left: 0;
-	padding-left: 0;
-}
-
-.sd-matrix__cell:nth-child(3n) {
-	padding-right: 0;
-}
-
-.sd-matrix__figure {
-	margin: 0 0 var(--wp--custom--space--sm);
-}
-
-/* idem */
 
 .sd-matrix__title {
 	font-size: var(--wp--preset--font-size--medium);
@@ -3088,37 +3192,51 @@ img {
 	margin: 0;
 }
 
+/* Le schede dell'elenco sono tutte uguali: stessa cornice, stessa altezza.
+
+   Prima ogni immagine si faceva della sua misura (370x245, 300x424,
+   2560x1179...) e le schede di una stessa riga avevano figure di altezze
+   diverse. Ora la cornice e' sempre 4/3, bianca, con un filetto e gli
+   angoli arrotondati: le fotografie la riempiono, i ritagli e la
+   panoramica si posano al centro con un po' d'aria, mai oltre la loro
+   misura naturale. Fra cornice e titolo c'e' uno spazio pieno. */
+.sd-matrix .sd-plate.sd-matrix__figure {
+	align-items: center;
+	aspect-ratio: var(--wp--custom--frame--plate);
+	background-color: var(--wp--custom--surface--pure);
+	border: 1px solid var(--wp--custom--border--hairline);
+	border-radius: var(--wp--custom--radius--panel);
+	box-sizing: border-box;
+	justify-content: center;
+	margin: 0 0 var(--wp--custom--space--md);
+	max-width: none;
+	overflow: hidden;
+	width: 100%;
+}
+
+.sd-matrix .sd-plate--contain.sd-matrix__figure,
+.sd-matrix .sd-plate--panorama.sd-matrix__figure {
+	padding: var(--wp--custom--space--sm);
+}
+
+.sd-matrix .sd-plate--contain.sd-matrix__figure img,
+.sd-matrix .sd-plate--panorama.sd-matrix__figure img {
+	height: auto;
+	max-height: 100%;
+	max-width: 100%;
+	object-fit: contain;
+	width: auto;
+}
+
 @media (max-width: 899px) {
 	.sd-matrix {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.sd-matrix__cell:nth-child(3n + 1),
-	.sd-matrix__cell:nth-child(3n) {
-		border-left: 1px solid var(--wp--custom--border--hairline);
-		padding-inline: var(--wp--custom--space--md);
-	}
-
-	.sd-matrix__cell:nth-child(2n + 1) {
-		border-left: 0;
-		padding-left: 0;
-	}
-
-	.sd-matrix__cell:nth-child(2n) {
-		padding-right: 0;
 	}
 }
 
 @media (max-width: 599px) {
 	.sd-matrix {
 		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.sd-matrix__cell,
-	.sd-matrix__cell:nth-child(2n),
-	.sd-matrix__cell:nth-child(3n) {
-		border-left: 0;
-		padding-inline: 0;
 	}
 }
 
@@ -3686,13 +3804,6 @@ img {
    18.13 La pagina dei contatti
    --------------------------------------------------------------- */
 
-.sd-contactpage__grid {
-	display: grid;
-	gap: var(--wp--custom--space--xl);
-	grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
-	align-items: start;
-}
-
 .sd-contacts {
 	display: grid;
 	gap: 0;
@@ -3747,12 +3858,6 @@ img {
 	border: 0;
 }
 
-@media (max-width: 899px) {
-	.sd-contactpage__grid {
-		grid-template-columns: minmax(0, 1fr);
-	}
-}
-
 /* ---------------------------------------------------------------
    18.14 Il testo libero di un'area (oggi: la FAQ di Implantologia)
    --------------------------------------------------------------- */
@@ -3802,30 +3907,86 @@ img {
 	padding-top: var(--wp--custom--space--md);
 }
 
-/* Le due fotografie dentro il racconto (voce 17): quella del corridoio
-   con la targa «dr. venanzio» e quella di una sala operativa oggi.
-   Niente cornice, niente scatola bianca: riempiono la colonna di
-   lettura e basta. Il rapporto e' `wide` perche' sono due scatti
-   d'ambiente, non ritratti. */
-.sd-chapter__shot {
-	margin: var(--wp--custom--space--md) 0 var(--wp--custom--space--lg);
-	max-width: var(--wp--custom--measure--column);
+/* ---------------------------------------------------------------
+   18.16 /lo-studio/ — le tappe e le due file di fotografie
+   --------------------------------------------------------------- */
+
+/* Tre date in fila, ciascuna sotto un filetto: messi uno accanto
+   all'altro i tre filetti fanno il filo del tempo. */
+.sd-tappe {
+	margin: 0 0 var(--wp--custom--space--lg);
 }
 
-.sd-chapter__shot img {
-	aspect-ratio: var(--wp--custom--frame--wide);
-	border-radius: var(--wp--custom--radius--panel);
+.sd-tappe .sd-tappe__list {
+	display: grid;
+	gap: var(--wp--custom--space--md);
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sd-tappe .sd-tappe__list > li {
+	border-top: 1px solid var(--wp--custom--border--hairline);
+	margin: 0;
+	padding-top: var(--wp--custom--space--xs);
+}
+
+.sd-tappe__year {
+	display: block;
+	font-family: var(--wp--preset--font-family--secondary);
+	font-size: var(--wp--preset--font-size--large);
+	line-height: 1.1;
+	margin-bottom: var(--wp--custom--space--xxs);
+}
+
+.sd-tappe__text {
+	display: block;
+}
+
+/* Le due file — com'era, oggi — sono identiche: quattro riquadri
+   quadrati, il soggetto al centro. Gli originali partono da 1459px e
+   un riquadro non supera i ~300: nessuna fotografia viene ingrandita. */
+.sd-strip {
+	margin: var(--wp--custom--space--md) 0 var(--wp--custom--space--lg);
+}
+
+.sd-strip__caption {
+	color: var(--wp--preset--color--secondary);
+	letter-spacing: 0.06em;
+	margin: 0 0 var(--wp--custom--space--xxs);
+}
+
+.sd-strip__grid {
+	display: grid;
+	gap: var(--wp--custom--space--xs);
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sd-strip__shot {
+	margin: 0;
+	min-width: 0;
+}
+
+.sd-strip__shot img {
+	aspect-ratio: 1 / 1;
 	display: block;
 	height: auto;
 	object-fit: cover;
+	object-position: 50% 50%;
 	width: 100%;
 }
 
-/* Su /contatti/ il modulo non ha i recapiti accanto — stanno gia' in cima
-   alla pagina — quindi occupa la colonna intera e i campi restano su due
-   file invece di stringersi in una. */
-.sd-prenota--wide .sd-form-wrapper {
-	max-width: var(--wp--custom--measure--form);
+@media (min-width: 1121px) {
+	.sd-strip__grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 781px) {
+	.sd-tappe .sd-tappe__list {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 /* ===============================================================
@@ -4222,6 +4383,16 @@ img {
 	--sd-focus: 50% 18%;
 
 	object-position: var(--sd-focus);
+}
+
+/* I tre `*-profilo` (670x838) hanno la testa a filo del bordo alto: nella
+   cornice 3/2 di mobile anche il 18% bastava a tagliare la fronte di
+   Stefania e i capelli di Giuseppe. Qui si parte dal bordo, e si vede
+   tutta l'aria che la fotografia ha sopra la testa. */
+@media (max-width: 599px) {
+	.sd-roster__portrait img {
+		--sd-focus: 50% 0%;
+	}
 }
 
 /* La riga senza immagine non tiene una colonna di nulla: diventa piena.
@@ -4905,6 +5076,41 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	.sd-plate--panorama.sd-zig__figure {
 		aspect-ratio: var(--sd-ar);
 		max-height: none;
+	}
+}
+
+/* La fotografia della scheda accompagna la lettura (da 900px in su).
+
+   Il testo e' quasi sempre piu' alto della fotografia: la cornice si
+   fermava in cima e sotto restava una colonna bianca. Qui prende il
+   posto che le spetta e segue lo scorrimento, come la fotografia di
+   «Tecnologie» in homepage (`.sd-tech__figure`): `align-self: start` la
+   toglie dall'allungamento, `sticky` la tiene sotto l'header finche' il
+   testo scorre. L'area di griglia della figura copre titolo e testo,
+   quindi ha tutto il percorso. Le tre cornici tengono la loro misura:
+   la fotografia piena il 4/3, il ritaglio il suo tetto, la panoramica
+   la sua proporzione. Nessuna si ingrandisce.
+
+   `.sd-entry` aveva `overflow: hidden`, che fa della sezione il
+   contenitore di scorrimento e spegne `sticky`: `clip` taglia lo
+   stesso lo sbordo laterale ma non crea contenitore. */
+@media (min-width: 900px) {
+	.sd-entry {
+		overflow: clip;
+	}
+
+	.sd-entry__figure,
+	.sd-plate--cover.sd-entry__figure,
+	.sd-plate--contain.sd-entry__figure {
+		align-self: start;
+		position: sticky;
+		top: var(--sd-sticky-top);
+	}
+
+	.sd-plate--cover.sd-entry__figure:not(.sd-plate--panorama) {
+		aspect-ratio: var(--wp--custom--frame--plate);
+		max-height: 44rem;
+		min-height: 0;
 	}
 }
 

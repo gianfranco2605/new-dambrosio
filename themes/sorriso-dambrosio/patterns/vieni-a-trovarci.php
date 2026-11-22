@@ -20,7 +20,7 @@ $sd_c = sorriso_dambrosio_contacts();
 $sd_map = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2968.633916371706!2d12.468092614968212!3d41.922227870631446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132f60ef1aca4077%3A0xc71223dd3dc0b35e!2sLungotevere%20Flaminio%2C%2034%2C%2000196%20Roma%20RM!5e0!3m2!1sit!2sit!4v1627212137112!5m2!1sit!2sit';
 ?>
 <!-- wp:group {"tagName":"section","className":"sd-visit","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-visit" aria-labelledby="sd-vieni-a-trovarci-titolo" style="margin-top:0;margin-bottom:0"><!-- wp:html -->
+<section class="wp-block-group sd-visit" style="margin-top:0;margin-bottom:0"><!-- wp:html -->
 <div class="sd-visit__map">
 	<?php
 	/*

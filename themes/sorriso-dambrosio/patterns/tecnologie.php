@@ -58,7 +58,7 @@ $sd_tech = array(
 );
 ?>
 <!-- wp:group {"tagName":"section","className":"sd-section sd-tech","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-section sd-tech" aria-labelledby="sd-tecnologie-titolo" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap sd-tech__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-section sd-tech" style="margin-top:0;margin-bottom:0"><!-- wp:group {"className":"sd-wrap sd-tech__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-wrap sd-tech__grid"><!-- wp:group {"className":"sd-tech__aside","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-tech__aside">
 <?php echo sorriso_dambrosio_section_head( 'Tendenze', 'Tecnologie', 2, home_url( '/tecnologie/' ), 'sd-tecnologie-titolo' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

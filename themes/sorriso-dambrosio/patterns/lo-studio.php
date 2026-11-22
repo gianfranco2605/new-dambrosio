@@ -46,7 +46,7 @@ $sd_accoglienza_id = 1321;
 ?>
 <!-- wp:group {"className":"sd-section sd-chapter","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-section sd-chapter" style="margin-top:0;margin-bottom:0"><!-- wp:group {"tagName":"section","className":"sd-chapter__grid","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-chapter__grid" aria-labelledby="sd-lo-studio-titolo"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-chapter__grid"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
 <?php echo sorriso_dambrosio_image( $sd_media_id, '1536x1536', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1120px) 100vw, 1152px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
@@ -79,7 +79,7 @@ $sd_accoglienza_id = 1321;
 <!-- /wp:group -->
 
 <!-- wp:group {"tagName":"section","className":"sd-chapter__grid sd-chapter__grid--mirror sd-welcome","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
-<section class="wp-block-group sd-chapter__grid sd-chapter__grid--mirror sd-welcome" aria-labelledby="sd-pazienti-titolo"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
+<section class="wp-block-group sd-chapter__grid sd-chapter__grid--mirror sd-welcome"><!-- wp:group {"className":"sd-chapter__media","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"default"}} -->
 <div class="wp-block-group sd-chapter__media">
 <?php echo sorriso_dambrosio_image( $sd_accoglienza_id, 'full', 'sd-chapter__figure', array( 'sizes' => '(max-width: 1023px) 100vw, 1100px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </div>
