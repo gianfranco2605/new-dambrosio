@@ -492,8 +492,12 @@ function sorriso_dambrosio_nav_mark_current_link( $block_content, $block ) {
 	if ( sorriso_dambrosio_nav_url_path( $block['attrs']['url'] ) !== sorriso_dambrosio_nav_current_path() ) {
 		return $block_content;
 	}
-	$block_content = preg_replace( '/class="([^"]*wp-block-navigation-item[^"]*)"/', 'class="$1 current-menu-item"', $block_content, 1 );
-	return (string) preg_replace( '/(<a[^>]*wp-block-navigation-item__content[^>]*)(>)/', '$1 aria-current="page"$2', $block_content, 1 );
+	// `preg_replace()` restituisce null se la regex fallisce: in quel caso
+	// la voce resta com'era invece di sparire dal menu.
+	$marked = preg_replace( '/class="([^"]*wp-block-navigation-item[^"]*)"/', 'class="$1 current-menu-item"', $block_content, 1 );
+	$marked = is_string( $marked ) ? $marked : $block_content;
+	$marked = preg_replace( '/(<a[^>]*wp-block-navigation-item__content[^>]*)(>)/', '$1 aria-current="page"$2', $marked, 1 );
+	return is_string( $marked ) ? $marked : $block_content;
 }
 add_filter( 'render_block_core/navigation-link', 'sorriso_dambrosio_nav_mark_current_link', 10, 2 );
 

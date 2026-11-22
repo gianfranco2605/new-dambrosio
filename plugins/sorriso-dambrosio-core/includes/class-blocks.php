@@ -547,7 +547,7 @@ final class Blocks {
 
 				$body .= '<div class="sd-index__area">'
 					. '<' . $tag . ' class="sd-index__areaname">'
-					. '<a href="' . esc_url( (string) get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>'
+					. Render::term_link( $term )
 					. '</' . $tag . '>'
 					. Render::chips( $posts )
 					. '</div>';
@@ -643,7 +643,7 @@ final class Blocks {
 
 		if ( $area instanceof \WP_Term ) {
 			$meta[] = '<li class="sd-case__meta-item"><span class="sd-case__meta-label">Area</span>'
-				. '<a href="' . esc_url( (string) get_term_link( $area ) ) . '">' . esc_html( $area->name ) . '</a></li>';
+				. Render::term_link( $area ) . '</li>';
 		}
 
 		if ( array() !== $meta ) {

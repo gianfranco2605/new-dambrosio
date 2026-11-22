@@ -3,7 +3,7 @@
  * Plugin Name:       Sorriso D'Ambrosio — Contenuti
  * Plugin URI:        https://github.com/gianfranco2605/new-dambrosio
  * Description:       I contenuti dello Studio Odontoiatrico D'Ambrosio: trattamenti, tecnologie, professionisti e casi clinici, piu' gli orari e i recapiti in un posto solo. Qui sta il contenuto; la presentazione sta nel tema.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.8
  * Requires PHP:      8.3
  * Author:            Studio Odontoiatrico D'Ambrosio
@@ -20,7 +20,7 @@ namespace SD\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 const FILE    = __FILE__;
 
 require_once __DIR__ . '/includes/class-content-types.php';

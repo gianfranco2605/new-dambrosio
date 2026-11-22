@@ -46,6 +46,30 @@ final class Render {
 	}
 
 	/**
+	 * L'indirizzo di un'area, o stringa vuota se WordPress non lo sa dare.
+	 *
+	 * `get_term_link()` puo' restituire un WP_Error: convertirlo a stringa con
+	 * `(string)` in PHP 8 blocca la pagina. Chi lo usa, con la stringa vuota,
+	 * mostra il nome senza collegamento.
+	 */
+	public static function term_url( \WP_Term $term ): string {
+		$link = get_term_link( $term );
+
+		return is_string( $link ) ? $link : '';
+	}
+
+	/**
+	 * Il nome di un'area, collegato alla sua pagina quando l'indirizzo c'e'.
+	 */
+	public static function term_link( \WP_Term $term ): string {
+		$url = self::term_url( $term );
+
+		return '' !== $url
+			? '<a href="' . esc_url( $url ) . '">' . esc_html( $term->name ) . '</a>'
+			: esc_html( $term->name );
+	}
+
+	/**
 	 * L'intestazione di sezione: filetto sopra, occhiello a destra, titolo sotto.
 	 *
 	 * E' la stessa figura di `sorriso_dambrosio_section_head()` nel tema, ma in

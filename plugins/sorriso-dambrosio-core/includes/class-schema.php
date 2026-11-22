@@ -184,10 +184,10 @@ final class Schema {
 		if ( is_tax( Content_Types::AREA ) ) {
 			$term = get_queried_object();
 
-			if ( $term instanceof \WP_Term ) {
+			if ( $term instanceof \WP_Term && '' !== Render::term_url( $term ) ) {
 				$crumbs[] = array(
 					'name' => $term->name,
-					'url'  => (string) get_term_link( $term ),
+					'url'  => Render::term_url( $term ),
 				);
 			}
 
@@ -222,10 +222,10 @@ final class Schema {
 		if ( Content_Types::TRATTAMENTO === $post->post_type ) {
 			$area = Relations::area( $post->ID );
 
-			if ( $area instanceof \WP_Term ) {
+			if ( $area instanceof \WP_Term && '' !== Render::term_url( $area ) ) {
 				$crumbs[] = array(
 					'name' => $area->name,
-					'url'  => (string) get_term_link( $area ),
+					'url'  => Render::term_url( $area ),
 				);
 			}
 		} else {
