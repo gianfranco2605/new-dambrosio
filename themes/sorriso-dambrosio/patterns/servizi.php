@@ -24,7 +24,7 @@ $sd_services = array(
 		'image' => 85,
 		'title' => 'Estetica',
 		'text'  => 'Scopri il piacere di riscoprire e riabbracciare la bellezza del tuo sorriso attraverso l&#8217;ampia gamma dei nostri servizi di estetica dentale di prima classe.',
-		'link'  => '/estetica/',
+		'link'  => '/estetica-dentale/',
 	),
 	array(
 		'image' => 527,

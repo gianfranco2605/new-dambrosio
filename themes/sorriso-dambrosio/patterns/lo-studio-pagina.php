@@ -116,7 +116,7 @@ $sd_strip = static function ( $caption, $shots ) {
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Fin dai suoi esordi, lo studio si &egrave; distinto per l&#8217;attenzione al paziente, la professionalit&agrave; e un approccio innovativo nel campo delle cure dentistiche.Inizialmente situato nel cuore di Roma, a Via del Tritone, si &egrave; trasferito nel 1978 a Lungotevere Flaminio 34, in una struttura di design con innovazioni tecnologiche in quel tempo &#8220;futuristiche&#8221;.</p>
+<p>Fin dai suoi esordi, lo studio si &egrave; distinto per l&#8217;attenzione al paziente, la professionalit&agrave; e un approccio innovativo nel campo delle cure dentistiche. Inizialmente situato nel cuore di Roma, a Via del Tritone, si &egrave; trasferito nel 1978 a Lungotevere Flaminio 34, in una struttura di design con innovazioni tecnologiche in quel tempo &#8220;futuristiche&#8221;.</p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 

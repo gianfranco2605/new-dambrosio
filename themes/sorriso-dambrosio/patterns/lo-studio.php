@@ -62,7 +62,7 @@ $sd_accoglienza_id = 1321;
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Fin dai suoi esordi, lo studio si &egrave; distinto per l&#8217;attenzione al paziente, la professionalit&agrave; e un approccio innovativo nel campo delle cure dentistiche.Inizialmente situato nel cuore di Roma, a Via del Tritone, si &egrave; trasferito nel 1978 a <a href="https://maps.app.goo.gl/jsVVDPiXFAFLCiE18" target="_blank" rel="noreferrer noopener"><strong>Lungotevere Flaminio 34</strong></a>, in una struttura di design con innovazioni tecnologiche in quel tempo &#8220;futuristiche&#8221;.</p>
+<p>Fin dai suoi esordi, lo studio si &egrave; distinto per l&#8217;attenzione al paziente, la professionalit&agrave; e un approccio innovativo nel campo delle cure dentistiche. Inizialmente situato nel cuore di Roma, a Via del Tritone, si &egrave; trasferito nel 1978 a <a href="https://maps.app.goo.gl/jsVVDPiXFAFLCiE18" target="_blank" rel="noreferrer noopener"><strong>Lungotevere Flaminio 34</strong></a>, in una struttura di design con innovazioni tecnologiche in quel tempo &#8220;futuristiche&#8221;.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
