@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.42
+Version: 1.8.51
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -5198,5 +5198,116 @@ body:has(.wp-block-navigation__responsive-container.is-menu-open) .sd-mobile-cta
 	/* 150px su un telefono sono un terzo della larghezza. */
 	.sd-footer .logo-footer img {
 		width: 96px;
+	}
+}
+
+/* ---------------------------------------------------------------
+   20.8 Il footer su quattro colonne (23/11, scelta del titolare)
+
+   Logo con i dati dello studio, Contatti, Menu, Social. Una
+   griglia e non le colonne flessibili di core: sotto i 1120px quattro
+   colonne diventano due per due, e core su desktop vieta l'a capo
+   (`flex-wrap: nowrap !important`). Le regole qui battono quelle di
+   §15 e di 20.7 sul logo.
+   --------------------------------------------------------------- */
+
+/* Colonne larghe quanto il loro contenuto e distribuite con
+   `space-between`: con quattro colonne uguali (1fr) il vuoto fra una
+   colonna e l'altra dipendeva da quanto era lungo il testo — stretto
+   dopo i dati dello studio, larghissimo dopo il menu. Cosi' i tre
+   intervalli sono identici e i social chiudono sul bordo destro. */
+.sd-footer .sd-footer__cols {
+	display: grid;
+	gap: var(--wp--custom--space--xl) var(--wp--custom--space--lg);
+	grid-template-columns: repeat(4, minmax(0, max-content));
+	justify-content: space-between;
+	margin: 0;
+}
+
+.sd-footer__col > * {
+	margin-block: 0;
+}
+
+.sd-footer__col > * + * {
+	margin-block-start: var(--wp--custom--space--sm);
+}
+
+.sd-footer__col .logo-footer {
+	margin: 0;
+}
+
+.sd-footer .sd-footer__col .logo-footer img {
+	display: block;
+	height: auto;
+	width: 96px;
+}
+
+/* L'etichetta della colonna: maiuscolo spaziato, piccolo, in bianco,
+   come nei footer di riferimento; il tondo del Fraunces qui sarebbe
+   un secondo titolo accanto al logo. */
+.sd-footer .sd-footer__title {
+	color: var(--wp--preset--color--base);
+	font-family: var(--wp--preset--font-family--primary);
+	font-size: var(--wp--preset--font-size--x-small);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.4;
+	text-transform: uppercase;
+}
+
+.sd-footer__col > .sd-footer__title + * {
+	margin-block-start: var(--wp--custom--space--xs);
+}
+
+.sd-footer__col p,
+.sd-footer__nav {
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.75;
+}
+
+.sd-footer__info {
+	color: var(--wp--preset--color--main-accent);
+}
+
+.sd-footer__nav {
+	list-style: none;
+	padding: 0;
+}
+
+.sd-footer__nav li {
+	margin: 0;
+}
+
+.sd-footer__bottom {
+	align-items: center;
+	border-top: 1px solid var(--wp--custom--rule--on-dark);
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--custom--space--xs) var(--wp--custom--space--lg);
+	justify-content: space-between;
+	margin-top: var(--wp--custom--space--xl);
+	padding-top: var(--wp--custom--space--md);
+}
+
+.sd-footer__bottom > * {
+	margin: 0;
+}
+
+.sd-footer__credit {
+	color: var(--wp--preset--color--main-accent);
+	font-size: var(--wp--preset--font-size--x-small);
+}
+
+@media (max-width: 1120px) {
+	.sd-footer .sd-footer__cols {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		justify-content: stretch;
+	}
+}
+
+@media (max-width: 599px) {
+	.sd-footer .sd-footer__cols {
+		gap: var(--wp--custom--space--lg);
+		grid-template-columns: minmax(0, 1fr);
 	}
 }
