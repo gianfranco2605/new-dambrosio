@@ -3,7 +3,7 @@
  * Title: Perche noi
  * Slug: sorriso-dambrosio/perche-noi
  * Categories: sorriso-dambrosio
- * Description: Fascia scura di sola tipografia: la dichiarazione in grande e quattro motivi su quattro colonne divise da filetti.
+ * Description: Fascia scura: la dichiarazione in grande e quattro motivi, ciascuno con la sua icona, su quattro colonne divise da filetti.
  * Inserter: true
  *
  * @package SorrisoDambrosio
@@ -12,25 +12,32 @@
 /*
  * L'unica fascia scura in mezzo alla pagina. Il paragrafo introduttivo sale
  * a 34px e fa da dichiarazione; i quattro motivi sono sola tipografia.
- * Le quattro icone (193-196) spariscono: erano clipart blu da 44px che non
- * dicevano niente che il titolo non dicesse gia'.
+ * Le quattro icone del vecchio sito (193-196) tornano sopra i titoli (23/11,
+ * scelta del titolare), ma nel colore del testo: il PNG blu fa da maschera
+ * (`mask-image`) e il colore lo da' `currentColor`, quindi resta un token
+ * della palette. 128px naturali mostrati a 48: non si ingrandiscono.
+ * Decorative: `aria-hidden`, il titolo dice gia' tutto.
  *
  * Nessun numero progressivo: i quattro motivi non sono una sequenza.
  */
 $sd_reasons = array(
 	array(
+		'icon'  => 193,
 		'title' => 'Team odontoiatrico altamente qualificato.',
 		'text'  => 'Il nostro team odontoiatrico &egrave; composto da professionisti altamente qualificati e dedicati alla cura della tua salute dentale.',
 	),
 	array(
+		'icon'  => 194,
 		'title' => 'Vasta linea di servizi odontoiatrici.',
 		'text'  => 'La nostra vasta gamma di servizi odontoiatrici offre soluzioni complete per tutte le tue esigenze dentali.',
 	),
 	array(
+		'icon'  => 195,
 		'title' => 'Strutture e attrezzature avanzate.',
 		'text'  => 'Le nostre strutture e attrezzature odontoiatriche all&#8217;avanguardia garantiscono trattamenti di alta qualit&agrave; e comfort per i nostri pazienti.',
 	),
 	array(
+		'icon'  => 196,
 		'title' => 'Risultati garantiti e sorrisi pi&ugrave; luminosi.',
 		'text'  => 'I nostri trattamenti garantiscono risultati sorprendenti, regalando sorrisi pi&ugrave; luminosi e sicuri.',
 	),
@@ -53,7 +60,11 @@ $sd_reasons = array(
 <div class="wp-block-group sd-why__grid">
 <?php foreach ( $sd_reasons as $sd_reason ) : ?>
 <!-- wp:group {"className":"sd-why__cell","style":{"spacing":{"blockGap":"var:preset|spacing|small"}},"layout":{"type":"default"}} -->
-<div class="wp-block-group sd-why__cell"><!-- wp:heading {"level":3,"fontSize":"medium"} -->
+<div class="wp-block-group sd-why__cell"><!-- wp:html -->
+<span class="sd-why__icon" style="--sd-icon:url(<?php echo esc_url( (string) wp_get_attachment_url( $sd_reason['icon'] ) ); ?>)" aria-hidden="true"></span>
+<!-- /wp:html -->
+
+<!-- wp:heading {"level":3,"fontSize":"medium"} -->
 <h3 class="wp-block-heading has-medium-font-size"><?php echo $sd_reason['title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 <!-- /wp:heading -->
 

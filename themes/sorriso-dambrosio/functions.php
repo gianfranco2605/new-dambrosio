@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Riserva di wp_enqueue_style quando style.css manca: tenerla pari al suo Version.
 if ( ! defined( 'SORRISO_DAMBROSIO_VERSION' ) ) {
-	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.51' );
+	define( 'SORRISO_DAMBROSIO_VERSION', '1.8.52' );
 }
 
 /**

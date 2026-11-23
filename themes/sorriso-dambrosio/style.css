@@ -7,7 +7,7 @@ Author URI: https://digitalnavas.it/
 Description: Child theme di Ollie per lo Studio Odontoiatrico D'Ambrosio. Layout editoriale, palette invariata, font inclusi localmente.
 Tested up to: 7.1
 Requires PHP: 8.3
-Version: 1.8.51
+Version: 1.8.52
 License: GNU General Public License v3 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: sorriso-dambrosio
@@ -1953,6 +1953,19 @@ Text Domain: sorriso-dambrosio
 .sd-why__cell h3 {
 	margin-top: 0;
 	text-wrap: balance;
+}
+
+/* L'icona del motivo: il PNG del vecchio sito fa da maschera e il
+   colore e' quello del testo (base sul fondo scuro), non il blu del
+   file. 48px: il file ne ha 128, quindi si riduce e non si stira. */
+.sd-why__icon {
+	background-color: currentColor;
+	display: block;
+	height: 48px;
+	margin-bottom: var(--wp--custom--space--sm);
+	-webkit-mask: var(--sd-icon) center / contain no-repeat;
+	mask: var(--sd-icon) center / contain no-repeat;
+	width: 48px;
 }
 
 @media (max-width: 899px) {
